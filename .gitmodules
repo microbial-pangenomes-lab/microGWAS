@@ -1,0 +1,6 @@
+[submodule "albi"]
+	path = albi
+	url = git@github.com:cozygene/albi.git
+[submodule "panfeed"]
+	path = panfeed
+	url = git@github.com:haneubau/panfeed.git
