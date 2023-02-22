@@ -1,4 +1,4 @@
-# Snakemake workflow: P. aeruginosa biofilm tolerance GWAS 2022
+# Snakemake workflow: Bacterial GWAS
 
 ## Author
 
