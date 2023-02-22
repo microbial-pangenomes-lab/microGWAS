@@ -1,0 +1,8 @@
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - biopython=1.78
+ - bcftools=1.13
+ - pandas=1.3.3
+ - pysam=0.17.0

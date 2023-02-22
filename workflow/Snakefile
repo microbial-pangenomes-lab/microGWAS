@@ -1,0 +1,929 @@
+from snakemake.utils import validate
+import pandas as pd
+import os
+
+##### load config #####
+
+configfile: "config/config.yaml"
+
+##### functions #####
+
+def _read_samples(infile):
+  m = pd.read_csv(infile, sep='\t', index_col=0)
+  return set(m.index)
+
+def _read_files(indir, extension='.fasta'):
+  return {x.split(extension)[0] for x in os.listdir(indir)}
+
+##### rules #####
+
+rule unitigs:
+  input: config["unitigs_input"]
+  output:
+    config["unitigs"],
+    config["unitigs_rtab"]
+  params: config["unitigs_dir"]
+  threads: 1
+  conda: "envs/unitig-counter.yaml"
+  log: "out/logs/unitigs.log"
+  shell:
+    """
+    rm -rf {params} && \
+    unitig-counter -gzip -strains {input} -output {params} \
+    -nb-cores {threads} 2> {log}
+    """
+
+rule lineage_st:
+  input:
+    _read_files(config["fastas"]).union(
+    _read_files(config["references_fastas"]))
+  output: config["lineage_mlst"]
+  params: config["mlst_scheme"]
+  threads: 16
+  conda: "envs/mlst.yaml"
+  shell:
+    """
+    mlst --scheme {params} --threads {threads} {input} | cut -f1,3 > {output}
+    sed -i 's$data/fastas/$$g' {output} | sed -i 's/.fasta//g' {output}
+    """
+
+rule lineage_poppunk:
+  input: config["poppunk_input"]
+  output: config["lineage_poppunk"]
+  params:
+    indir=config["poppunk_db"],
+    outdir=config["poppunk_dir"]
+  threads: 16
+  conda: "envs/poppunk.yaml"
+  log: "out/logs/poppunk.log"
+  shell:
+     """
+     poppunk_assign --db {params.indir} \
+             --query {input} --output {params.outdir} \
+             --threads {threads} 2> {log} && \
+     tail -n+2 {params.outdir}/poppunk_clusters.csv | \
+     sed 's/data\/fastas\///g' | sed 's/.fasta//g' | \
+     awk -F',' '{{print $1"\\t"$2}}' > {output}
+     """
+
+rule mash_sketch:
+  input: config["mash_input"]
+  output: config["sketches"]
+  params: config["sketches_base"]
+  threads: 5
+  conda: "envs/mash.yaml"
+  log: "out/logs/mash_sketch.log"
+  shell:
+    "mash sketch -p {threads} -s 10000 -o {params} -l {input} 2> {log}"
+
+rule distance:
+  input: config["sketches"]
+  output: config["distances"]
+  threads: 5
+  conda: "envs/mash.yaml"
+  log: "out/logs/distance.log"
+  shell:
+    "mash dist -p {threads} {input} {input} | square_mash > {output} 2> {log}"
+
+rule pangenome:
+  input: config["panaroo_input"]
+  output:
+    config["pangenome"],
+    config["pangenome_csv"],
+    config["pangenome_genes"],
+    config["structural"],
+    config["core_genome_aln"]
+  params: config["panaroo_dir"]
+  threads: 16
+  conda: "envs/panaroo.yaml"
+  log: "out/logs/pangenome.log"
+  shell:
+    "panaroo -t {threads} -i {input} -o {params} --clean-mode strict -a core 2> {log}"
+
+rule variant_sites:
+  input: config["core_genome_aln"]
+  output: config["core_genome_aln_variant"]
+  conda: "envs/snp-sites.yaml"
+  log: "out/logs/variant_sites.log"
+  shell:
+    "snp-sites -o {output} {input} 2> {log}"
+
+rule aln2vcf:
+  input: config["core_genome_aln"]
+  output: config["core_genome_vcf"]
+  conda: "envs/snp-sites.yaml"
+  threads: 16
+  log: "out/logs/snp-sites.log"
+  shell:
+    """
+    snp-sites -o core.vcf -v {input}
+    bcftools norm -m - -O z --threads {threads} core.vcf > {output} 2> {log}
+    bcftools index {output}
+    rm core.vcf
+    """
+
+rule similarity:
+  input:
+    aln=config["core_genome_aln"],
+    vcf=config["core_genome_vcf"]
+  output: config["similarities"]
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/similarity.log"
+  shell:
+    """
+    grep '>' {input.aln} | cut -c 2- > similarity_samples.txt
+    python3 workflow/scripts/similarity.py similarity_samples.txt \
+           --vcf {input.vcf} \
+           > {output} 2> {log}
+    rm similarity_samples.txt
+    """
+
+rule tree:
+  input: config["core_genome_aln"]
+  output: config["tree"]
+  conda: "envs/fasttree.yaml"
+  log: "out/logs/tree.log"
+  shell:
+    "FastTree -nt -gttr < {input} > {output} 2> {log}"
+
+rule prepare_pyseer:
+  input:
+    variants=config["unitigs_input"],
+    phenotypes=config["samples"],
+    similarity=config["similarities"],
+    distances=config["distances"],
+    lineage=config["lineage"]
+  output:
+    phenotypes=os.path.join(config["association_inputs"], "{phenotype}/phenotypes.tsv"),
+    similarity=os.path.join(config["association_inputs"], "{phenotype}/similarity.tsv"),
+    distances=os.path.join(config["association_inputs"], "{phenotype}/distances.tsv"),
+    lineage=os.path.join(config["association_inputs"], "{phenotype}/lineages.tsv")
+  params: os.path.join(config["association_inputs"], "{phenotype}")
+  log: "out/logs/prepare_pyseer_{phenotype}.log"
+  shell:
+    "python3 workflow/scripts/prepare_pyseer.py {input} {params} {wildcards.phenotype} 2> {log}"
+
+rule prepare_wg:
+  input:
+    variants = config["unitigs_input"],
+    unitigs = config["unitigs"],
+    phenotypes = config["samples"],
+    similarity = config["similarities"],
+    distances = config["distances"],
+    lineage = config["lineage"]
+  output:
+    phenotypes=os.path.join(config["wg_inputs"], "{phenotype}/phenotypes.tsv"),
+    similarity=os.path.join(config["wg_inputs"], "{phenotype}/similarity.tsv"),
+    distances=os.path.join(config["wg_inputs"], "{phenotype}/distances.tsv"),
+    lineage=os.path.join(config["wg_inputs"], "{phenotype}/lineages.tsv"),
+    variants=os.path.join(config["wg_inputs"], "{phenotype}/variants.pkl")
+  params:
+    directory = os.path.join(config["wg_inputs"], "{phenotype}"),
+    variants = os.path.join(config["wg_inputs"], "{phenotype}/variants")
+  threads: 18
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/prepare_wg_{phenotype}.log"
+  shell:
+    """
+     python3 workflow/scripts/prepare_pyseer.py {input.variants} {input.phenotypes} \
+                                                {input.similarity} {input.distances} \
+                                                {input.lineage} {params.directory} \
+                                                {wildcards.phenotype} 2> {log} && \
+     pyseer --phenotypes {output.phenotypes} --phenotype-column {wildcards.phenotype} \
+            --kmers {input.unitigs} \
+            --wg enet --save-vars {params.variants} \
+            --cpu {threads} 2>> {log}
+    """
+
+rule heritability:
+  input:
+    expand('out/associations/{target}/heritability_all.tsv',
+           target=config["targets"])
+
+rule lineages2covariance:
+  input:
+    os.path.join(config["association_inputs"], "{target}/lineages.tsv")
+  output:
+    os.path.join(config["association_inputs"], "{target}/lineages_covariance.tsv")
+  log: "out/logs/lineages2covariance_{target}.log"
+  shell:
+    "python workflow/scripts/lineage2covar.py {input} > {output} 2> {log}"
+
+rule run_heritability:
+  input:
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    similarity=os.path.join(config["association_inputs"], "{target}/similarity.tsv"),
+    lineages=os.path.join(config["association_inputs"], "{target}/lineages_covariance.tsv"),
+  output:
+    h_ci="out/associations/{target}/heritability.ci.tsv",
+    h="out/associations/{target}/heritability.tsv",
+    h_lineages="out/associations/{target}/heritability_lineages.tsv",
+  conda: "envs/limix.yaml"
+  log: "out/logs/heritability_{target}.log"
+  shell:
+    """
+    python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.similarity} \
+          -p {wildcards.target} \
+    > {output.h} 2> {log}
+    python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.similarity} \
+          -p {wildcards.target} \
+          --prefix /tmp/{wildcards.target} 2>> {log}
+    grep normal {output.h} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
+    grep normal {output.h} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
+    python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
+          -f /tmp/{wildcards.target}.estimates.txt \
+    | grep -v "Estimating" | grep -v '#' > {output.h_ci} 2>> {log}
+
+    python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.lineages} \
+          -p {wildcards.target} \
+    > {output.h_lineages} 2>> {log}
+    python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.lineages} \
+          -p {wildcards.target} \
+          --prefix /tmp/{wildcards.target} 2>> {log}
+    grep normal {output.h_lineages} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
+    grep normal {output.h_lineages} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
+    python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
+          -f /tmp/{wildcards.target}.estimates.txt \
+    | grep -v "Estimat" | grep -v '#' >> {output.h_ci} 2>> {log}
+    """
+
+rule combine_heritability:
+  input:
+    h_ci="out/associations/{target}/heritability.ci.tsv",
+    h="out/associations/{target}/heritability.tsv",
+    h_lineages="out/associations/{target}/heritability_lineages.tsv",
+  output:
+    "out/associations/{target}/heritability_all.tsv"
+  log: "out/logs/combine_heritability_{target}.log"
+  shell:
+    "python workflow/scripts/combine_heritability.py {input.h} {input.h_lineages} {input.h_ci} > {output}"
+
+rule sift:
+  input: config["snps_reference_faa"]
+  output: "out/snps/sift/sift.done"
+  params:
+    db=config["uniref50"],
+    outdir=config["sift"]
+  threads: 36
+  conda: "envs/sift4g.yaml"
+  log: "out/logs/sift.log"
+  shell:
+    """
+    sift4g -q {input} -d {params.db} --out {params.outdir} \
+           -t {threads} --sub-results \
+           --median-threshold 3.25 2> {log}
+    Rscript workflow/scripts/install_siftr.R 2>> {log} || true
+    for i in $(ls {params.outdir} | grep aligned.fasta); \
+    do \
+      echo $i; \
+      Rscript workflow/scripts/sift_scorer.R {params.outdir}/$i {params.outdir}/$(basename $i .aligned.fasta).tsv || true; \
+    done 2>> {log}
+    touch {output}
+    """
+
+rule prepare_rare_variants:
+  input:
+    vcf=expand("out/snps/{sample}/snps.vcf.gz",
+               sample=_read_samples(config["inputs"])),
+    sift="out/snps/sift/sift.done"
+  output: config["rare_snps"]
+  params: config["sift"]
+  threads: 36
+  conda: "envs/bcftools.yaml"
+  log: "out/logs/prepare_rare_variants.log"
+  shell:
+    """
+    bcftools merge {input.vcf} -0 -O z --threads {threads} > out/snps/merged.vcf.gz 2> {log}
+    bcftools norm -m - -O z --threads {threads} out/snps/merged.vcf.gz > out/snps/norm.vcf.gz 2>> {log}
+    bcftools view -Q 0.05 out/snps/norm.vcf.gz -O z --threads {threads} > out/snps/filtered.vcf.gz 2>> {log}
+    python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz {params} | bgzip > {output} 2>> {log}
+    bcftools index {output} 2>> {log}
+    rm out/snps/merged.vcf.gz out/snps/norm.vcf.gz out/snps/filtered.vcf.gz
+    """
+
+rule get_snps:
+  input:
+    ref=config["snps_reference"],
+    ctgs=os.path.join(config["fastas"], "{sample}.fasta")
+  output:
+    "out/snps/{sample}/snps.vcf.gz"
+  params:
+    "out/snps/{sample}"
+  conda: "envs/nucmer.yaml"
+  log: "out/logs/snippy_{sample}.log"
+  shell:
+    "snippy --force --outdir {params} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 2> {log}"
+
+rule prepare_regions:
+  input: config["snps_reference_gff"],
+  output: config["regions"]
+  shell:
+    """
+    grep CDS {input} | \
+    awk -F '\t' '{{print $1":"$4"-"$5"\t"$9}}' | \
+    sed 's/.1:/:/g' | awk -F ';' '{{print $1}}' | \
+    sed 's/ID=//g' | awk '{{print $2"\t"$1}}' > {output}
+    """
+
+rule pyseer:
+  input:
+    expand('out/associations/{target}/unitigs_filtered.tsv',
+           target=config["targets"]),
+    expand('out/associations/{target}/gpa_summary.tsv',
+           target=config["targets"])
+
+rule pyseer_rare:
+  input:
+    expand('out/associations/{target}/rare_summary.tsv',
+           target=config["targets"])
+
+rule wg:
+  input:
+    expand('out/wg/{target}/ridge.tsv',
+           target=config["targets"]),
+    expand('out/wg/{target}/lasso.tsv',
+           target=config["targets"]),
+
+rule run_pyseer:
+  input:
+    unitigs=config["unitigs"],
+    gpa=config["pangenome"],
+    struct=config["structural"],
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    similarity=os.path.join(config["association_inputs"], "{target}/similarity.tsv"),
+    distances=os.path.join(config["association_inputs"], "{target}/distances.tsv"),
+    lineages=os.path.join(config["association_inputs"], "{target}/lineages.tsv")
+  output:
+    patterns="out/associations/{target}/unitigs_patterns.txt",
+    unitigs="out/associations/{target}/unitigs.tsv",
+    unitigs_f="out/associations/{target}/unitigs_filtered.tsv",
+    gpa="out/associations/{target}/gpa.tsv",
+    gpa_f="out/associations/{target}/gpa_filtered.tsv",
+    struct="out/associations/{target}/struct.tsv",
+    struct_f="out/associations/{target}/struct_filtered.tsv"
+  threads: 2
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/pyseer_{target}.log"
+  shell:
+    """
+    zcat {input.unitigs} | head -n 10 > out/associations/{wildcards.target}/small.txt && \
+    sleep 5 && \
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --kmers out/associations/{wildcards.target}/small.txt \
+           --uncompressed \
+           --cpu {threads} \
+           --lineage --lineage-clusters {input.lineages} \
+           --lineage-file out/associations/{wildcards.target}/unitigs_lineage.txt \
+           --distances {input.distances} \
+           > /dev/null 2> {log}
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --kmers {input.unitigs} \
+           --similarity {input.similarity} \
+           --lmm \
+           --output-patterns out/associations/{wildcards.target}/unitigs_patterns.txt \
+           --cpu {threads} \
+           > {output.unitigs} 2>> {log} && \
+    sleep 5 && \
+    cat <(head -1 {output.unitigs}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold out/associations/{wildcards.target}/unitigs_patterns.txt) '$4<pval {{print $0}}' {output.unitigs}) > {output.unitigs_f}
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --pres {input.gpa} \
+           --similarity {input.similarity} \
+           --lmm --uncompressed \
+           --output-patterns out/associations/{wildcards.target}/gpa_patterns.txt \
+           --cpu {threads} \
+           > {output.gpa} 2>> {log} && \
+    sleep 5 && \
+    cat <(head -1 {output.gpa}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold out/associations/{wildcards.target}/unitigs_patterns.txt) '$4<pval {{print $0}}' {output.gpa}) > {output.gpa_f}
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --pres {input.struct} \
+           --similarity {input.similarity} \
+           --lmm --uncompressed \
+           --output-patterns out/associations/{wildcards.target}/struct_patterns.txt \
+           --cpu {threads} \
+           > {output.struct} 2>> {log} && \
+    sleep 5 && \
+    cat <(head -1 {output.struct}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold out/associations/{wildcards.target}/unitigs_patterns.txt) '$4<pval {{print $0}}' {output.struct}) > {output.struct_f}
+    """
+
+rule run_gpa_summary:
+  input:
+    filtered="out/associations/{target}/gpa_filtered.tsv",
+    pangenome=config["pangenome"],
+    pangenome2=config["pangenome_csv"],
+  output:
+    summary="out/associations/{target}/gpa_summary.tsv"
+  params:
+    d=config["references_gffs"],
+    r=config["summary_references"]
+  log: "out/logs/gpa_summary_{target}.log"
+  shell:
+    """
+    python workflow/scripts/gpa_summary.py {input.filtered} \
+           --pangenome {input.pangenome} \
+           --pangenome-genes {input.pangenome2} \
+           {params.r} \
+           --gff-dir {params.d} \
+           --sort lrt-pvalue \
+           > {output.summary} 2> {log} || true
+    """
+
+rule run_pyseer_rare:
+  input:
+    snps=config["rare_snps"],
+    regions=config["regions"],
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    similarity=os.path.join(config["association_inputs"], "{target}/similarity.tsv"),
+    lineages=os.path.join(config["association_inputs"], "{target}/lineages.tsv"),
+    patterns="out/associations/{target}/unitigs_patterns.txt",
+  output:
+    rare="out/associations/{target}/rare.tsv",
+    rare_f="out/associations/{target}/rare_filtered.tsv",
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/pyseer_rare_{target}.log"
+  shell:
+    """
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --vcf {input.snps} \
+           --burden {input.regions} \
+           --similarity {input.similarity} \
+           --lmm \
+           --output-patterns out/associations/{wildcards.target}/rare_patterns.txt \
+           --cpu 1 \
+           > {output.rare} 2> {log} && \
+    cat <(head -1 {output.rare}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.rare}) > {output.rare_f}
+    """
+
+rule run_rare_summary:
+  input:
+    filtered="out/associations/{target}/rare_filtered.tsv",
+    pangenome=config["pangenome"],
+    pangenome2=config["pangenome_csv"],
+  output:
+    summary="out/associations/{target}/rare_summary.tsv"
+  params:
+    d=config["references_gffs"],
+    r=config["summary_references"]
+  log: "out/logs/rare_summary_{target}.log"
+  shell:
+    """
+    python workflow/scripts/rare_summary.py {input.filtered} IAI39 \
+           --pangenome {input.pangenome} \
+           --pangenome-genes {input.pangenome2} \
+           {params.r} \
+           --gff-dir {params.d} \
+           --sort lrt-pvalue \
+           > {output.summary} 2> {log} || true
+    """
+
+rule run_wg:
+  input:
+    unitigs=config["unitigs"],
+    variants=os.path.join(config["wg_inputs"], "{target}/variants.pkl"),
+    phenotypes=os.path.join(config["wg_inputs"], "{target}/phenotypes.tsv"),
+    similarity=os.path.join(config["wg_inputs"], "{target}/similarity.tsv"),
+    distances=os.path.join(config["wg_inputs"], "{target}/distances.tsv"),
+    lineages=os.path.join(config["wg_inputs"], "{target}/lineages.tsv")
+  output:
+    ridge="out/wg/{target}/ridge.tsv",
+    ridge_o="out/wg/{target}/ridge.txt",
+    ridge_m="out/wg/{target}/ridge.pkl",
+    lasso="out/wg/{target}/lasso.tsv",
+    lasso_o="out/wg/{target}/lasso.txt",
+    lasso_m="out/wg/{target}/lasso.pkl",
+  params:
+    variants = os.path.join(config["wg_inputs"], "{target}/variants"),
+    ridge = "out/wg/{target}/ridge",
+    lasso = "out/wg/{target}/lasso",
+  threads: 32
+  conda: "envs/pyseer.yaml"
+  shell:
+    """
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --kmers {input.unitigs} \
+           --distances {input.distances} \
+           --wg enet \
+           --load-vars {params.variants} \
+           --save-model {params.ridge} \
+           --alpha 0.01 \
+           --sequence-reweighting \
+           --lineage-clusters {input.lineages} \
+           --cor-filter 0.0 \
+           > {output.ridge} 2> {output.ridge_o}
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --kmers {input.unitigs} \
+           --distances {input.distances} \
+           --wg enet \
+           --load-vars {params.variants} \
+           --save-model {params.lasso} \
+           --alpha 1 \
+           --sequence-reweighting \
+           --lineage-clusters {input.lineages} \
+           --cor-filter 0.0 \
+           > {output.lasso} 2> {output.lasso_o}
+    """
+
+rule map_back:
+  input:
+    expand("out/associations/{target}/mapped.tsv",
+           target=config["targets"]),
+    expand("out/associations/{target}/mapped_all.tsv",
+           target=config["targets"]),
+    expand("out/wg/{target}/mapped_{model}.tsv",
+           target=config["targets"],
+           model=['ridge', 'lasso']),
+
+rule run_map_back:
+  input:
+    unitigs="out/associations/{target}/unitigs_filtered.tsv",
+    fastadir=config["fastas"],
+    gffdir=config["gffs"],
+    reffastadir=os.path.join(config["references_dir"], "fastas"),
+    refgffdir=os.path.join(config["references_dir"], "gffs"),
+    pangenome=config['pangenome_csv']
+  output:
+    "out/associations/{target}/mapped.tsv"
+  params:
+    "/tmp/map_back_{target}"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/map_back_{target}.log"
+  shell:
+    """
+    mkdir -p {params}
+    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
+    python workflow/scripts/map_back.py {input.unitigs} {input.fastadir} --tmp-prefix {params} --gff {input.gffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+    python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+    """
+
+rule run_map_back_all:
+  input:
+    unitigs="out/associations/{target}/unitigs.tsv",
+    reffastadir=os.path.join(config["references_dir"], "fastas"),
+    refgffdir=os.path.join(config["references_dir"], "gffs"),
+  output:
+    "out/associations/{target}/mapped_all.tsv"
+  params:
+    "/tmp/map_back_all_{target}"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/map_back_all_{target}.log"
+  shell:
+    """
+    mkdir -p {params}
+    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {params}/mapped.tsv
+    python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details >> {params}/mapped.tsv 2> {log}
+    python workflow/scripts/make_skyline.py {input.unitigs} {params}/mapped.tsv > {output} 2>> {log}
+    """
+
+rule run_map_back_wg:
+  input:
+    unitigs="out/wg/{target}/{model}.tsv",
+    fastadir=config["fastas"],
+    gffdir=config["gffs"],
+    reffastadir=os.path.join(config["references_dir"], "fastas"),
+    refgffdir=os.path.join(config["references_dir"], "gffs"),
+    pangenome=config['pangenome_csv']
+  output:
+    "out/wg/{target}/mapped_{model}.tsv"
+  params:
+    "/tmp/map_back_{model}_{target}"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/map_back_{model}_{target}.log"
+  shell:
+    """
+    mkdir -p {params}
+    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
+    python workflow/scripts/map_back.py {input.unitigs} {input.fastadir} --tmp-prefix {params} --gff {input.gffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+    python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+    """
+
+rule map_summary:
+  input:
+    expand("out/associations/{target}/summary.tsv",
+           target=config["targets"]),
+    expand("out/wg/{target}/summary_{model}.tsv",
+           target=config["targets"],
+           model=["ridge", "lasso"]),
+
+rule map_summary_fig:
+  input:
+    mapped=expand("out/associations/{target}/mapped.svg",
+                  target=config["targets"]),
+
+rule run_map_summary:
+  input:
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    filtered="out/associations/{target}/unitigs_filtered.tsv",
+    pangenome=config["pangenome"],
+    pangenome2=config["pangenome_csv"],
+    mapped="out/associations/{target}/mapped.tsv",
+  output:
+    summary="out/associations/{target}/summary.tsv"
+  params:
+    d=config["references_gffs"],
+    r=config["summary_references"]
+  log: "out/logs/map_summary_{target}.log"
+  shell:
+    """
+    python workflow/scripts/mapped_summary.py {input.mapped} \
+           {input.phenotypes} {wildcards.target} {input.filtered} \
+           --pangenome {input.pangenome} \
+           --pangenome-genes {input.pangenome2} \
+           --length 30 --minimum-hits 9 --maximum-genes 10 \
+           {params.r} \
+           --gff-dir {params.d} \
+           --unique --sort avg-lrt-pvalue \
+           > {output.summary} 2> {log} || true
+    """
+
+rule run_map_summary_wg:
+  input:
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    filtered="out/wg/{target}/{model}.tsv",
+    pangenome=config["pangenome"],
+    pangenome2=config["pangenome_csv"],
+    mapped="out/wg/{target}/mapped_{model}.tsv",
+  output:
+    summary="out/wg/{target}/summary_{model}.tsv"
+  params:
+    d=config["references_gffs"],
+    r=config["summary_references"]
+  log: "out/logs/map_summary_{model}_{target}.log"
+  shell:
+    """
+    python workflow/scripts/mapped_summary.py {input.mapped} \
+           {input.phenotypes} {wildcards.target} {input.filtered} \
+           --pangenome {input.pangenome} \
+           --pangenome-genes {input.pangenome2} \
+           --length 30 --minimum-hits 9 --maximum-genes 10 \
+           {params.r} \
+           --gff-dir {params.d} \
+           --unique --sort avg-beta \
+           > {output.summary} || true
+    """
+
+rule run_map_summary_fig:
+  input:
+    config["tree"],
+    "out/associations/inputs/lineages.tsv",
+    "out/associations/{target}/mapped.tsv"
+  output:
+    "out/associations/{target}/mapped.svg"
+  log: "out/logs/map_summary_fig_{target}.log"
+  conda: "../envs/pyseer.yaml"
+  shell:
+    """
+    python workflow/scripts/unitigs2fig.py {input} {output}
+    """
+
+rule annotate_summary:
+  input:
+    expand("out/associations/{target}/annotated_summary.tsv",
+           target=config["targets"]),
+    expand("out/associations/{target}/annotated_rare_summary.tsv",
+           target=config["targets"]),
+    expand("out/associations/{target}/annotated_gpa_summary.tsv",
+           target=config["targets"]),
+    expand("out/wg/{target}/annotated_summary_{model}.tsv",
+           target=config["targets"],
+           model=["ridge", "lasso"]),
+
+rule run_annotate_summary:
+  input:
+    summary="out/associations/{target}/summary.tsv",
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"]
+  output:
+    "out/associations/{target}/annotated_summary.tsv"
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/associations/{target}/summary",
+    sample="out/associations/{target}/sample.faa",
+    annotations="out/associations/{target}/summary.emapper.annotations",
+    r=config["annotation_references"]
+  threads: 8
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_{target}.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               {params.r} \
+               --groups {input.summary} > {params.sample} 2> {log} && \
+    emapper.py -i {params.sample} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+    python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
+    > {output} 2>> {log}
+    """
+
+rule run_annotate_rare_summary:
+  input:
+    summary="out/associations/{target}/rare_summary.tsv",
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"]
+  output:
+    "out/associations/{target}/annotated_rare_summary.tsv"
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/associations/{target}/rare_summary",
+    sample="out/associations/{target}/rare_sample.faa",
+    annotations="out/associations/{target}/rare_summary.emapper.annotations",
+    r=config["annotation_references"]
+  threads: 8
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_rare_{target}.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               {params.r} \
+               --groups {input.summary} > {params.sample} 2> {log} && \
+    emapper.py -i {params.sample} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+    python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
+    > {output} 2>> {log}
+    """
+
+rule run_annotate_gpa_summary:
+  input:
+    summary="out/associations/{target}/gpa_summary.tsv",
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"]
+  output:
+    "out/associations/{target}/annotated_gpa_summary.tsv"
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/associations/{target}/gpa_summary",
+    sample="out/associations/{target}/gpa_sample.faa",
+    annotations="out/associations/{target}/gpa_summary.emapper.annotations",
+    r=config["annotation_references"]
+  threads: 8
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_gpa_{target}.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               {params.r} \
+               --groups {input.summary} > {params.sample} 2> {log} && \
+    emapper.py -i {params.sample} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+    python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
+    > {output} 2>> {log}
+    """
+
+rule run_annotate_summary_wg:
+  input:
+    summary="out/wg/{target}/summary_{model}.tsv",
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"]
+  output:
+    "out/wg/{target}/annotated_summary_{model}.tsv"
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/wg/{target}/summary_{model}",
+    sample="out/wg/{target}/sample_{model}.faa",
+    annotations="out/wg/{target}/summary_{model}.emapper.annotations",
+    r=config["annotation_references"]
+  threads: 8
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_{model}_{target}.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               {params.r} \
+               --groups {input.summary} > {params.sample} 2> {log} && \
+    emapper.py -i {params.sample} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+    python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
+    > {output} 2>> {log}
+    """
+
+rule mapped_clusters:
+  input:
+    expand("out/associations/{target}/clusters.tsv",
+           target=config["targets"]),
+    expand("out/wg/{target}/clusters_{model}.tsv",
+           target=config["targets"],
+           model=["ridge", "lasso"]),
+  output:
+    "out/clusters.done"
+  shell:
+    "touch {output}"
+
+rule get_mapped_clusters:
+  input:
+    mapped="out/associations/{target}/mapped.tsv",
+    rare="out/associations/{target}/rare_summary.tsv",
+    gpa="out/associations/{target}/gpa_filtered.tsv"
+  output:
+    "out/associations/{target}/clusters.tsv"
+  shell:
+    """
+    awk '{{print $7}}' {input.mapped} > out/associations/{wildcards.target}/tmp.txt || true
+    awk '{{print $8}}' {input.mapped} >> out/associations/{wildcards.target}/tmp.txt || true
+    awk '{{print $9}}' {input.mapped} >> out/associations/{wildcards.target}/tmp.txt || true
+    tail -n+2 {input.rare} | awk '{{print $1}}' >> out/associations/{wildcards.target}/tmp.txt || true
+    tail -n+2 {input.gpa} | awk '{{print $1}}' >> out/associations/{wildcards.target}/tmp.txt || true
+    cat out/associations/{wildcards.target}/tmp.txt | grep -v 'gene' | grep -v 'downstream' | grep -v 'upstream' | grep . | sort | uniq > {output} || true
+    rm out/associations/{wildcards.target}/tmp.txt || true
+    """
+
+rule get_mapped_clusters_wg:
+  input:
+    "out/wg/{target}/mapped_{model}.tsv"
+  output:
+    "out/wg/{target}/clusters_{model}.tsv"
+  shell:
+    """
+    awk '{{print $7}}' {input} > out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
+    awk '{{print $8}}' {input} >> out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
+    awk '{{print $9}}' {input} >> out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
+    cat out/wg/{wildcards.target}/tmp_{wildcards.model}.txt | grep -v 'gene' | grep -v 'downstream' | grep -v 'upstream' | grep . | sort | uniq > {output} || true
+    rm out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
+    """
+
+rule panfeed_input:
+  input:
+    "out/clusters.done"
+  output:
+    config["panfeed_genes"]
+  shell:
+    "cat out/associations/*/clusters.tsv out/wg/*/clusters_*.tsv | sort | uniq > {output}"
+
+rule panfeed_kmers:
+  input:
+    pangenome=config["pangenome"],
+    genes=config["panfeed_genes"],
+  output: config["panfeed_patterns"]
+  params:
+    input=config["pangenome_csv"],
+    outdir=config["panfeed_dir"],
+    indir=config["panfeed_input_dir"],
+    gffdir1=config["gffs"],
+    gffdir2=config["references_gffs"],
+  threads: 4
+  conda: "envs/panfeed.yaml"
+  log: "out/logs/panfeed.log"
+  shell:
+    """
+    rm -rf {params.outdir} && \
+    mkdir -p {params.indir} && rm -rf {params.indir}/* && \
+    cp {params.gffdir1}/*.gff {params.indir} && \
+    cp {params.gffdir2}/*.gff {params.indir} && \
+    ls {params.indir} | sed 's/.gff//g' > data/panfeed_targets.txt && \
+    python panfeed/panfeed-runner.py \
+                --gff {params.indir} \
+                -o {params.outdir} \
+                -p {params.input} \
+                --upstream 250 --downstream 50 \
+                --no-filter \
+                --targets data/panfeed_targets.txt \
+                --genes {input.genes} \
+                -v \
+                --cores {threads} 2> {log} && \
+    rm -rf {params.indir}
+    """
+
+rule panfeed:
+  input:
+    expand('out/associations/{target}/panfeed.tsv',
+           target=config["targets"])
+
+rule run_panfeed:
+  input:
+    kmers=config["panfeed_patterns"],
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    similarity=os.path.join(config["association_inputs"], "{target}/similarity.tsv"),
+    distances=os.path.join(config["association_inputs"], "{target}/distances.tsv"),
+    lineages=os.path.join(config["association_inputs"], "{target}/lineages.tsv"),
+    patterns="out/associations/{target}/unitigs_patterns.txt",
+  output:
+    p="out/associations/{target}/panfeed.tsv",
+    p_f="out/associations/{target}/panfeed_filtered.tsv",
+  threads: 2
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/panfeed_{target}.log"
+  shell:
+    """
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --pres {input.kmers} \
+           --similarity {input.similarity} \
+           --lmm --uncompressed \
+           --output-patterns out/associations/{wildcards.target}/panfeed_patterns.txt \
+           --cpu {threads} \
+           > {output.p} 2> {log}
+    cat <(head -1 {output.p}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.p}) > {output.p_f}
+    """
+

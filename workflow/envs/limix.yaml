@@ -1,0 +1,5 @@
+channels:
+ - conda-forge
+dependencies:
+ - pandas < 1.1.0
+ - limix=3.0.4

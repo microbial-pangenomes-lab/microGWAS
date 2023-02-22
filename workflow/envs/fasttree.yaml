@@ -1,0 +1,4 @@
+channels:
+ - bioconda
+dependencies:
+ - fasttree=2.1.11

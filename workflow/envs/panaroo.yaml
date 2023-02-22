@@ -1,0 +1,4 @@
+channels:
+ - bioconda
+dependencies:
+ - panaroo=1.3.0

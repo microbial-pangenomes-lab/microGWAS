@@ -1,0 +1,10 @@
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - biopython
+ - mummer4=4.0.0rc1
+ - snpeff=5.0
+ - snippy=4.6.0
+ - pandas=1.2.5
+ - perl-bioperl=1.7.8

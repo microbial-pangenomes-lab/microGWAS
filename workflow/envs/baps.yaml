@@ -1,0 +1,6 @@
+channels:
+ - conda-forge
+ - hcc
+dependencies:
+ - r-argparse
+ - r-rhierbaps=1.1.2

@@ -1,0 +1,4 @@
+channels:
+ - bioconda
+dependencies:
+ - unitig-counter=1.1.0

@@ -1,0 +1,111 @@
+##### params #####
+
+# targets for associations
+targets: [
+         "phenotype1",
+         "phenotype2",
+         ]
+
+# MLST scheme
+mlst_scheme: ecoli
+
+# references for association summaries and annotation
+summary_references: "--reference 536 --reference CFT073 --reference IAI39"
+annotation_references: "--focus-strain 536 --focus-strain CFT073 --focus-strain IAI39"
+
+##### inputs (there already) #####
+
+# samples file
+# (includes phenotypes)
+samples: "data/data.tsv"
+
+# all genomes, excluding reference
+inputs: "out/inputs.tsv"
+
+# genomes
+fastas: "data/fastas"
+gffs: "data/gffs"
+
+# eggnog-mapper
+# path to eggnog-mapper data directory
+# note: can also be a symbolic link
+emapper: "data/eggnog-mapper"
+
+# snpeff
+references_dir: "data/references"
+references_fastas: "data/references/fastas"
+references_gffs: "data/references/gffs"
+
+# rare variants
+# path to uniref50 unzipped fasta file
+# note: can also be a symbolic link
+uniref50: "data/uniref50.fasta"
+snps_reference_faa: "data/sift4g.faa"
+snps_reference_gff: "data/references/gffs/IAI39.gff"
+snps_reference: "data/references/gbks/IAI39.gbk"
+
+# lineages
+poppunk_db: "data/poppunk"
+
+##### outputs #####
+
+### lineages
+# generated outside the workflow
+poppunk_input: "out/poppunk_input.txt"
+#
+poppunk_dir: "out/poppunk"
+baps: "out/baps.txt"
+lineage_poppunk: "out/lineages_poppunk.tsv"
+lineage_mlst: "out/lineages_mlst.txt"
+
+### unitigs
+# generated outside the workflow
+unitigs_input: "out/unitigs_input.tsv"
+# 
+unitigs_dir: "out/unitigs"
+unitigs: "out/unitigs/unitigs.txt.gz"
+unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
+
+### pangenome (panaroo)
+# generated outside the workflow
+panaroo_input: "out/panaroo_input.txt"
+#
+panaroo_dir: "out/panaroo"
+pangenome: "out/panaroo/gene_presence_absence.Rtab"
+pangenome_csv: "out/panaroo/gene_presence_absence.csv"
+pangenome_genes: "out/panaroo/gene_data.csv"
+structural: "out/panaroo/struct_presence_absence.Rtab"
+core_genome_aln: "out/panaroo/core_gene_alignment.aln"
+core_genome_vcf: "out/panaroo/core_gene_alignment.vcf.gz"
+core_genome_aln_variant: "out/panaroo/core_gene_alignment_variable.aln"
+
+### k-mers (panfeed)
+panfeed_input_dir: "out/panfeed_gffs"
+panfeed_dir: "out/panfeed"
+panfeed_patterns: "out/panfeed/hashes_to_patterns.tsv"
+# gene clusters to extract k-mers from
+panfeed_genes: "out/panfeed_genes.txt"
+
+### phylogenetic tree
+tree: "out/panaroo/core_gene_alignment.aln.treefile"
+
+### distance (mash)
+# generated outside the workflow
+mash_input: "out/mash_input.txt"
+#
+sketches_base: "out/sketches"
+sketches: "out/sketches.msh"
+distances: "out/distances.tsv"
+
+### similarity
+similarities: "out/similarity.tsv"
+
+### rare variants
+rare_snps: "out/snps/rare.vcf.gz"
+regions: "out/snps/regions.tsv"
+sift: "out/snps/sift"
+
+### associations
+association_inputs: "out/associations/inputs"
+wg_inputs: "out/wg/inputs"
+

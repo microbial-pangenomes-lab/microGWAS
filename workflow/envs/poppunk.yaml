@@ -1,0 +1,4 @@
+channels:
+ - bioconda
+dependencies:
+ - poppunk = 2.4.0

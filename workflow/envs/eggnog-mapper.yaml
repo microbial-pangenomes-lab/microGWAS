@@ -1,0 +1,5 @@
+channels:
+ - bioconda
+dependencies:
+ - pandas
+ - eggnog-mapper=2.1.3

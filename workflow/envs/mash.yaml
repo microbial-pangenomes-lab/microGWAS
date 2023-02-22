@@ -1,0 +1,5 @@
+channels:
+ - bioconda
+dependencies:
+ - mash=2.2.2
+ - pyseer=1.3.6
