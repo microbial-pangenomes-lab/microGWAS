@@ -15,6 +15,10 @@ def _read_samples(infile):
 def _read_files(indir, extension='.fasta'):
   return {x.split(extension)[0] for x in os.listdir(indir)}
 
+def _read_directory(indir):
+  return {os.path.join(indir, x)
+          for x in os.listdir(indir)}
+
 ##### rules #####
 
 rule unitigs:
@@ -35,8 +39,8 @@ rule unitigs:
 
 rule lineage_st:
   input:
-    _read_files(config["fastas"]).union(
-    _read_files(config["references_fastas"]))
+    _read_directory(config["fastas"]).union(
+    _read_directory(config["references_fastas"]))
   output: config["lineage_mlst"]
   params: config["mlst_scheme"]
   threads: 16
