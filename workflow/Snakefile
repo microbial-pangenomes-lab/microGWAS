@@ -98,7 +98,7 @@ rule pangenome:
     config["structural"],
     config["core_genome_aln"]
   params: config["panaroo_dir"]
-  threads: 16
+  threads: 24
   conda: "envs/panaroo.yaml"
   log: "out/logs/pangenome.log"
   shell:
