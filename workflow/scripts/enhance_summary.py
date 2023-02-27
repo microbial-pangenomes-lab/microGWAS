@@ -45,6 +45,11 @@ def get_options():
     parser.add_argument('annotations',
                         help='Output from eggnog mapper (*.emapper.annotations)')
 
+    parser.add_argument('--no-summary',
+                        default=False,
+                        action="store_true",
+                        help='Summary table is not really there')
+
     return parser.parse_args()
 
 
@@ -52,8 +57,9 @@ if __name__ == "__main__":
     options = get_options()
 
     try:
-        # read summary
-        s = pd.read_csv(options.summary, sep='\t', index_col=0)
+        if not options.no_summary:
+            # read summary
+            s = pd.read_csv(options.summary, sep='\t', index_col=0)
 
         # read annotations
         a = pd.read_csv(options.annotations, sep='\t', skiprows=4,
@@ -66,5 +72,6 @@ if __name__ == "__main__":
            'KEGG_Pathway', 'KEGG_Module', 'KEGG_Reaction', 'KEGG_rclass', 'BRITE',
            'KEGG_TC', 'CAZy', 'BiGG_Reaction', 'PFAMs']]
 
-    a = s.join(a, how='left')
+    if not options.no_summary:
+        a = s.join(a, how='left')
     a.to_csv(sys.stdout, sep='\t')

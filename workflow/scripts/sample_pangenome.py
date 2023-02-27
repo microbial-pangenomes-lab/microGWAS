@@ -15,6 +15,11 @@ def get_options():
                         default=None,
                         action='append',
                         help='Focus strain [Default: random strain]')
+    parser.add_argument('--only-focus',
+                        default=False,
+                        action='store_true',
+                        help='Only output OGs that are in the focus strain(s) '
+                             '[Default: all or selected OGs]')
     parser.add_argument('--groups',
                         default=None,
                         help='OGs to focus on (tab-delimited summary file) '
@@ -76,6 +81,8 @@ if __name__ == "__main__":
                     gene = genes.loc[strain]
                     break
             if gene is None:
+                if options.only_focus:
+                    continue
                 strain = genes.index[0]
                 gene = genes.values[0]
         if ';' in gene:

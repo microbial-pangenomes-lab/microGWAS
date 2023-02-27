@@ -813,48 +813,80 @@ rule run_annotate_summary_wg:
     > {output} 2>> {log}
     """
 
-rule mapped_clusters:
+rule annotate_reference:
+  input:  
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"]
+  output: config["annotated_reference"]
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/reference",
+    sample="out/reference.faa",
+    annotations="out/reference.emapper.annotations",
+    r=config["enrichment_reference"]
+  threads: 8
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_reference.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               --focus-strain {params.r} --only-focus \
+               > {params.sample} 2> {log} && \
+    emapper.py -i {params.sample} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+    python workflow/scripts/enhance_summary.py /dev/null {params.annotations} --no-summary \
+    > {output} 2>> {log}
+    """
+
+rule download_obo:
+  output: config["go_obo"]
+  shell: "wget -O {output} 'http://purl.obolibrary.org/obo/go/go-basic.obo'"
+
+rule enrichment:
   input:
-    expand("out/associations/{target}/clusters.tsv",
+    expand('out/associations/{target}/COG.tsv',
            target=config["targets"]),
-    expand("out/wg/{target}/clusters_{model}.tsv",
+    expand('out/associations/{target}/GO.tsv',
+           target=config["targets"]),
+    expand("out/wg/{target}/COG_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
-  output:
-    "out/clusters.done"
-  shell:
-    "touch {output}"
+    expand("out/wg/{target}/GO_{model}.tsv",
+           target=config["targets"],
+           model=["ridge", "lasso"]),
 
-rule get_mapped_clusters:
+rule run_enrich:
   input:
-    mapped="out/associations/{target}/mapped.tsv",
-    rare="out/associations/{target}/rare_summary.tsv",
-    gpa="out/associations/{target}/gpa_filtered.tsv"
+    sample="out/associations/{target}/annotated_summary.tsv",
+    reference=config["annotated_reference"],
+    obo=config["go_obo"]
   output:
-    "out/associations/{target}/clusters.tsv"
+    cog="out/associations/{target}/COG.tsv",
+    go="out/associations/{target}/GO.tsv",
+  conda: "envs/enrich.yaml"
+  log: "out/logs/enrich_{target}.log"
   shell:
     """
-    awk '{{print $7}}' {input.mapped} > out/associations/{wildcards.target}/tmp.txt || true
-    awk '{{print $8}}' {input.mapped} >> out/associations/{wildcards.target}/tmp.txt || true
-    awk '{{print $9}}' {input.mapped} >> out/associations/{wildcards.target}/tmp.txt || true
-    tail -n+2 {input.rare} | awk '{{print $1}}' >> out/associations/{wildcards.target}/tmp.txt || true
-    tail -n+2 {input.gpa} | awk '{{print $1}}' >> out/associations/{wildcards.target}/tmp.txt || true
-    cat out/associations/{wildcards.target}/tmp.txt | grep -v 'gene' | grep -v 'downstream' | grep -v 'upstream' | grep . | sort | uniq > {output} || true
-    rm out/associations/{wildcards.target}/tmp.txt || true
+    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+            {input.reference} {input.obo} {output} 2> {log}
     """
 
-rule get_mapped_clusters_wg:
+rule run_enrich_wg:
   input:
-    "out/wg/{target}/mapped_{model}.tsv"
+    sample="out/wg/{target}/annotated_summary_{model}.tsv",
+    reference=config["annotated_reference"],
+    obo=config["go_obo"]
   output:
-    "out/wg/{target}/clusters_{model}.tsv"
+    cog="out/wg/{target}/COG_{model}.tsv",
+    go="out/wg/{target}/GO_{model}.tsv",
+  conda: "envs/enrich.yaml"
+  log: "out/logs/enrich_{target}_{model}.log"
   shell:
     """
-    awk '{{print $7}}' {input} > out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
-    awk '{{print $8}}' {input} >> out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
-    awk '{{print $9}}' {input} >> out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
-    cat out/wg/{wildcards.target}/tmp_{wildcards.model}.txt | grep -v 'gene' | grep -v 'downstream' | grep -v 'upstream' | grep . | sort | uniq > {output} || true
-    rm out/wg/{wildcards.target}/tmp_{wildcards.model}.txt || true
+    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+            {input.reference} {input.obo} {output} 2> {log}
     """
 
 rule panfeed_input:

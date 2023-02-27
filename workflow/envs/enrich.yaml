@@ -1,0 +1,7 @@
+channels:
+ - bioconda
+dependencies:
+ - scipy
+ - pandas
+ - goatools
+ - statsmodels >=0.10

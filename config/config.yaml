@@ -12,6 +12,7 @@ mlst_scheme: ecoli
 # references for association summaries and annotation
 summary_references: "--reference 536 --reference CFT073 --reference IAI39"
 annotation_references: "--focus-strain 536 --focus-strain CFT073 --focus-strain IAI39"
+enrichment_reference: "IAI39"
 
 ##### inputs (there already) #####
 
@@ -109,3 +110,6 @@ sift: "out/snps/sift"
 association_inputs: "out/associations/inputs"
 wg_inputs: "out/wg/inputs"
 
+### enrichments
+annotated_reference: "out/annotated_reference.tsv"
+go_obo: "out/go-basic.obo"
