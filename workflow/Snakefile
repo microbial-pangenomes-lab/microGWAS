@@ -371,8 +371,7 @@ rule run_pyseer:
   log: "out/logs/pyseer_{target}.log"
   shell:
     """
-    zcat {input.unitigs} | head -n 10 > out/associations/{wildcards.target}/small.txt && \
-    sleep 5 && \
+    zcat {input.unitigs} | head -n 10 > out/associations/{wildcards.target}/small.txt || true
     pyseer --phenotypes {input.phenotypes} \
            --phenotype-column {wildcards.target} \
            --kmers out/associations/{wildcards.target}/small.txt \
