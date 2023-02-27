@@ -889,18 +889,9 @@ rule run_enrich_wg:
             {input.reference} {input.obo} {output} 2> {log}
     """
 
-rule panfeed_input:
-  input:
-    "out/clusters.done"
-  output:
-    config["panfeed_genes"]
-  shell:
-    "cat out/associations/*/clusters.tsv out/wg/*/clusters_*.tsv | sort | uniq > {output}"
-
 rule panfeed_kmers:
   input:
     pangenome=config["pangenome"],
-    genes=config["panfeed_genes"],
   output: config["panfeed_patterns"]
   params:
     input=config["pangenome_csv"],
@@ -917,15 +908,12 @@ rule panfeed_kmers:
     mkdir -p {params.indir} && rm -rf {params.indir}/* && \
     cp {params.gffdir1}/*.gff {params.indir} && \
     cp {params.gffdir2}/*.gff {params.indir} && \
-    ls {params.indir} | sed 's/.gff//g' > data/panfeed_targets.txt && \
     python panfeed/panfeed-runner.py \
                 --gff {params.indir} \
                 -o {params.outdir} \
                 -p {params.input} \
                 --upstream 250 --downstream 50 \
                 --no-filter \
-                --targets data/panfeed_targets.txt \
-                --genes {input.genes} \
                 -v \
                 --cores {threads} 2> {log} && \
     rm -rf {params.indir}
