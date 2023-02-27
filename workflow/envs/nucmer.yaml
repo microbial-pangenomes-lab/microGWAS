@@ -8,3 +8,5 @@ dependencies:
  - snippy=4.6.0
  - pandas=1.2.5
  - perl-bioperl=1.7.8
+ - bcftools>1.10
+ - gsl
