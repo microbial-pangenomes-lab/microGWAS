@@ -184,7 +184,7 @@ rule prepare_wg:
   params:
     directory = os.path.join(config["wg_inputs"], "{phenotype}"),
     variants = os.path.join(config["wg_inputs"], "{phenotype}/variants")
-  threads: 18
+  threads: 4
   conda: "envs/pyseer.yaml"
   log: "out/logs/prepare_wg_{phenotype}.log"
   shell:
@@ -196,6 +196,7 @@ rule prepare_wg:
      pyseer --phenotypes {output.phenotypes} --phenotype-column {wildcards.phenotype} \
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
+            --cor-filter 0.0 \
             --cpu {threads} 2>> {log}
     """
 
@@ -503,7 +504,7 @@ rule run_wg:
     variants = os.path.join(config["wg_inputs"], "{target}/variants"),
     ridge = "out/wg/{target}/ridge",
     lasso = "out/wg/{target}/lasso",
-  threads: 32
+  threads: 4
   conda: "envs/pyseer.yaml"
   shell:
     """
