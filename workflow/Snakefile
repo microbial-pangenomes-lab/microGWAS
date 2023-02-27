@@ -47,8 +47,8 @@ rule lineage_st:
   conda: "envs/mlst.yaml"
   shell:
     """
-    mlst --scheme {params} --threads {threads} {input} | cut -f1,3 > {output}
-    sed -i 's$data/fastas/$$g' {output} | sed -i 's/.fasta//g' {output}
+    mlst --scheme {params} --threads {threads} {input} | cut -f1,3 > /tmp/mlst.txt
+    sed 's$data/fastas/$$g' /tmp/mlst.txt | sed 's/.fasta//g' > {output}
     """
 
 rule lineage_poppunk:
