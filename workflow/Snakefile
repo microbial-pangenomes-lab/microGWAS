@@ -148,7 +148,7 @@ rule tree:
   conda: "envs/fasttree.yaml"
   log: "out/logs/tree.log"
   shell:
-    "FastTree -nt -gttr < {input} > {output} 2> {log}"
+    "FastTree -nt -gtr < {input} > {output} 2> {log}"
 
 rule prepare_pyseer:
   input:
