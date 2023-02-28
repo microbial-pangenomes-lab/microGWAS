@@ -120,14 +120,14 @@ if __name__ == "__main__":
     obodag = GODag(options.obo)
 
     assoc = {k: {y for y in v.split(',')}
-             for k, v in m.set_index('#query')['GOs'].dropna().to_dict().items()}
-    for k, v in n.set_index('gene')['GOs'].dropna().to_dict().items():
+             for k, v in m.set_index(m.columns[0])['GOs'].dropna().to_dict().items()}
+    for k, v in n.set_index(n.columns[0])['GOs'].dropna().to_dict().items():
         if k in assoc:
             continue
         assoc[k] = {y for y in v.split(',')}
 
     go = GOEnrichmentStudy(assoc.keys(), assoc, obodag, methods=['fdr_bh'])
-    res = go.run_study(set(n['gene']))
+    res = go.run_study(set(n[n.columns[0]]))
 
     passing = [x for x in res
                if x.get_pvalue() < 0.05]

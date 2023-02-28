@@ -850,6 +850,12 @@ rule enrichment:
            target=config["targets"]),
     expand('out/associations/{target}/GO.tsv',
            target=config["targets"]),
+    expand('out/associations/{target}/COG_{kind}.tsv',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
+    expand('out/associations/{target}/GO_{kind}.tsv',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
     expand("out/wg/{target}/COG_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
@@ -867,6 +873,22 @@ rule run_enrich:
     go="out/associations/{target}/GO.tsv",
   conda: "envs/enrich.yaml"
   log: "out/logs/enrich_{target}.log"
+  shell:
+    """
+    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+            {input.reference} {input.obo} {output} 2> {log}
+    """
+
+rule run_enrich_alt:
+  input:
+    sample="out/associations/{target}/annotated_{kind}_summary.tsv",
+    reference=config["annotated_reference"],
+    obo=config["go_obo"]
+  output:
+    cog="out/associations/{target}/COG_{kind}.tsv",
+    go="out/associations/{target}/GO_{kind}.tsv",
+  conda: "envs/enrich.yaml"
+  log: "out/logs/enrich_{target}_{kind}.log"
   shell:
     """
     python3 workflow/scripts/functional_enrichment.py {input.sample} \
