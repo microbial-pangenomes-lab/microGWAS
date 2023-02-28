@@ -484,6 +484,19 @@ rule run_rare_summary:
            > {output.summary} 2> {log} || true
     """
 
+rule qq_plots:
+  input:
+    expand('out/associations/{target}/{variant}.png',
+           target=config["targets"],
+           variant=["unitigs", "gpa", "rare"]),
+
+rule run_qq_plot:
+  input: "out/associations/{target}/{variant}.tsv"
+  output: "out/associations/{target}/{variant}.png"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/qq_{variant}_{target}.log"
+  shell: "python3 workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
+
 rule run_wg:
   input:
     unitigs=config["unitigs"],
