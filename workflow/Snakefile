@@ -471,11 +471,12 @@ rule run_rare_summary:
     summary="out/associations/{target}/rare_summary.tsv"
   params:
     d=config["references_gffs"],
-    r=config["summary_references"]
+    r=config["summary_references"],
+    ref=config["enrichment_reference"]
   log: "out/logs/rare_summary_{target}.log"
   shell:
     """
-    python workflow/scripts/rare_summary.py {input.filtered} IAI39 \
+    python workflow/scripts/rare_summary.py {input.filtered} {params.ref} \
            --pangenome {input.pangenome} \
            --pangenome-genes {input.pangenome2} \
            {params.r} \
