@@ -828,7 +828,7 @@ rule run_annotate_summary_wg:
     """
 
 rule annotate_reference:
-  input:  
+  input:
     pangenome=config["pangenome_csv"],
     genes=config["pangenome_genes"]
   output: config["annotated_reference"]
@@ -928,13 +928,18 @@ rule run_enrich_wg:
 rule panfeed_kmers:
   input:
     pangenome=config["pangenome"],
-  output: config["panfeed_patterns"]
+  output:
+    config["panfeed_patterns"],
+    config["panfeed_conversion"],
   params:
     input=config["pangenome_csv"],
     outdir=config["panfeed_dir"],
     indir=config["panfeed_input_dir"],
     gffdir1=config["gffs"],
     gffdir2=config["references_gffs"],
+    indirfasta=config["panfeed_input_dir"],
+    fastadir1=config["fastas"],
+    fastadir2=config["references_fastas"],
   threads: 4
   conda: "envs/panfeed.yaml"
   log: "out/logs/panfeed.log"
@@ -944,18 +949,23 @@ rule panfeed_kmers:
     mkdir -p {params.indir} && rm -rf {params.indir}/* && \
     cp {params.gffdir1}/*.gff {params.indir} && \
     cp {params.gffdir2}/*.gff {params.indir} && \
-    python panfeed/panfeed-runner.py \
-                --gff {params.indir} \
-                -o {params.outdir} \
-                -p {params.input} \
-                --upstream 250 --downstream 50 \
-                --no-filter \
-                -v \
-                --cores {threads} 2> {log} && \
-    rm -rf {params.indir}
+    mkdir -p {params.indirfasta} && rm -rf {params.indirfasta}/* && \
+    cp {params.fastadir1}/*.fasta {params.indirfasta} && \
+    cp {params.fastadir2}/*.fasta {params.indirfasta} && \
+    panfeed \
+        --gff {params.indir} \
+        --fasta {params.indirfasta} \
+        -o {params.outdir} \
+        -p {params.input} \
+        --upstream 250 --downstream 100 \
+        --no-filter \
+        -v \
+        --cores {threads} 2> {log} && \
+    rm -rf {params.indir} && \
+    rm -rf {params.indirfasta}
     """
 
-rule panfeed:
+rule panfeed_first_pass:
   input:
     expand('out/associations/{target}/panfeed.tsv',
            target=config["targets"])
@@ -985,5 +995,69 @@ rule run_panfeed:
            --cpu {threads} \
            > {output.p} 2> {log}
     cat <(head -1 {output.p}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.p}) > {output.p_f}
+    """
+
+rule panfeed_downstream:
+  input:
+    expand('out/associations/{target}/panfeed_annotated_kmers.tsv.gz',
+           target=config["targets"])
+
+rule panfeed:
+  input:
+    pangenome=config["pangenome"],
+    patterns="out/associations/{target}/unitigs_patterns.txt",
+    panfeed="out/associations/{target}/panfeed.tsv",
+    panfeed_conversion=config["panfeed_conversion"],
+  output:
+    "out/associations/{target}/panfeed_annotated_kmers.tsv.gz"
+  params:
+    input=config["pangenome_csv"],
+    outdir="out/associations/{target}/panfeed_second_pass",
+    indir="out/associations/{target}/panfeed_gffs",
+    gffdir1=config["gffs"],
+    gffdir2=config["references_gffs"],
+    indirfasta="out/associations/{target}/panfeed_fastas",
+    fastadir1=config["fastas"],
+    fastadir2=config["references_fastas"],
+    clusters="out/associations/{target}/panfeed_clusters.txt",
+    targets="out/associations/{target}/panfeed_targets.txt",
+    k2h="out/associations/{target}/panfeed_second_pass/kmers_to_hashes.tsv.gz",
+    k="out/associations/{target}/panfeed_second_pass/kmers.tsv.gz",
+  threads: 4
+  conda: "envs/panfeed.yaml"
+  log: "out/logs/panfeed_second_pass_{target}.log"
+  shell:
+    """
+    panfeed-get-clusters \
+        -a {input.panfeed} \
+        -p {input.panfeed_conversion} \
+        -t $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
+        > {params.clusters} && \
+    rm -rf {params.outdir} && \
+    mkdir -p {params.indir} && rm -rf {params.indir}/* && \
+    cp {params.gffdir1}/*.gff {params.indir} && \
+    cp {params.gffdir2}/*.gff {params.indir} && \
+    mkdir -p {params.indirfasta} && rm -rf {params.indirfasta}/* && \
+    cp {params.fastadir1}/*.fasta {params.indirfasta} && \
+    cp {params.fastadir2}/*.fasta {params.indirfasta} && \
+    ls {params.indir} | sed 's/.gff//g' > {params.targets} && \
+    panfeed \
+        --gff {params.indir} \
+        --fasta {params.indirfasta} \
+        -o {params.outdir} \
+        -p {params.input} \
+        --upstream 250 --downstream 100 \
+        --no-filter \
+        -v --compress \
+        --genes {params.clusters} && \
+        --targets {params.targets} && \
+        --cores {threads} 2> {log} && \
+    rm -rf {params.indir} && \
+    rm -rf {params.indirfasta} && \
+    panfeed-get-kmers \
+        -a {input.panfeed} \
+        -p {params.k2h} \
+        -k {params.k} \
+        | gzip > {output}
     """
 

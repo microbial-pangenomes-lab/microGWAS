@@ -8,11 +8,15 @@ targets: [
 
 # MLST scheme
 mlst_scheme: ecoli
+#mlst_scheme: "paeruginosa"
 
 # references for association summaries and annotation
-summary_references: "--reference 536 --reference CFT073 --reference IAI39"
-annotation_references: "--focus-strain 536 --focus-strain CFT073 --focus-strain IAI39"
+summary_references: "--reference 536 --reference CFT073 --reference ED1a --reference IAI1 --reference IAI39 --reference K-12_substr._MG1655 --reference UMN026 --reference UTI89"
+annotation_references: "--focus-strain 536 --focus-strain CFT073 --focus-strain ED1a --focus-strain IAI1 --focus-strain IAI39 --focus-strain K-12_substr._MG1655 --focus-strain UMN026 --focus-strain UTI89"
 enrichment_reference: "IAI39"
+#summary_references: "--reference PAO1 --reference UCBPP-PA14"
+#annotation_references: "--focus-strain PAO1 --focus-strain UCBPP-PA14"
+#enrichment_reference: "UCBPP-PA14"
 
 ##### inputs (there already) #####
 
@@ -42,8 +46,8 @@ references_gffs: "data/references/gffs"
 # note: can also be a symbolic link
 uniref50: "data/uniref50.fasta"
 snps_reference_faa: "data/sift4g.faa"
-snps_reference_gff: "data/references/gffs/IAI39.gff"
-snps_reference: "data/references/gbks/IAI39.gbk"
+snps_reference_gff: "data/reference.gff"
+snps_reference: "data/reference.gbk"
 
 # lineages
 poppunk_db: "data/poppunk"
@@ -82,8 +86,10 @@ core_genome_aln_variant: "out/panaroo/core_gene_alignment_variable.aln"
 
 ### k-mers (panfeed)
 panfeed_input_dir: "out/panfeed_gffs"
+panfeed_input_fasta_dir: "out/panfeed_gffs"
 panfeed_dir: "out/panfeed"
 panfeed_patterns: "out/panfeed/hashes_to_patterns.tsv"
+panfeed_conversion: "out/panfeed/kmers_to_hashes.tsv"
 # gene clusters to extract k-mers from
 panfeed_genes: "out/panfeed_genes.txt"
 
