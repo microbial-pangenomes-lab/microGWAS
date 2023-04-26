@@ -78,10 +78,10 @@ TBD
 
 ## TODO
 
-Markup : - [ ] Add the ability to use covariants in the associations
-         - [ ] Easily switch to poppunk for lineage computation
-         - [ ] Combine all annotations in a series of webpages
-         - [ ] Add references to the tools used in the pipeline
+- [ ] Add the ability to use covariants in the associations
+- [ ] Easily switch to poppunk for lineage computation
+- [ ] Combine all annotations in a series of webpages
+- [ ] Add references to the tools used in the pipeline
 
 ## Reference
 
