@@ -997,12 +997,12 @@ rule run_panfeed:
     cat <(head -1 {output.p}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.p}) > {output.p_f}
     """
 
-rule panfeed_downstream:
+rule panfeed:
   input:
     expand('out/associations/{target}/panfeed_annotated_kmers.tsv.gz',
            target=config["targets"])
 
-rule panfeed:
+rule panfeed_downstream:
   input:
     pangenome=config["pangenome"],
     patterns="out/associations/{target}/unitigs_patterns.txt",

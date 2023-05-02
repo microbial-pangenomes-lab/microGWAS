@@ -66,6 +66,6 @@ done
 
 python3 workflow/scripts/gbk2faa.py data/references/gbks/$REFERENCE.gbk > data/sift4g.faa
 cp data/references/gffs/$REFERENCE.gff data/reference.gff
-cp data/references/gbks/$REFERENCE.gff data/reference.gbk
+cp data/references/gbks/$REFERENCE.gbk data/reference.gbk
 
 tail -n+2 out/unitigs_input.tsv > out/poppunk_input.txt

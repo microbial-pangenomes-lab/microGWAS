@@ -24,7 +24,7 @@ It can also optionally compute a phylogenetic tree of all samples.
 Make a copy of this repository (optionally you can first create a new repository by clicking on the "Use this template" button
 from Github's interface), including the submodules:
 
-    git clone --recursive git@github.com:microbial-pangenomes-lab/gwas_template.git MyGWAS
+    git clone --recursive https://github.com/microbial-pangenomes-lab/gwas_template.git MyGWAS
     cd MyGWAS
 
 Save your phenotype table as a tab-separated file as `data/data.tsv`.
