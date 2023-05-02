@@ -28,6 +28,11 @@ samples: "data/data.tsv"
 inputs: "out/inputs.tsv"
 
 # genomes
+# WARNING: the bootstrap script expects the
+# two input folders to be called
+# "data/fastas" and "data/gffs",
+# if changed you need to fix the bootstrapping script as well
+# ALSO: file extensions must be ".fasta" and ".gff"
 fastas: "data/fastas"
 gffs: "data/gffs"
 
