@@ -6,3 +6,5 @@ dependencies:
  - r-xml
  - r-argparse
  - r-devtools=2.0.1
+ - r-mass
+ - r-lattice
