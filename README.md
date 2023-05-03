@@ -88,6 +88,7 @@ TBD
 - [ ] Easily switch to poppunk for lineage computation
 - [ ] Combine all annotations in a series of webpages
 - [ ] Add references to the tools used in the pipeline
+- [ ] Use random file names for things that go in `/tmp` to avoid conflicts
 
 ## Reference
 
