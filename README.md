@@ -89,6 +89,9 @@ TBD
 - [ ] Combine all annotations in a series of webpages
 - [ ] Add references to the tools used in the pipeline
 - [ ] Use random file names for things that go in `/tmp` to avoid conflicts
+- [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O rules
+- [ ] Delete everything but the necessary files upon completion of a rule
+- [ ] Avoid rules that list each input file as it might eventually be too long
 
 ## Reference
 
