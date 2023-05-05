@@ -91,7 +91,7 @@ core_genome_aln_variant: "out/panaroo/core_gene_alignment_variable.aln"
 
 ### k-mers (panfeed)
 panfeed_input_dir: "out/panfeed_gffs"
-panfeed_input_fasta_dir: "out/panfeed_gffs"
+panfeed_input_fasta_dir: "out/panfeed_fastas"
 panfeed_dir: "out/panfeed"
 panfeed_patterns: "out/panfeed/hashes_to_patterns.tsv"
 panfeed_conversion: "out/panfeed/kmers_to_hashes.tsv"
