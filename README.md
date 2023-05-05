@@ -92,6 +92,7 @@ TBD
 - [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O rules
 - [ ] Delete everything but the necessary files upon completion of a rule
 - [ ] Avoid rules that list each input file as it might eventually be too long
+- [ ] Run QC on phenotypic data/genomes as part of bootstrapping
 
 ## Reference
 
