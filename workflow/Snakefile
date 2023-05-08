@@ -937,7 +937,7 @@ rule panfeed_kmers:
     indir=config["panfeed_input_dir"],
     gffdir1=config["gffs"],
     gffdir2=config["references_gffs"],
-    indirfasta=config["panfeed_input_dir"],
+    indirfasta=config["panfeed_input_fasta_dir"],
     fastadir1=config["fastas"],
     fastadir2=config["references_fastas"],
   threads: 4
