@@ -39,7 +39,7 @@ if __name__ == "__main__":
     d = pd.read_csv(options.distances, sep='\t', index_col=0)
     l = pd.read_csv(options.lineages, sep='\t', index_col=0, header=None)
 
-    shared = samples.intersection(p.index).intersection(s.index).intersection(d.index).intersection(l.index)
+    shared = sorted(samples.intersection(p.index).intersection(s.index).intersection(d.index).intersection(l.index))
 
     print(f'genomes: {len(samples)}, shared: {len(shared)}')
 
