@@ -1033,11 +1033,11 @@ rule panfeed_downstream:
         -p {input.panfeed_conversion} \
         -t $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
         > {params.clusters} 2> {log} && \
-    rm -rf {params.outdir} && \
-    mkdir -p {params.indir} && rm -rf {params.indir}/* && \
+    rm -rf {params.outdir} || true && \
+    mkdir -p {params.indir} && rm -rf {params.indir}/* || true && \
     cp {params.gffdir1}/*.gff {params.indir} && \
     cp {params.gffdir2}/*.gff {params.indir} && \
-    mkdir -p {params.indirfasta} && rm -rf {params.indirfasta}/* && \
+    mkdir -p {params.indirfasta} && rm -rf {params.indirfasta}/* || true && \
     cp {params.fastadir1}/*.fasta {params.indirfasta} && \
     cp {params.fastadir2}/*.fasta {params.indirfasta} && \
     ls {params.indir} | sed 's/.gff//g' > {params.targets} && \
