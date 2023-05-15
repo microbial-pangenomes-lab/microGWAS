@@ -1032,7 +1032,7 @@ rule panfeed_downstream:
         -a {input.panfeed} \
         -p {input.panfeed_conversion} \
         -t $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
-        > {params.clusters} && \
+        > {params.clusters} 2> {log} && \
     rm -rf {params.outdir} && \
     mkdir -p {params.indir} && rm -rf {params.indir}/* && \
     cp {params.gffdir1}/*.gff {params.indir} && \
@@ -1057,7 +1057,7 @@ rule panfeed_downstream:
     panfeed-get-kmers \
         -a {input.panfeed} \
         -p {params.k2h} \
-        -k {params.k} \
+        -k {params.k} 2> {log} \
         | gzip > {output}
     """
 

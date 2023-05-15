@@ -93,6 +93,7 @@ TBD
 - [ ] Delete everything but the necessary files upon completion of a rule
 - [ ] Avoid rules that list each input file as it might eventually be too long
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
+- [ ] Use snakemake resources system to budget memory requirements
 
 ## Reference
 
