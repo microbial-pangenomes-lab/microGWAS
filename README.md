@@ -84,16 +84,17 @@ TBD
 
 ## TODO
 
-- [ ] Add the ability to use covariants in the associations
+- [ ] Add the ability to use covariates in the associations
 - [ ] Easily switch to poppunk for lineage computation
 - [ ] Combine all annotations in a series of webpages
 - [ ] Add references to the tools used in the pipeline
 - [ ] Use random file names for things that go in `/tmp` to avoid conflicts
-- [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O rules
+- [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
 - [ ] Delete everything but the necessary files upon completion of a rule
-- [ ] Avoid rules that list each input file as it might eventually be too long
+- [ ] Avoid rules that list each input file as it might eventually become too long
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
 - [ ] Use snakemake resources system to budget memory requirements
+- [ ] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3)
 
 ## Reference
 
