@@ -95,6 +95,7 @@ TBD
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
 - [ ] Use snakemake resources system to budget memory requirements
 - [ ] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3)
+- [ ] Create a minimal test set that yields some hits and runs in reasonable time
 
 ## Reference
 
