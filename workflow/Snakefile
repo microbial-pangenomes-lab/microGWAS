@@ -1033,14 +1033,14 @@ rule panfeed_downstream:
         -p {input.panfeed_conversion} \
         -t $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
         > {params.clusters} 2> {log} && \
-    rm -rf {params.outdir} || true && \
-    mkdir -p {params.indir} && rm -rf {params.indir}/* || true && \
-    cp {params.gffdir1}/*.gff {params.indir} && \
-    cp {params.gffdir2}/*.gff {params.indir} && \
-    mkdir -p {params.indirfasta} && rm -rf {params.indirfasta}/* || true && \
-    cp {params.fastadir1}/*.fasta {params.indirfasta} && \
-    cp {params.fastadir2}/*.fasta {params.indirfasta} && \
-    ls {params.indir} | sed 's/.gff//g' > {params.targets} && \
+    rm -rf {params.outdir} 2>> {log} || true && \
+    mkdir -p {params.indir} 2>> {log} && rm -rf {params.indir}/* 2>> {log} || true && \
+    cp {params.gffdir1}/*.gff {params.indir} 2>> {log} && \
+    cp {params.gffdir2}/*.gff {params.indir} 2>> {log} && \
+    mkdir -p {params.indirfasta} 2>> {log} && rm -rf {params.indirfasta}/* 2>> {log} || true && \
+    cp {params.fastadir1}/*.fasta {params.indirfasta} 2>> {log} && \
+    cp {params.fastadir2}/*.fasta {params.indirfasta} 2>> {log}&& \
+    ls {params.indir} | sed 's/.gff//g' > {params.targets} 2>> {log} && \
     panfeed \
         --gff {params.indir} \
         --fasta {params.indirfasta} \
@@ -1051,13 +1051,13 @@ rule panfeed_downstream:
         -v --compress \
         --genes {params.clusters} && \
         --targets {params.targets} && \
-        --cores {threads} 2> {log} && \
-    rm -rf {params.indir} && \
-    rm -rf {params.indirfasta} && \
+        --cores {threads} 2>> {log} && \
+    rm -rf {params.indir} 2>> {log} && \
+    rm -rf {params.indirfasta} 2>> {log} && \
     panfeed-get-kmers \
         -a {input.panfeed} \
         -p {params.k2h} \
-        -k {params.k} 2> {log} \
+        -k {params.k} 2>> {log} \
         | gzip > {output}
     """
 
