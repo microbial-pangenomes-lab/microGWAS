@@ -1049,8 +1049,8 @@ rule panfeed_downstream:
         --upstream 250 --downstream 100 \
         --no-filter \
         -v --compress \
-        --genes {params.clusters} && \
-        --targets {params.targets} && \
+        --genes {params.clusters} \
+        --targets {params.targets} \
         --cores {threads} 2>> {log} && \
     rm -rf {params.indir} 2>> {log} && \
     rm -rf {params.indirfasta} 2>> {log} && \
