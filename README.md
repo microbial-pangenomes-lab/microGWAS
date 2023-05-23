@@ -91,7 +91,7 @@ TBD
 - [ ] Use random file names for things that go in `/tmp` to avoid conflicts
 - [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
 - [ ] Delete everything but the necessary files upon completion of a rule
-- [ ] Avoid rules that list each input file as it might eventually become too long
+- [ ] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
 - [ ] Use snakemake resources system to budget memory requirements
 - [ ] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3)
