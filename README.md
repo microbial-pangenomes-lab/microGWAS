@@ -98,6 +98,7 @@ TBD
 - [ ] Create a minimal test set that yields some hits and runs in reasonable time
 - [ ] Also generate panfeed plots
 - [ ] Harden panfeed rules against stochastic gzip file corruption
+- [ ] Swap `unitig-counter` for `bifrost`
 
 ## Reference
 
