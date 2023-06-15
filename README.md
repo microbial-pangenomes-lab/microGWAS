@@ -99,6 +99,7 @@ TBD
 - [ ] Also generate panfeed plots
 - [ ] Harden panfeed rules against stochastic gzip file corruption
 - [ ] Swap `unitig-counter` for `bifrost`
+- [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)
 
 ## Reference
 
