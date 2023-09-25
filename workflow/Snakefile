@@ -1021,8 +1021,8 @@ rule panfeed_downstream:
     fastadir2=config["references_fastas"],
     clusters="out/associations/{target}/panfeed_clusters.txt",
     targets="out/associations/{target}/panfeed_targets.txt",
-    k2h="out/associations/{target}/panfeed_second_pass/kmers_to_hashes.tsv.gz",
-    k="out/associations/{target}/panfeed_second_pass/kmers.tsv.gz",
+    k2h="out/associations/{target}/panfeed_second_pass/kmers_to_hashes.tsv",
+    k="out/associations/{target}/panfeed_second_pass/kmers.tsv",
   threads: 4
   conda: "envs/panfeed.yaml"
   log: "out/logs/panfeed_second_pass_{target}.log"
@@ -1048,7 +1048,7 @@ rule panfeed_downstream:
         -p {params.input} \
         --upstream 250 --downstream 100 \
         --no-filter \
-        -v --compress \
+        -v \
         --genes {params.clusters} \
         --targets {params.targets} \
         --cores {threads} 2>> {log} && \
