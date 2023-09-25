@@ -2,7 +2,8 @@
 
 # targets for associations
 targets: [
-         "fc_0.1",
+         "phenotype1",
+         "phenotype2",
          ]
 
 # MLST scheme
