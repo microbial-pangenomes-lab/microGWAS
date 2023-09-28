@@ -98,8 +98,8 @@ TBD
 - [ ] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3)
 - [ ] Create a minimal test set that yields some hits and runs in reasonable time
 - [ ] Also generate panfeed plots
-- [ ] Harden panfeed rules against stochastic gzip file corruption
-- [ ] Swap `unitig-counter` for `bifrost`
+- [x] Harden panfeed rules against stochastic gzip file corruption ([fixed here](https://github.com/microbial-pangenomes-lab/gwas_template/pull/1))
+- [ ] Swap `unitig-counter` for `bifrost` or `cuttlefish`
 - [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)
 
 ## Reference
