@@ -101,6 +101,7 @@ TBD
 - [x] Harden panfeed rules against stochastic gzip file corruption ([fixed here](https://github.com/microbial-pangenomes-lab/gwas_template/pull/1))
 - [ ] Swap `unitig-counter` for `bifrost` or `cuttlefish`
 - [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)
+- [ ] Add [abritamr](https://github.com/MDU-PHL/abritamr) to detect known AMR/VAGs
 
 ## Reference
 
