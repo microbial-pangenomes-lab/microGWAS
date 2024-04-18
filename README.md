@@ -85,23 +85,23 @@ TBD
 ## TODO
 
 - [ ] Add the ability to use covariates in the associations
-- [ ] manhattan_plot.py : handle cases in which the reference genome has more than one chromosome (either because it has plasmids or because it is a draft genome)
+- [x] manhattan_plot.py : handle cases in which the reference genome has more than one chromosome (either because it has plasmids or because it is a draft genome)
 - [ ] Easily switch to poppunk for lineage computation
-- [ ] Combine all annotations in a series of webpages
-- [ ] Add references to the tools used in the pipeline
+- [x] Combine all annotations in a series of webpages ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/6))
+- [x] Add references to the tools used in the pipeline ([documentation issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/7))
 - [ ] Use random file names for things that go in `/tmp` to avoid conflicts
 - [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
 - [ ] Delete everything but the necessary files upon completion of a rule
 - [ ] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
-- [ ] Use snakemake resources system to budget memory requirements
-- [ ] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3)
-- [ ] Create a minimal test set that yields some hits and runs in reasonable time
+- [x] Use snakemake resources system to budget memory requirements ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/9))
+- [x] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/10))
+- [ ] Create a minimal test set that yields some hits and runs in reasonable time (~300 Ecoli dataset from BSI mouse model)
 - [ ] Also generate panfeed plots
 - [x] Harden panfeed rules against stochastic gzip file corruption ([fixed here](https://github.com/microbial-pangenomes-lab/gwas_template/pull/1))
-- [ ] Swap `unitig-counter` for `bifrost` or `cuttlefish`
+- [x] Swap `unitig-counter` for `bifrost` or `cuttlefish` ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/11))
 - [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)
-- [ ] Add [abritamr](https://github.com/MDU-PHL/abritamr) to detect known AMR/VAGs
+- [ ] Add [abritamr](https://github.com/MDU-PHL/abritamr) to detect known AMR/VAGs - necessary for this pipeline???
 
 ## Reference
 
