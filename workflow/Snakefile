@@ -197,9 +197,9 @@ rule prepare_wg:
      pyseer --phenotypes {output.phenotypes} --phenotype-column {wildcards.phenotype} \
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
+            --uncompressed \
             --cor-filter 0.0 \
-            --cpu {threads} 2>> {log} \
-            --uncompressed
+            --cpu {threads} 2>> {log}
     """
 
 rule heritability:

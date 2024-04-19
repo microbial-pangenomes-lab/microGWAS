@@ -5,4 +5,3 @@ dependencies:
  - pandas
  - goatools
  - statsmodels >=0.10
- - mash =2.1
