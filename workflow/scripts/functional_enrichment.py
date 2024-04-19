@@ -47,9 +47,8 @@ def get_options():
                         help='COG enrichment output')
     parser.add_argument('go',
                         help='GO enrichment output')
-    parser.add_argument('kegg', 
-                        help = 'KEGG enrichment output')
-
+    parser.add_argument('kegg',
+                        help='KEGG analysis output')
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -149,38 +148,27 @@ if __name__ == "__main__":
         f = open(options.go, 'w')
         f.close()
 
-    # kegg analysis
-    
-   m['KEGG_ko'] = m['KEGG_ko'].str.split(':').str[1].split(',').str[0]
-   m['KEGG_ko'] = m['KEGG_ko'].fillna('X')
+    m['KEGG_ko'] = m['KEGG_ko'].str.split(':').str[1].str.split(',').str[0]
+    m['KEGG_ko'] = m['KEGG_ko'].fillna('X')
 
-   n['KEGG_ko'] = n['KEGG_ko'].str.split(':').str[1].split(',').str[0]
-   n['KEGG_ko'] = n['KEGG_ko'].fillna('X')
-   
-   res = []
-   
-   kegg_categories = m['KEGG_ko'].unique()
-   
-   for kegg_category in kegg_categories:
-       pop_c = m[m['KEGG_ko'].str.contains(kegg_category)].shape[0]
-       pop_n = m[~m['KEGG_ko'].str.contains(kegg_category)].shape[0]
+    n['KEGG_ko'] = n['KEGG_ko'].str.split(':').str[1].str.split(',').str[0]
+    n['KEGG_ko'] = n['KEGG_ko'].fillna('X') 
     
-       study_c = n[n['KEGG_ko'].str.contains(kegg_category)].shape[0]
-       study_n = n[~n['KEGG_ko'].str.contains(kegg_category)].shape[0]
- 
-       table = [[study_c, pop_c],
+    res = []
+    kegg_categories = m['KEGG_ko'].unique()
+    for kegg_category in kegg_categories:
+        pop_c = m[m['KEGG_ko'].str.contains(kegg_category)].shape[0]
+        pop_n = m[~m['KEGG_ko'].str.contains(kegg_category)].shape[0]
+    
+        study_c = n[n['KEGG_ko'].str.contains(kegg_category)].shape[0]
+        study_n = n[~n['KEGG_ko'].str.contains(kegg_category)].shape[0]
+    
+        table = [[study_c, pop_c],
                  [study_n, pop_n]]
     
-       odds_ratio, pvalue = stats.fisher_exact(table, alternative='greater')
+        odds_ratio, pvalue = stats.fisher_exact(table, alternative='greater')
     
-       res.append((kegg_category, pvalue))
-
-   kegg = pd.DataFrame(res, columns=['KEGG_ko', 'pvalue'])
-
-   # q-values using the Benjamini-Hochberg method
-
-   kegg['qvalue'] = sm.stats.multipletests(kegg['pvalue'], alpha=0.05, method='fdr_bh')[1]
-   kegg_sig = kegg[kegg['qvalue'] < 0.05]
-   
-   if not kegg_sig.empty:
-        kegg_sig.to_csv(options.kegg, sep ='\t', index = False)
+        res.append((kegg_category, pvalue))
+    kegg = pd.DataFrame(res, columns=['KEGG_ko', 'pvalue'])
+    kegg['qvalue'] = sm.stats.multipletests(kegg['pvalue'], alpha=0.05, method='fdr_bh')[1]
+    kegg.to_csv(options.kegg, sep='\t', index=False)
