@@ -1,3 +1,4 @@
+#    rm -rf {params} && \
 from snakemake.utils import validate
 import pandas as pd
 import os
@@ -27,13 +28,13 @@ rule unitigs:
     config["unitigs"],
     config["unitigs_rtab"]
   params: config["unitigs_dir"]
-  threads: 1
+  threads: 16
   conda: "envs/unitig-counter.yaml"
   log: "out/logs/unitigs.log"
   shell:
     """
     rm -rf {params} && \
-    unitig-counter -gzip -strains {input} -output {params} \
+    unitig-counter -strains {input} -output {params} \
     -nb-cores {threads} 2> {log}
     """
 
@@ -196,6 +197,7 @@ rule prepare_wg:
      pyseer --phenotypes {output.phenotypes} --phenotype-column {wildcards.phenotype} \
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
+            --uncompressed \
             --cor-filter 0.0 \
             --cpu {threads} 2>> {log}
     """
