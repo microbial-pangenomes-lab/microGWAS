@@ -925,6 +925,15 @@ rule run_enrich_wg:
             {input.reference} {input.obo} {output} 2> {log}
     """
 
+rule cog_plot:
+  input: 
+    "out/associations/{target}/COG.tsv"
+  output: 
+    "out/associations/{target}/cog.png"
+  shell:
+    """
+    python3 workflow/scripts/cog_plot.py {input} {output}
+    """
 rule panfeed_kmers:
   input:
     pangenome=config["pangenome"],
