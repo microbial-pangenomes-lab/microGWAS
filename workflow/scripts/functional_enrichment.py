@@ -115,7 +115,8 @@ if __name__ == "__main__":
 
     r['qvalue'] = sm.stats.multipletests(r['pvalue'], alpha=0.05, method='fdr_bh')[1]
     r = r[['cog', 'category', 'pvalue', 'qvalue', 'empirical-qvalue']]
-
+    pathway_genes_dict = m.groupby('COG_category')['Preferred_name'].apply(list).to_dict()
+    r['genes'] = r['cog'].apply(lambda x: pathway_genes_dict.get(x, []))
     r.to_csv(options.cog, sep='\t', index=False)
 
     obodag = GODag(options.obo)
