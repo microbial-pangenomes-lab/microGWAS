@@ -39,7 +39,7 @@ def main():
 
     plt.xlabel('Gene Count')
     plt.ylabel('COG Category')
-
+    plt.grid(axis='x', linestyle='--', alpha=0.5)
     cbar = plt.colorbar(plt.cm.ScalarMappable(cmap='viridis', 
                                                norm=plt.Normalize(vmin=cog_data_sorted['-log10(padj)'].min(), 
                                                                   vmax=cog_data_sorted['-log10(padj)'].max())), 
