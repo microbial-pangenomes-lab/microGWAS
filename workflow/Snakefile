@@ -70,6 +70,23 @@ rule lineage_poppunk:
      awk -F',' '{{print $1"\\t"$2}}' > {output}
      """
 
+rule find_amr_vag:
+  input: config["unitigs_input"]
+  output:
+    "out/abritamr/abritamr.txt"
+  params: 
+    species=config["amr_species"]
+  threads: 36
+  conda: "envs/abritamr.yaml"
+  log: "out/logs/find_amr_vag.log"
+  shell:
+    """
+    mkdir -p out/abritamr && \
+    tail -n+2 {input} | sed 's/data/..\/..\/data/g' > out/abritamr/abritamr_input.tsv && \
+    cd out/abritamr && \
+    abritamr run --contigs abritamr_input.tsv --species {params.species} --jobs {threads}
+    """
+
 rule mash_sketch:
   input: config["mash_input"]
   output: config["sketches"]

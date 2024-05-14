@@ -1,5 +1,10 @@
 ##### params #####
 
+# species
+species_amr: "Escherichia"
+# species_amr: "Pseudomonas_aeruginosa"
+# species_amr: "Klebsiella"
+
 # targets for associations
 targets: [
          "phenotype1",
