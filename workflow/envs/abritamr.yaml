@@ -1,0 +1,5 @@
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - abritamr=1.0.14
