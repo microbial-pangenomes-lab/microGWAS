@@ -86,6 +86,7 @@ unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
 panaroo_input: "out/panaroo_input.txt"
 #
 panaroo_dir: "out/panaroo"
+panaroo_dir_tmp: "out/panaroo_tmp"
 pangenome: "out/panaroo/gene_presence_absence.Rtab"
 pangenome_csv: "out/panaroo/gene_presence_absence.csv"
 pangenome_genes: "out/panaroo/gene_data.csv"

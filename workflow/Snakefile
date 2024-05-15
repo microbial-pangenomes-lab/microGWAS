@@ -111,17 +111,28 @@ rule distance:
 rule pangenome:
   input: config["panaroo_input"]
   output:
-    config["pangenome"],
-    config["pangenome_csv"],
-    config["pangenome_genes"],
-    config["structural"],
-    config["core_genome_aln"]
-  params: config["panaroo_dir"]
+    rtab=config["pangenome"],
+    csv=config["pangenome_csv"],
+    genes=config["pangenome_genes"],
+    struct=config["structural"],
+    aln=config["core_genome_aln"]
+  params:
+    final=config["panaroo_dir"],
+    tmp=config["panaroo_dir_tmp"]
   threads: 24
   conda: "envs/panaroo.yaml"
   log: "out/logs/pangenome.log"
   shell:
-    "panaroo -t {threads} -i {input} -o {params} --clean-mode strict -a core 2> {log}"
+    """
+    panaroo -t {threads} -i {input} -o {params.tmp} --clean-mode strict -a core 2> {log}
+    mkdir -p {params.final}
+    mv {params.tmp}/gene_presence_absence.Rtab {params.final}
+    mv {params.tmp}/gene_presence_absence.csv {params.final}
+    mv {params.tmp}/gene_data.csv {params.final}
+    mv {params.tmp}/struct_presence_absence.Rtab {params.final}
+    mv {params.tmp}/core_gene_alignment.aln {params.final}
+    rm -rf {params.tmp}
+    """
 
 rule variant_sites:
   input: config["core_genome_aln"]
