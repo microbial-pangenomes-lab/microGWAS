@@ -46,9 +46,10 @@ rule lineage_st:
   params: config["mlst_scheme"]
   threads: 16
   conda: "envs/mlst.yaml"
+  log: "out/logs/mlst.log"
   shell:
     """
-    mlst --scheme {params} --threads {threads} {input} | cut -f1,3 > /tmp/mlst.txt
+    mlst --scheme {params} --threads {threads} {input} 2> {log} | cut -f1,3 > /tmp/mlst.txt
     sed 's$data/fastas/$$g' /tmp/mlst.txt | sed 's/.fasta//g' > {output}
     """
 
