@@ -267,8 +267,8 @@ rule run_heritability:
     grep normal {output.h} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
     grep normal {output.h} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
     python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt \
-    | grep -v "Estimating" | grep -v '#' > {output.h_ci} 2>> {log}
+          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+    | grep -v "Estimating" | grep -v '#' > {output.h_ci} || true
 
     python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.lineages} \
           -p {wildcards.target} \
@@ -279,8 +279,8 @@ rule run_heritability:
     grep normal {output.h_lineages} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
     grep normal {output.h_lineages} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
     python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt \
-    | grep -v "Estimat" | grep -v '#' >> {output.h_ci} 2>> {log}
+          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+    | grep -v "Estimat" | grep -v '#' >> {output.h_ci} || true
     """
 
 rule combine_heritability:
