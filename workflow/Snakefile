@@ -334,7 +334,7 @@ rule get_snps:
     "out/snps/{sample}/snps.vcf.gz"
   params:
     final="out/snps/{sample}",
-    tmp="out/snps/tmp/{sample}"
+    tmp=os.path.join(config["snippy_dir_tmp"], "{sample}")
   conda: "envs/nucmer.yaml"
   log: "out/logs/snippy_{sample}.log"
   shell:

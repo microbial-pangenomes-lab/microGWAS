@@ -118,6 +118,7 @@ distances: "out/distances.tsv"
 similarities: "out/similarity.tsv"
 
 ### rare variants
+snippy_dir_tmp: "out/snps/tmp"
 rare_snps: "out/snps/rare.vcf.gz"
 regions: "out/snps/regions.tsv"
 sift: "out/snps/sift"
