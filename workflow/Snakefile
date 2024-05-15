@@ -342,6 +342,7 @@ rule get_snps:
     snippy --force --outdir {params.tmp} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 2> {log}
     mkdir -p {params.final}
     mv {params.tmp}/snps.vcf.gz {params.final}/
+    mv {params.tmp}/snps.vcf.gz.csi {params.final}/
     rm -rf {params.tmp}
     """
 
