@@ -1,10 +1,5 @@
 ##### params #####
 
-# species
-species_amr: "Escherichia"
-# species_amr: "Pseudomonas_aeruginosa"
-# species_amr: "Klebsiella"
-
 # targets for associations
 targets: [
          "phenotype1",
@@ -22,6 +17,11 @@ enrichment_reference: "IAI39"
 #summary_references: "--reference PAO1 --reference UCBPP-PA14"
 #annotation_references: "--focus-strain PAO1 --focus-strain UCBPP-PA14"
 #enrichment_reference: "UCBPP-PA14"
+
+# species to be used for AMR and virulence predictions
+species_amr: "Escherichia"
+# species_amr: "Pseudomonas_aeruginosa"
+# species_amr: "Klebsiella"
 
 ##### inputs (there already) #####
 
