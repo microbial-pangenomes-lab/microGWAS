@@ -333,11 +333,17 @@ rule get_snps:
   output:
     "out/snps/{sample}/snps.vcf.gz"
   params:
-    "out/snps/{sample}"
+    final="out/snps/{sample}",
+    tmp="out/snps/tmp/{sample}"
   conda: "envs/nucmer.yaml"
   log: "out/logs/snippy_{sample}.log"
   shell:
-    "snippy --force --outdir {params} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 2> {log}"
+    """
+    snippy --force --outdir {params.tmp} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 2> {log}
+    mkdir -p {params.final}
+    mv {params.tmp}/snps.vcf.gz {params.final}/
+    rm -rf {params.tmp}
+    """
 
 rule prepare_regions:
   input: config["snps_reference_gff"],
