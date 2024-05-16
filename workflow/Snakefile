@@ -77,7 +77,7 @@ rule find_amr_vag:
   input: config["unitigs_input"]
   output:
     "out/abritamr/abritamr.txt"
-  params: 
+  params:
     species=config["species_amr"]
   threads: 36
   conda: "envs/abritamr.yaml"

@@ -93,7 +93,7 @@ TBD
 - [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
 - [ ] Delete everything but the necessary files upon completion of a rule
     - [x] snippy
-    - [ ] panaroo
+    - [x] panaroo
 - [ ] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
 - [x] Use snakemake resources system to budget memory requirements ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/9))
