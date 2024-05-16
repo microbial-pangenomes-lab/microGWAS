@@ -35,7 +35,7 @@ rule unitigs:
     """
     rm -rf {params} && \
     unitig-counter -strains {input} -output {params} \
-    -nb-cores {threads} 2> {log}
+    -gzip -nb-cores {threads} 2> {log}
     """
 
 rule lineage_st:
@@ -227,7 +227,6 @@ rule prepare_wg:
      pyseer --phenotypes {output.phenotypes} --phenotype-column {wildcards.phenotype} \
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
-            --uncompressed \
             --cor-filter 0.0 \
             --cpu {threads} 2>> {log}
     """
