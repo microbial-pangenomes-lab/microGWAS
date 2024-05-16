@@ -49,8 +49,9 @@ rule lineage_st:
   log: "out/logs/mlst.log"
   shell:
     """
-    mlst --scheme {params} --threads {threads} {input} 2> {log} | cut -f1,3 > /tmp/mlst.txt
-    sed 's$data/fastas/$$g' /tmp/mlst.txt | sed 's/.fasta//g' > {output}
+    mlst --scheme {params} --threads {threads} {input} 2> {log} | cut -f1,3 > {output}.tmp
+    python3 workflow/scripts/sanitize_mlst.py {output}.tmp > {output}
+    rm {output}.tmp
     """
 
 rule lineage_poppunk:
