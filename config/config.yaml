@@ -2,8 +2,8 @@
 
 # targets for associations
 targets: [
-         "phenotype1",
-         "phenotype2",
+         "phenotype",
+         #"phenotype2",
          ]
 
 # MLST scheme
