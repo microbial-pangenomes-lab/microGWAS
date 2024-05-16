@@ -311,9 +311,11 @@ rule sift:
     Rscript workflow/scripts/install_siftr.R 2>> {log} || true
     for i in $(ls {params.outdir} | grep aligned.fasta); \
     do \
-      echo $i; \
+      echo $i >> {log}; \
       Rscript workflow/scripts/sift_scorer.R {params.outdir}/$i {params.outdir}/$(basename $i .aligned.fasta).tsv || true; \
     done 2>> {log}
+    rm {params.outdir}/*.aligned.fasta
+    rm {params.outdir}/*.SIFTprediction
     touch {output}
     """
 
