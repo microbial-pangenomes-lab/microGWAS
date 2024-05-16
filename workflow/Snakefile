@@ -186,7 +186,7 @@ rule prepare_pyseer:
     phenotypes=config["samples"],
     similarity=config["similarities"],
     distances=config["distances"],
-    lineage=config["lineage_mlst"]
+    lineage=config["lineages_file"]
   output:
     phenotypes=os.path.join(config["association_inputs"], "{phenotype}/phenotypes.tsv"),
     similarity=os.path.join(config["association_inputs"], "{phenotype}/similarity.tsv"),
@@ -204,7 +204,7 @@ rule prepare_wg:
     phenotypes = config["samples"],
     similarity = config["similarities"],
     distances = config["distances"],
-    lineage = config["lineage_mlst"]
+    lineage = config["lineages_file"]
   output:
     phenotypes=os.path.join(config["wg_inputs"], "{phenotype}/phenotypes.tsv"),
     similarity=os.path.join(config["wg_inputs"], "{phenotype}/similarity.tsv"),

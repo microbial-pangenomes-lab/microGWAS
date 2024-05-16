@@ -23,6 +23,12 @@ species_amr: "Escherichia"
 # species_amr: "Pseudomonas_aeruginosa"
 # species_amr: "Klebsiella"
 
+# which lineage file to use?
+# use "out/lineages_mlst.txt" to use mlst
+# or "out/lineages_poppunk.tsv" for poppunk
+# or an existing file for a custom lineages list
+lineages_file: "data/lineages.txt"
+
 ##### inputs (there already) #####
 
 # samples file

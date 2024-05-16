@@ -86,7 +86,7 @@ TBD
 
 - [ ] Add the ability to use covariates in the associations
 - [x] manhattan_plot.py : handle cases in which the reference genome has more than one chromosome (either because it has plasmids or because it is a draft genome) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/8))
-- [ ] Easily switch to poppunk for lineage computation
+- [x] Easily switch to poppunk for lineage computation
 - [x] Combine all annotations in a series of webpages ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/6))
 - [x] Add references to the tools used in the pipeline ([documentation issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/7))
 - [ ] Use random file names for things that go in `/tmp` to avoid conflicts
