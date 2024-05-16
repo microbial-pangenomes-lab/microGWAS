@@ -27,7 +27,7 @@ species_amr: "Escherichia"
 # use "out/lineages_mlst.txt" to use mlst
 # or "out/lineages_poppunk.tsv" for poppunk
 # or an existing file for a custom lineages list
-lineages_file: "data/lineages_mlst.txt"
+lineages_file: "out/lineages_mlst.txt"
 
 ##### inputs (there already) #####
 
