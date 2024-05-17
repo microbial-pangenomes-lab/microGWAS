@@ -80,7 +80,7 @@ The following example instead uses "vanilla" `conda` and skips the generation of
 
 ## Outputs
 
-| Output file                         | File Description                                                                                                                                                                                                               |
+| Output file                         |  Description                                                                                                                                                                                                               |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | annotated_gpa_summary.tsv           |                                                                                                                                                                                                                                |
 | annotated_rare_summary.tsv          |                                                                                                                                                                                                                                |
