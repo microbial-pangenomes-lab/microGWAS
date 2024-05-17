@@ -80,7 +80,31 @@ The following example instead uses "vanilla" `conda` and skips the generation of
 
 ## Outputs
 
-TBD
+| File Name | Description |
+|-----------|-------------|
+| annotated_gpa_summary.tsv |  |
+| annotated_rare_summary.tsv |  |
+|COG.tsv, COG_gpa.tsv, COG_rare.tsv| "GO functional enrichment for test unitigs, gene presence/absence and rare variants. Columns of interests are the COG category, and the qvalue
+or empirical-qvalue as they are adjusted for multiple test corrections.  "        |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
+|       |         |
 
 ## TODO
 
