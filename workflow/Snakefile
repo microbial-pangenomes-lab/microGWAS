@@ -935,14 +935,24 @@ rule run_enrich_wg:
             {input.reference} {input.obo} {output} 2> {log}
     """
 
-rule cog_plot:
-  input: 
-    "out/associations/{target}/COG.tsv"
-  output: 
-    "out/associations/{target}/cog.png"
+rule enrich_plots:
+  input:
+    expand("out/associations/{target}/cog.png", target=config["targets"]),
+    expand("out/associations/{target}/go.png", target=config["targets"]),
+    expand("out/associations/{target}/kegg.png", target=config["targets"])
+
+rule enrichment_plots:
+  input:
+    cog="out/associations/{target}/COG.tsv",
+    go="out/associations/{target}/GO.tsv",
+    kegg="out/associations/{target}/KEGG.tsv"
+  output:
+    cog_plot="out/associations/{target}/cog.png",
+    go_plot="out/associations/{target}/go.png",
+    kegg_plot="out/associations/{target}/kegg.png"
   shell:
     """
-    python3 workflow/scripts/cog_plot.py {input} {output}
+    python3 workflow/scripts/enrichment_plot.py {input.cog} {output.cog_plot} {input.go} {output.go_plot} {input.kegg} {output.kegg_plot}
     """
 rule panfeed_kmers:
   input:
