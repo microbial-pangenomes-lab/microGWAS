@@ -173,7 +173,7 @@ test dataset is a reduced part of the E. coli genome.
 - [x] Swap `unitig-counter` for `bifrost` or `cuttlefish` ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/11))
 - [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)
 - [x] Add [abritamr](https://github.com/MDU-PHL/abritamr) to detect known AMR/VAGs - necessary for this pipeline???
-- [ ] Add txt file that describes outputs produced from running the pipeline
+- [x] Add txt file that describes outputs produced from running the pipeline
 
 ## Reference
 
