@@ -82,21 +82,45 @@ The following example instead uses "vanilla" `conda` and skips the generation of
 
 TBD
 
+## Testing
+
+We have included a small dataset in order to test the pipeline in reasonable time
+and resources. In its current state continuous integration (CI) in the cloud is not feasible
+because certain rules require significant time and resources to complete (`sift`, `annotate_reference`,
+`get_snps`). Some workarounds might be added in the future to bypass those rules. In the meantime the
+tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few hours.
+
+The test dataset has been created from that [used in a mouse model of bloodstream infection]().
+
+To run the tests, prepare the symbolic links to the uniref50.fasta file and the eggnog-mapper
+databases (as explained above), then do the following:
+
+    cd test
+    bash run_tests.sh
+
+The script will prepare the input files, run the bootstrapping script, then run snakemake twice,
+first in "dry" mode, and then "for real".
+
+Please note that the only rule that is not tested is the one estimating lineages (`lineage_st`), as the
+test dataset is a reduced part of the E. coli genome.
+
 ## TODO
 
 - [ ] Add the ability to use covariates in the associations
 - [x] manhattan_plot.py : handle cases in which the reference genome has more than one chromosome (either because it has plasmids or because it is a draft genome) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/8))
-- [ ] Easily switch to poppunk for lineage computation
+- [x] Easily switch to poppunk for lineage computation
 - [x] Combine all annotations in a series of webpages ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/6))
 - [x] Add references to the tools used in the pipeline ([documentation issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/7))
 - [ ] Use random file names for things that go in `/tmp` to avoid conflicts
 - [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
 - [ ] Delete everything but the necessary files upon completion of a rule
+    - [x] snippy
+    - [x] panaroo
 - [ ] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
 - [x] Use snakemake resources system to budget memory requirements ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/9))
 - [x] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/10))
-- [ ] Create a minimal test set that yields some hits and runs in reasonable time (~300 Ecoli dataset from BSI mouse model)
+- [x] Create a minimal test set that yields some hits and runs in reasonable time (~300 Ecoli dataset from BSI mouse model)
 - [ ] Also generate panfeed plots
 - [x] Harden panfeed rules against stochastic gzip file corruption ([fixed here](https://github.com/microbial-pangenomes-lab/gwas_template/pull/1))
 - [x] Swap `unitig-counter` for `bifrost` or `cuttlefish` ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/11))

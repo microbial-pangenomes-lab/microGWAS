@@ -35,7 +35,7 @@ rule unitigs:
     """
     rm -rf {params} && \
     unitig-counter -strains {input} -output {params} \
-    -nb-cores {threads} 2> {log}
+    -gzip -nb-cores {threads} 2> {log}
     """
 
 rule lineage_st:
@@ -46,10 +46,12 @@ rule lineage_st:
   params: config["mlst_scheme"]
   threads: 16
   conda: "envs/mlst.yaml"
+  log: "out/logs/mlst.log"
   shell:
     """
-    mlst --scheme {params} --threads {threads} {input} | cut -f1,3 > /tmp/mlst.txt
-    sed 's$data/fastas/$$g' /tmp/mlst.txt | sed 's/.fasta//g' > {output}
+    mlst --scheme {params} --threads {threads} {input} 2> {log} | cut -f1,3 > {output}.tmp
+    python3 workflow/scripts/sanitize_mlst.py {output}.tmp > {output}
+    rm {output}.tmp
     """
 
 rule lineage_poppunk:
@@ -75,7 +77,7 @@ rule find_amr_vag:
   input: config["unitigs_input"]
   output:
     "out/abritamr/abritamr.txt"
-  params: 
+  params:
     species=config["species_amr"]
   threads: 36
   conda: "envs/abritamr.yaml"
@@ -110,17 +112,28 @@ rule distance:
 rule pangenome:
   input: config["panaroo_input"]
   output:
-    config["pangenome"],
-    config["pangenome_csv"],
-    config["pangenome_genes"],
-    config["structural"],
-    config["core_genome_aln"]
-  params: config["panaroo_dir"]
+    rtab=config["pangenome"],
+    csv=config["pangenome_csv"],
+    genes=config["pangenome_genes"],
+    struct=config["structural"],
+    aln=config["core_genome_aln"]
+  params:
+    final=config["panaroo_dir"],
+    tmp=config["panaroo_dir_tmp"]
   threads: 24
   conda: "envs/panaroo.yaml"
   log: "out/logs/pangenome.log"
   shell:
-    "panaroo -t {threads} -i {input} -o {params} --clean-mode strict -a core 2> {log}"
+    """
+    panaroo -t {threads} -i {input} -o {params.tmp} --clean-mode strict -a core 2> {log}
+    mkdir -p {params.final}
+    mv {params.tmp}/gene_presence_absence.Rtab {params.final}
+    mv {params.tmp}/gene_presence_absence.csv {params.final}
+    mv {params.tmp}/gene_data.csv {params.final}
+    mv {params.tmp}/struct_presence_absence.Rtab {params.final}
+    mv {params.tmp}/core_gene_alignment.aln {params.final}
+    rm -rf {params.tmp}
+    """
 
 rule variant_sites:
   input: config["core_genome_aln"]
@@ -174,7 +187,7 @@ rule prepare_pyseer:
     phenotypes=config["samples"],
     similarity=config["similarities"],
     distances=config["distances"],
-    lineage=config["lineage_mlst"]
+    lineage=config["lineages_file"]
   output:
     phenotypes=os.path.join(config["association_inputs"], "{phenotype}/phenotypes.tsv"),
     similarity=os.path.join(config["association_inputs"], "{phenotype}/similarity.tsv"),
@@ -192,7 +205,7 @@ rule prepare_wg:
     phenotypes = config["samples"],
     similarity = config["similarities"],
     distances = config["distances"],
-    lineage = config["lineage_mlst"]
+    lineage = config["lineages_file"]
   output:
     phenotypes=os.path.join(config["wg_inputs"], "{phenotype}/phenotypes.tsv"),
     similarity=os.path.join(config["wg_inputs"], "{phenotype}/similarity.tsv"),
@@ -214,7 +227,6 @@ rule prepare_wg:
      pyseer --phenotypes {output.phenotypes} --phenotype-column {wildcards.phenotype} \
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
-            --uncompressed \
             --cor-filter 0.0 \
             --cpu {threads} 2>> {log}
     """
@@ -255,8 +267,8 @@ rule run_heritability:
     grep normal {output.h} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
     grep normal {output.h} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
     python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt \
-    | grep -v "Estimating" | grep -v '#' > {output.h_ci} 2>> {log}
+          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+    | grep -v "Estimating" | grep -v '#' > {output.h_ci} || true
 
     python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.lineages} \
           -p {wildcards.target} \
@@ -267,8 +279,8 @@ rule run_heritability:
     grep normal {output.h_lineages} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
     grep normal {output.h_lineages} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
     python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt \
-    | grep -v "Estimat" | grep -v '#' >> {output.h_ci} 2>> {log}
+          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+    | grep -v "Estimat" | grep -v '#' >> {output.h_ci} || true
     """
 
 rule combine_heritability:
@@ -299,9 +311,11 @@ rule sift:
     Rscript workflow/scripts/install_siftr.R 2>> {log} || true
     for i in $(ls {params.outdir} | grep aligned.fasta); \
     do \
-      echo $i; \
+      echo $i >> {log}; \
       Rscript workflow/scripts/sift_scorer.R {params.outdir}/$i {params.outdir}/$(basename $i .aligned.fasta).tsv || true; \
     done 2>> {log}
+    rm {params.outdir}/*.aligned.fasta
+    rm {params.outdir}/*.SIFTprediction
     touch {output}
     """
 
@@ -332,11 +346,18 @@ rule get_snps:
   output:
     "out/snps/{sample}/snps.vcf.gz"
   params:
-    "out/snps/{sample}"
+    final="out/snps/{sample}",
+    tmp=os.path.join(config["snippy_dir_tmp"], "{sample}")
   conda: "envs/nucmer.yaml"
   log: "out/logs/snippy_{sample}.log"
   shell:
-    "snippy --force --outdir {params} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 2> {log}"
+    """
+    snippy --force --outdir {params.tmp} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 2> {log}
+    mkdir -p {params.final}
+    mv {params.tmp}/snps.vcf.gz {params.final}/
+    mv {params.tmp}/snps.vcf.gz.csi {params.final}/
+    rm -rf {params.tmp}
+    """
 
 rule prepare_regions:
   input: config["snps_reference_gff"],

@@ -1,14 +1,9 @@
 ##### params #####
 
-# species
-species_amr: "Escherichia"
-# species_amr: "Pseudomonas_aeruginosa"
-# species_amr: "Klebsiella"
-
 # targets for associations
 targets: [
-         "phenotype1",
-         "phenotype2",
+         "phenotype",
+         #"phenotype2",
          ]
 
 # MLST scheme
@@ -22,6 +17,17 @@ enrichment_reference: "IAI39"
 #summary_references: "--reference PAO1 --reference UCBPP-PA14"
 #annotation_references: "--focus-strain PAO1 --focus-strain UCBPP-PA14"
 #enrichment_reference: "UCBPP-PA14"
+
+# species to be used for AMR and virulence predictions
+species_amr: "Escherichia"
+# species_amr: "Pseudomonas_aeruginosa"
+# species_amr: "Klebsiella"
+
+# which lineage file to use?
+# use "out/lineages_mlst.txt" to use mlst
+# or "out/lineages_poppunk.tsv" for poppunk
+# or an existing file for a custom lineages list
+lineages_file: "out/lineages_mlst.txt"
 
 ##### inputs (there already) #####
 
@@ -86,6 +92,7 @@ unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
 panaroo_input: "out/panaroo_input.txt"
 #
 panaroo_dir: "out/panaroo"
+panaroo_dir_tmp: "out/panaroo_tmp"
 pangenome: "out/panaroo/gene_presence_absence.Rtab"
 pangenome_csv: "out/panaroo/gene_presence_absence.csv"
 pangenome_genes: "out/panaroo/gene_data.csv"
@@ -118,6 +125,7 @@ distances: "out/distances.tsv"
 similarities: "out/similarity.tsv"
 
 ### rare variants
+snippy_dir_tmp: "out/snps/tmp"
 rare_snps: "out/snps/rare.vcf.gz"
 regions: "out/snps/regions.tsv"
 sift: "out/snps/sift"

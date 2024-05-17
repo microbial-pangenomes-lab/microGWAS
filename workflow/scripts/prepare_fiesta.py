@@ -117,11 +117,17 @@ if __name__ == "__main__":
     else:
         cov = None
 
-    va, ve = np.linalg.eig(s)
-    va = va.astype(float)
-    ve = ve.astype(float)
+    try:
+        va, ve = np.linalg.eig(s)
+        va = va.astype(float)
+        ve = ve.astype(float)
+        np.savetxt(options.prefix + '_values.txt', va)
+        np.savetxt(options.prefix + '_vectors.txt', ve, delimiter=' ')
+        if cov is not None:
+            np.savetxt(options.prefix + '_covariates.txt', cov.values, delimiter=' ')
+    except np.linalg.LinAlgError:
+        open(options.prefix + '_values.txt', 'w').close()
+        open(options.prefix + '_vectors.txt', 'w').close()
+        if cov is not None:
+            open(options.prefix + '_covariates.txt', 'w').close()
 
-    np.savetxt(options.prefix + '_values.txt', va)
-    np.savetxt(options.prefix + '_vectors.txt', ve, delimiter=' ')
-    if cov is not None:
-        np.savetxt(options.prefix + '_covariates.txt', cov.values, delimiter=' ')
