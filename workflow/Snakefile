@@ -864,10 +864,15 @@ rule enrichment:
            target=config["targets"]),
     expand('out/associations/{target}/GO.tsv',
            target=config["targets"]),
+    expand('out/associations/{target}/KEGG.tsv',
+           target=config["targets"]),
     expand('out/associations/{target}/COG_{kind}.tsv',
            target=config["targets"],
            kind=['gpa', 'rare']),
     expand('out/associations/{target}/GO_{kind}.tsv',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
+    expand('out/associations/{target}/KEGG_{kind}.tsv',
            target=config["targets"],
            kind=['gpa', 'rare']),
     expand("out/wg/{target}/COG_{model}.tsv",
@@ -876,6 +881,8 @@ rule enrichment:
     expand("out/wg/{target}/GO_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
+    expand("out/wg/{target}/KEGG_{model}.tsv",
+           target=config["targets"],
 
 rule run_enrich:
   input:
@@ -885,6 +892,7 @@ rule run_enrich:
   output:
     cog="out/associations/{target}/COG.tsv",
     go="out/associations/{target}/GO.tsv",
+    kegg="out/associations/{target}/KEGG.tsv",
   conda: "envs/enrich.yaml"
   log: "out/logs/enrich_{target}.log"
   shell:
@@ -901,6 +909,7 @@ rule run_enrich_alt:
   output:
     cog="out/associations/{target}/COG_{kind}.tsv",
     go="out/associations/{target}/GO_{kind}.tsv",
+    kegg="out/associations/{target}/KEGG_{kind}.tsv"
   conda: "envs/enrich.yaml"
   log: "out/logs/enrich_{target}_{kind}.log"
   shell:
@@ -917,6 +926,7 @@ rule run_enrich_wg:
   output:
     cog="out/wg/{target}/COG_{model}.tsv",
     go="out/wg/{target}/GO_{model}.tsv",
+    kegg="out/wg/{target}/KEGG_{model}.tsv"
   conda: "envs/enrich.yaml"
   log: "out/logs/enrich_{target}_{model}.log"
   shell:
