@@ -34,7 +34,7 @@ categs = {'D': 'Cell cycle control, cell division, chromosome partitioning',
 def get_options():
     import argparse
 
-    description = 'FUnctional enrichment analysis'
+    description = 'Functional enrichment analysis'
     parser = argparse.ArgumentParser(description=description)
 
     parser.add_argument('sample',
@@ -73,6 +73,8 @@ if __name__ == "__main__":
         f = open(options.cog, 'w')
         f.close()
         f = open(options.go, 'w')
+        f.close()
+        f = open(options.kegg, 'w')
         f.close()
         sys.exit(0)
     n.loc[n.index.difference(n['COG_category'].dropna().index),
@@ -115,8 +117,8 @@ if __name__ == "__main__":
 
     r['qvalue'] = sm.stats.multipletests(r['pvalue'], alpha=0.05, method='fdr_bh')[1]
     r = r[['cog', 'category', 'pvalue', 'qvalue', 'empirical-qvalue']]
-    pathway_genes_dict = m.groupby('COG_category')['Preferred_name'].apply(list).to_dict()
-    r['genes'] = r['cog'].apply(lambda x: pathway_genes_dict.get(x, []))
+    cog_genes_dict = m.groupby('COG_category')['Preferred_name'].apply(list).to_dict()
+    r['genes'] = r['cog'].apply(lambda x: cog_genes_dict.get(x, []))
     r.to_csv(options.cog, sep='\t', index=False)
 
     obodag = GODag(options.obo)
@@ -172,4 +174,8 @@ if __name__ == "__main__":
         res.append((kegg_category, pvalue))
     kegg = pd.DataFrame(res, columns=['KEGG_ko', 'pvalue'])
     kegg['qvalue'] = sm.stats.multipletests(kegg['pvalue'], alpha=0.05, method='fdr_bh')[1]
-    kegg.to_csv(options.kegg, sep='\t', index=False)
+    if len(kegg) > 0:
+       kegg.to_csv(options.kegg, sep='\t', index=False)
+    else:
+       f = open(options.kegg, 'w')
+       f.close()
