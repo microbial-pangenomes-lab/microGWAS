@@ -1,7 +1,8 @@
-#    rm -rf {params} && \
 from snakemake.utils import validate
 import pandas as pd
 import os
+import random
+import string
 
 ##### load config #####
 
@@ -19,6 +20,10 @@ def _read_files(indir, extension='.fasta'):
 def _read_directory(indir):
   return {os.path.join(indir, x)
           for x in os.listdir(indir)}
+
+def _get_random_name(k):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choices(characters, k=k))
 
 ##### rules #####
 
@@ -261,25 +266,27 @@ rule run_heritability:
     python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.similarity} \
           -p {wildcards.target} \
     > {output.h} 2> {log}
+    tempfile=$(mktemp) && \
     python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.similarity} \
           -p {wildcards.target} \
-          --prefix /tmp/{wildcards.target} 2>> {log}
-    grep normal {output.h} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
-    grep normal {output.h} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
-    python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+          --prefix $tempfile 2>> {log} && \
+    grep normal {output.h} | awk '{{print $3}}' > $tempfile".estimates.txt" && \
+    grep normal {output.h} | awk '{{print $3}}' >> $tempfile".estimates.txt" && \
+    python albi/albi.py -k $tempfile"_values.txt" \
+          -f $tempfile".estimates.txt" 2>> {log} \
     | grep -v "Estimating" | grep -v '#' > {output.h_ci} || true
 
     python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.lineages} \
           -p {wildcards.target} \
     > {output.h_lineages} 2>> {log}
+    tempfile=$(mktemp) && \
     python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.lineages} \
           -p {wildcards.target} \
-          --prefix /tmp/{wildcards.target} 2>> {log}
-    grep normal {output.h_lineages} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
-    grep normal {output.h_lineages} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
+          --prefix $tempfile 2>> {log} && \
+    grep normal {output.h_lineages} | awk '{{print $3}}' > $tempfile".estimates.txt" && \
+    grep normal {output.h_lineages} | awk '{{print $3}}' >> $tempfile".estimates.txt" && \
     python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+          -f $tempfile".estimates.txt" 2>> {log} \
     | grep -v "Estimat" | grep -v '#' >> {output.h_ci} || true
     """
 
@@ -608,7 +615,7 @@ rule run_map_back:
   output:
     "out/associations/{target}/mapped.tsv"
   params:
-    "/tmp/map_back_{target}"
+    "/tmp/{target}_" + _get_random_name(10)
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{target}.log"
   shell:
@@ -627,7 +634,7 @@ rule run_map_back_all:
   output:
     "out/associations/{target}/mapped_all.tsv"
   params:
-    "/tmp/map_back_all_{target}"
+    "/tmp/{target}_" + _get_random_name(10)
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_all_{target}.log"
   shell:
@@ -649,7 +656,7 @@ rule run_map_back_wg:
   output:
     "out/wg/{target}/mapped_{model}.tsv"
   params:
-    "/tmp/map_back_{model}_{target}"
+    "/tmp/{target}_{model}_" + _get_random_name(10)
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{model}_{target}.log"
   shell:

@@ -158,7 +158,7 @@ test dataset is a reduced part of the E. coli genome.
 - [x] Easily switch to poppunk for lineage computation
 - [x] Combine all annotations in a series of webpages ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/6))
 - [x] Add references to the tools used in the pipeline ([documentation issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/7))
-- [ ] Use random file names for things that go in `/tmp` to avoid conflicts
+- [x] Use random file names for things that go in `/tmp` to avoid conflicts
 - [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
 - [ ] Delete everything but the necessary files upon completion of a rule
     - [x] snippy
