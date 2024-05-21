@@ -58,10 +58,7 @@ references_fastas: "data/references/fastas"
 references_gffs: "data/references/gffs"
 
 # rare variants
-# path to uniref50 unzipped fasta file
-# note: can also be a symbolic link
-uniref50: "data/uniref50.fasta"
-snps_reference_faa: "data/sift4g.faa"
+snps_reference_faa: "data/reference.faa"
 snps_reference_gff: "data/reference.gff"
 snps_reference: "data/reference.gbk"
 
@@ -128,7 +125,8 @@ similarities: "out/similarity.tsv"
 snippy_dir_tmp: "out/snps/tmp"
 rare_snps: "out/snps/rare.vcf.gz"
 regions: "out/snps/regions.tsv"
-sift: "out/snps/sift"
+sequence_unet: "data/models"
+unet: "out/snps/unet"
 
 ### associations
 association_inputs: "out/associations/inputs"

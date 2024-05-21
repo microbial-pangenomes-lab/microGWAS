@@ -33,6 +33,9 @@ sed -i 's$lineages_file: \"out/lineages_mlst.txt\"$lineages_file: \"data/lineage
 # ready to go
 cd ..
 bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+# reduce the size of the reference proteome
+# to speed up its annotation and rare variants analysis
+cp test/reference.faa data/
 # first dry run
 snakemake -np annotate_summary panfeed map_back heritability enrichment qq_plots tree --cores 8 --use-conda --conda-frontend mamba
 # actual run (brace yourself)

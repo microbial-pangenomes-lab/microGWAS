@@ -1,7 +1,7 @@
-#    rm -rf {params} && \
 from snakemake.utils import validate
 import pandas as pd
 import os
+import string
 
 ##### load config #####
 
@@ -19,6 +19,12 @@ def _read_files(indir, extension='.fasta'):
 def _read_directory(indir):
   return {os.path.join(indir, x)
           for x in os.listdir(indir)}
+
+# used to generate a pseudorandom but persistent
+# folder name for temporary files
+username = os.getenv('USER')
+if username is None:
+    username = 'gwas'
 
 ##### rules #####
 
@@ -50,7 +56,7 @@ rule lineage_st:
   shell:
     """
     mlst --scheme {params} --threads {threads} {input} 2> {log} | cut -f1,3 > {output}.tmp
-    python3 workflow/scripts/sanitize_mlst.py {output}.tmp > {output}
+    python workflow/scripts/sanitize_mlst.py {output}.tmp > {output}
     rm {output}.tmp
     """
 
@@ -167,7 +173,7 @@ rule similarity:
   shell:
     """
     grep '>' {input.aln} | cut -c 2- > similarity_samples.txt
-    python3 workflow/scripts/similarity.py similarity_samples.txt \
+    python workflow/scripts/similarity.py similarity_samples.txt \
            --vcf {input.vcf} \
            > {output} 2> {log}
     rm similarity_samples.txt
@@ -196,7 +202,7 @@ rule prepare_pyseer:
   params: os.path.join(config["association_inputs"], "{phenotype}")
   log: "out/logs/prepare_pyseer_{phenotype}.log"
   shell:
-    "python3 workflow/scripts/prepare_pyseer.py {input} {params} {wildcards.phenotype} 2> {log}"
+    "python workflow/scripts/prepare_pyseer.py {input} {params} {wildcards.phenotype} 2> {log}"
 
 rule prepare_wg:
   input:
@@ -220,7 +226,7 @@ rule prepare_wg:
   log: "out/logs/prepare_wg_{phenotype}.log"
   shell:
     """
-     python3 workflow/scripts/prepare_pyseer.py {input.variants} {input.phenotypes} \
+     python workflow/scripts/prepare_pyseer.py {input.variants} {input.phenotypes} \
                                                 {input.similarity} {input.distances} \
                                                 {input.lineage} {params.directory} \
                                                 {wildcards.phenotype} 2> {log} && \
@@ -228,7 +234,7 @@ rule prepare_wg:
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
             --cor-filter 0.0 \
-            --cpu {threads} 2>> {log}
+            --cpu {threads} > /dev/null 2>> {log}
     """
 
 rule heritability:
@@ -261,25 +267,27 @@ rule run_heritability:
     python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.similarity} \
           -p {wildcards.target} \
     > {output.h} 2> {log}
+    tempfile=$(mktemp) && \
     python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.similarity} \
           -p {wildcards.target} \
-          --prefix /tmp/{wildcards.target} 2>> {log}
-    grep normal {output.h} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
-    grep normal {output.h} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
-    python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+          --prefix $tempfile 2>> {log} && \
+    grep normal {output.h} | awk '{{print $3}}' > $tempfile".estimates.txt" && \
+    grep normal {output.h} | awk '{{print $3}}' >> $tempfile".estimates.txt" && \
+    python albi/albi.py -k $tempfile"_values.txt" \
+          -f $tempfile".estimates.txt" 2>> {log} \
     | grep -v "Estimating" | grep -v '#' > {output.h_ci} || true
 
     python workflow/scripts/estimate_heritability.py {input.phenotypes} {input.lineages} \
           -p {wildcards.target} \
     > {output.h_lineages} 2>> {log}
+    tempfile=$(mktemp) && \
     python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.lineages} \
           -p {wildcards.target} \
-          --prefix /tmp/{wildcards.target} 2>> {log}
-    grep normal {output.h_lineages} | awk '{{print $3}}' > /tmp/{wildcards.target}.estimates.txt
-    grep normal {output.h_lineages} | awk '{{print $3}}' >> /tmp/{wildcards.target}.estimates.txt
+          --prefix $tempfile 2>> {log} && \
+    grep normal {output.h_lineages} | awk '{{print $3}}' > $tempfile".estimates.txt" && \
+    grep normal {output.h_lineages} | awk '{{print $3}}' >> $tempfile".estimates.txt" && \
     python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
-          -f /tmp/{wildcards.target}.estimates.txt 2>> {log} \
+          -f $tempfile".estimates.txt" 2>> {log} \
     | grep -v "Estimat" | grep -v '#' >> {output.h_ci} || true
     """
 
@@ -294,28 +302,30 @@ rule combine_heritability:
   shell:
     "python workflow/scripts/combine_heritability.py {input.h} {input.h_lineages} {input.h_ci} > {output}"
 
-rule sift:
-  input: config["snps_reference_faa"]
-  output: "out/snps/sift/sift.done"
+rule download_sequence_unet:
+  output: os.path.join(config["sequence_unet"], "freq_classifier.tf/saved_model.pb")
+  params: config["sequence_unet"]
+  conda: "envs/sequence_unet.yaml"
+  log: "out/logs/download_sequence_unet.log"
+  shell:
+    "python workflow/scripts/download_sequence_unet_model.py {params} 2> {log}"
+
+rule sequence_unet:
+  input:
+    model=os.path.join(config["sequence_unet"], "freq_classifier.tf/saved_model.pb"),
+    reference=config["snps_reference_faa"]
+  output: "out/snps/unet/unet.done"
   params:
-    db=config["uniref50"],
-    outdir=config["sift"]
-  threads: 36
-  conda: "envs/sift4g.yaml"
-  log: "out/logs/sift.log"
+    model=config["sequence_unet"],
+    outdir=config["unet"]
+  threads: 8
+  conda: "envs/sequence_unet.yaml"
+  log: "out/logs/sequence_unet.log"
   shell:
     """
-    sift4g -q {input} -d {params.db} --out {params.outdir} \
-           -t {threads} --sub-results \
-           --median-threshold 3.25 2> {log}
-    Rscript workflow/scripts/install_siftr.R 2>> {log} || true
-    for i in $(ls {params.outdir} | grep aligned.fasta); \
-    do \
-      echo $i >> {log}; \
-      Rscript workflow/scripts/sift_scorer.R {params.outdir}/$i {params.outdir}/$(basename $i .aligned.fasta).tsv || true; \
-    done 2>> {log}
-    rm {params.outdir}/*.aligned.fasta
-    rm {params.outdir}/*.SIFTprediction
+    python workflow/scripts/sequence_unet_predictions.py --fasta {input.reference} \
+           --model_dir {params.model} --output {params.outdir} --cores {threads} \
+           freq_classifier 2> {log} && \
     touch {output}
     """
 
@@ -323,9 +333,9 @@ rule prepare_rare_variants:
   input:
     vcf=expand("out/snps/{sample}/snps.vcf.gz",
                sample=_read_samples(config["inputs"])),
-    sift="out/snps/sift/sift.done"
+    unet="out/snps/unet/unet.done"
   output: config["rare_snps"]
-  params: config["sift"]
+  params: config["unet"]
   threads: 36
   conda: "envs/bcftools.yaml"
   log: "out/logs/prepare_rare_variants.log"
@@ -334,7 +344,7 @@ rule prepare_rare_variants:
     bcftools merge {input.vcf} -0 -O z --threads {threads} > out/snps/merged.vcf.gz 2> {log}
     bcftools norm -m - -O z --threads {threads} out/snps/merged.vcf.gz > out/snps/norm.vcf.gz 2>> {log}
     bcftools view -Q 0.05 out/snps/norm.vcf.gz -O z --threads {threads} > out/snps/filtered.vcf.gz 2>> {log}
-    python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz {params} | bgzip > {output} 2>> {log}
+    python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz --unet {params} | bgzip > {output} 2>> {log}
     bcftools index {output} 2>> {log}
     rm out/snps/merged.vcf.gz out/snps/norm.vcf.gz out/snps/filtered.vcf.gz
     """
@@ -536,7 +546,7 @@ rule run_qq_plot:
   output: "out/associations/{target}/{variant}.png"
   conda: "envs/pyseer.yaml"
   log: "out/logs/qq_{variant}_{target}.log"
-  shell: "python3 workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
+  shell: "python workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
 
 rule run_wg:
   input:
@@ -608,7 +618,7 @@ rule run_map_back:
   output:
     "out/associations/{target}/mapped.tsv"
   params:
-    "/tmp/map_back_{target}"
+    "/tmp/{target}_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{target}.log"
   shell:
@@ -627,7 +637,7 @@ rule run_map_back_all:
   output:
     "out/associations/{target}/mapped_all.tsv"
   params:
-    "/tmp/map_back_all_{target}"
+    "/tmp/{target}_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_all_{target}.log"
   shell:
@@ -649,7 +659,7 @@ rule run_map_back_wg:
   output:
     "out/wg/{target}/mapped_{model}.tsv"
   params:
-    "/tmp/map_back_{model}_{target}"
+    "/tmp/{target}_{model}_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{model}_{target}.log"
   shell:
@@ -929,7 +939,7 @@ rule run_enrich:
   log: "out/logs/enrich_{target}.log"
   shell:
     """
-    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+    python workflow/scripts/functional_enrichment.py {input.sample} \
             {input.reference} {input.obo} {output} 2> {log}
     """
 
@@ -945,7 +955,7 @@ rule run_enrich_alt:
   log: "out/logs/enrich_{target}_{kind}.log"
   shell:
     """
-    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+    python workflow/scripts/functional_enrichment.py {input.sample} \
             {input.reference} {input.obo} {output} 2> {log}
     """
 
@@ -961,7 +971,7 @@ rule run_enrich_wg:
   log: "out/logs/enrich_{target}_{model}.log"
   shell:
     """
-    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+    python workflow/scripts/functional_enrichment.py {input.sample} \
             {input.reference} {input.obo} {output} 2> {log}
     """
 

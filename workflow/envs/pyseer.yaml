@@ -1,8 +1,9 @@
 channels:
  - conda-forge
  - bioconda
+ - defaults
 dependencies:
- - python
+ - python >= 3.7
  - pybedtools
  - biopython
  - seaborn
