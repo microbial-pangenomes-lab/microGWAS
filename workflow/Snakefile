@@ -301,6 +301,33 @@ rule combine_heritability:
   shell:
     "python workflow/scripts/combine_heritability.py {input.h} {input.h_lineages} {input.h_ci} > {output}"
 
+rule download_sequence_unet:
+  output: os.path.join(config["sequence_unet"], "freq_classifier.tf/saved_model.pb")
+  params: config["sequence_unet"]
+  conda: "envs/sequence_unet.yaml"
+  log: "out/logs/download_sequence_unet.log"
+  shell:
+    "python3 workflow/scripts/download_sequence_unet_model.py {params} 2> {log}"
+
+rule sequence_unet:
+  input:
+    model=os.path.join(config["sequence_unet"], "freq_classifier.tf/saved_model.pb"),
+    reference=config["snps_reference_faa"]
+  output: "out/snps/unet/unet.done"
+  params:
+    model=config["sequence_unet"],
+    outdir=config["unet"]
+  threads: 8
+  conda: "envs/sequence_unet.yaml"
+  log: "out/logs/sequence_unet.log"
+  shell:
+    """
+    python workflow/scripts/sequence_unet_predictions.py --fasta {input.reference} \
+           --model_dir {params.model} --output {params.outdir} --cores {threads} \
+           freq_classifier 2> {log} && \
+    touch {output}
+    """
+
 rule sift:
   input: config["snps_reference_faa"]
   output: "out/snps/sift/sift.done"
@@ -330,9 +357,9 @@ rule prepare_rare_variants:
   input:
     vcf=expand("out/snps/{sample}/snps.vcf.gz",
                sample=_read_samples(config["inputs"])),
-    sift="out/snps/sift/sift.done"
+    unet="out/snps/unet/unet.done"
   output: config["rare_snps"]
-  params: config["sift"]
+  params: config["unet"]
   threads: 36
   conda: "envs/bcftools.yaml"
   log: "out/logs/prepare_rare_variants.log"
@@ -341,7 +368,7 @@ rule prepare_rare_variants:
     bcftools merge {input.vcf} -0 -O z --threads {threads} > out/snps/merged.vcf.gz 2> {log}
     bcftools norm -m - -O z --threads {threads} out/snps/merged.vcf.gz > out/snps/norm.vcf.gz 2>> {log}
     bcftools view -Q 0.05 out/snps/norm.vcf.gz -O z --threads {threads} > out/snps/filtered.vcf.gz 2>> {log}
-    python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz {params} | bgzip > {output} 2>> {log}
+    python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz --unet {params} | bgzip > {output} 2>> {log}
     bcftools index {output} 2>> {log}
     rm out/snps/merged.vcf.gz out/snps/norm.vcf.gz out/snps/filtered.vcf.gz
     """
