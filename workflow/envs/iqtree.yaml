@@ -1,4 +1,6 @@
 channels:
  - bioconda
+ - conda-forge
+ - defaults
 dependencies:
  - iqtree=2.1.2

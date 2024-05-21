@@ -1,6 +1,7 @@
 channels:
  - conda-forge
  - bioconda
+ - defaults
 dependencies:
  - sift4g=2.0.0
  - r-xml

@@ -1,6 +1,7 @@
 channels:
  - conda-forge
  - bioconda
+ - defaults
 dependencies:
  - pandas
  - eggnog-mapper=2.1.3

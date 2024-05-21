@@ -1,6 +1,8 @@
 channels:
  - conda-forge
  - hcc
+ - bioconda
+ - defaults
 dependencies:
  - r-argparse
  - r-rhierbaps=1.1.2

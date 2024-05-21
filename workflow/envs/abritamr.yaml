@@ -1,5 +1,6 @@
 channels:
  - conda-forge
  - bioconda
+ - defaults
 dependencies:
  - abritamr=1.0.14

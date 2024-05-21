@@ -1,4 +1,6 @@
 channels:
  - bioconda
+ - conda-forge
+ - defaults
 dependencies:
  - fasttree=2.1.11

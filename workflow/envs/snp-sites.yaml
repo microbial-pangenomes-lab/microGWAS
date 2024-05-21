@@ -1,6 +1,7 @@
 channels:
  - conda-forge
  - bioconda
+ - defaults
 dependencies:
  - bcftools=1.13
  - snp-sites=2.5.1

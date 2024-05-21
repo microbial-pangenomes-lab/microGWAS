@@ -1,6 +1,7 @@
 channels:
  - conda-forge
  - bioconda
+ - defaults
 dependencies:
  - biopython
  - mummer4=4.0.0rc1
