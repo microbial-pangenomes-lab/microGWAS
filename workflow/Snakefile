@@ -329,31 +329,6 @@ rule sequence_unet:
     touch {output}
     """
 
-rule sift:
-  input: config["snps_reference_faa"]
-  output: "out/snps/sift/sift.done"
-  params:
-    db=config["uniref50"],
-    outdir=config["sift"]
-  threads: 36
-  conda: "envs/sift4g.yaml"
-  log: "out/logs/sift.log"
-  shell:
-    """
-    sift4g -q {input} -d {params.db} --out {params.outdir} \
-           -t {threads} --sub-results \
-           --median-threshold 3.25 2> {log}
-    Rscript workflow/scripts/install_siftr.R 2>> {log} || true
-    for i in $(ls {params.outdir} | grep aligned.fasta); \
-    do \
-      echo $i >> {log}; \
-      Rscript workflow/scripts/sift_scorer.R {params.outdir}/$i {params.outdir}/$(basename $i .aligned.fasta).tsv || true; \
-    done 2>> {log}
-    rm {params.outdir}/*.aligned.fasta
-    rm {params.outdir}/*.SIFTprediction
-    touch {output}
-    """
-
 rule prepare_rare_variants:
   input:
     vcf=expand("out/snps/{sample}/snps.vcf.gz",
