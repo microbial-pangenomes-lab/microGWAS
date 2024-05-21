@@ -234,7 +234,7 @@ rule prepare_wg:
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
             --cor-filter 0.0 \
-            --cpu {threads} 2>> {log}
+            --cpu {threads} > /dev/null 2>> {log}
     """
 
 rule heritability:
