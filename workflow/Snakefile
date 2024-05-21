@@ -56,7 +56,7 @@ rule lineage_st:
   shell:
     """
     mlst --scheme {params} --threads {threads} {input} 2> {log} | cut -f1,3 > {output}.tmp
-    python3 workflow/scripts/sanitize_mlst.py {output}.tmp > {output}
+    python workflow/scripts/sanitize_mlst.py {output}.tmp > {output}
     rm {output}.tmp
     """
 
@@ -173,7 +173,7 @@ rule similarity:
   shell:
     """
     grep '>' {input.aln} | cut -c 2- > similarity_samples.txt
-    python3 workflow/scripts/similarity.py similarity_samples.txt \
+    python workflow/scripts/similarity.py similarity_samples.txt \
            --vcf {input.vcf} \
            > {output} 2> {log}
     rm similarity_samples.txt
@@ -202,7 +202,7 @@ rule prepare_pyseer:
   params: os.path.join(config["association_inputs"], "{phenotype}")
   log: "out/logs/prepare_pyseer_{phenotype}.log"
   shell:
-    "python3 workflow/scripts/prepare_pyseer.py {input} {params} {wildcards.phenotype} 2> {log}"
+    "python workflow/scripts/prepare_pyseer.py {input} {params} {wildcards.phenotype} 2> {log}"
 
 rule prepare_wg:
   input:
@@ -226,7 +226,7 @@ rule prepare_wg:
   log: "out/logs/prepare_wg_{phenotype}.log"
   shell:
     """
-     python3 workflow/scripts/prepare_pyseer.py {input.variants} {input.phenotypes} \
+     python workflow/scripts/prepare_pyseer.py {input.variants} {input.phenotypes} \
                                                 {input.similarity} {input.distances} \
                                                 {input.lineage} {params.directory} \
                                                 {wildcards.phenotype} 2> {log} && \
@@ -308,7 +308,7 @@ rule download_sequence_unet:
   conda: "envs/sequence_unet.yaml"
   log: "out/logs/download_sequence_unet.log"
   shell:
-    "python3 workflow/scripts/download_sequence_unet_model.py {params} 2> {log}"
+    "python workflow/scripts/download_sequence_unet_model.py {params} 2> {log}"
 
 rule sequence_unet:
   input:
@@ -571,7 +571,7 @@ rule run_qq_plot:
   output: "out/associations/{target}/{variant}.png"
   conda: "envs/pyseer.yaml"
   log: "out/logs/qq_{variant}_{target}.log"
-  shell: "python3 workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
+  shell: "python workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
 
 rule run_wg:
   input:
@@ -964,7 +964,7 @@ rule run_enrich:
   log: "out/logs/enrich_{target}.log"
   shell:
     """
-    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+    python workflow/scripts/functional_enrichment.py {input.sample} \
             {input.reference} {input.obo} {output} 2> {log}
     """
 
@@ -980,7 +980,7 @@ rule run_enrich_alt:
   log: "out/logs/enrich_{target}_{kind}.log"
   shell:
     """
-    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+    python workflow/scripts/functional_enrichment.py {input.sample} \
             {input.reference} {input.obo} {output} 2> {log}
     """
 
@@ -996,7 +996,7 @@ rule run_enrich_wg:
   log: "out/logs/enrich_{target}_{model}.log"
   shell:
     """
-    python3 workflow/scripts/functional_enrichment.py {input.sample} \
+    python workflow/scripts/functional_enrichment.py {input.sample} \
             {input.reference} {input.obo} {output} 2> {log}
     """
 
