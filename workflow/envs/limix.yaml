@@ -3,5 +3,6 @@ channels:
  - bioconda
  - defaults
 dependencies:
+ - python >= 3.7
  - pandas < 1.1.0
  - limix=3.0.4
