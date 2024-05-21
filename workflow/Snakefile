@@ -1,7 +1,6 @@
 from snakemake.utils import validate
 import pandas as pd
 import os
-import random
 import string
 
 ##### load config #####
@@ -21,9 +20,11 @@ def _read_directory(indir):
   return {os.path.join(indir, x)
           for x in os.listdir(indir)}
 
-def _get_random_name(k):
-    characters = string.ascii_letters + string.digits
-    return ''.join(random.choices(characters, k=k))
+# used to generate a pseudorandom but persistent
+# folder name for temporary files
+username = os.getenv('USER')
+if username is None:
+    username = 'gwas'
 
 ##### rules #####
 
@@ -642,7 +643,7 @@ rule run_map_back:
   output:
     "out/associations/{target}/mapped.tsv"
   params:
-    "/tmp/{target}_" + _get_random_name(10)
+    "/tmp/{target}_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{target}.log"
   shell:
@@ -661,7 +662,7 @@ rule run_map_back_all:
   output:
     "out/associations/{target}/mapped_all.tsv"
   params:
-    "/tmp/{target}_" + _get_random_name(10)
+    "/tmp/{target}_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_all_{target}.log"
   shell:
@@ -683,7 +684,7 @@ rule run_map_back_wg:
   output:
     "out/wg/{target}/mapped_{model}.tsv"
   params:
-    "/tmp/{target}_{model}_" + _get_random_name(10)
+    "/tmp/{target}_{model}_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{model}_{target}.log"
   shell:
