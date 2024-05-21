@@ -49,21 +49,26 @@ def extract_genes(bedtools_intervals, rd=None):
         rd = {}
     annotations = {}
     for match in bedtools_intervals.features():
+        if len(match) < 4:
+            continue
         kmer_id, hit_id = match.fields[3].split("_")
         annotations[kmer_id] = {}
 
         ID = None
         gene = None
-        for tag in match.fields[15].split(";"):
-            parse_tag = re.search('^(.+)=(.+)$', tag)
-            if parse_tag:
-                if parse_tag.group(1) == "ID" and ID is None:
-                    ID = parse_tag.group(2)
-        if gene is None:
-            if ID is not None:
-                gene = ID
-            else:
-                gene = ""
+        if len(match) < 16:
+            gene = ""
+        else:
+            for tag in match.fields[15].split(";"):
+                parse_tag = re.search('^(.+)=(.+)$', tag)
+                if parse_tag:
+                    if parse_tag.group(1) == "ID" and ID is None:
+                        ID = parse_tag.group(2)
+            if gene is None:
+                if ID is not None:
+                    gene = ID
+                else:
+                    gene = ""
 
         annotations[kmer_id][int(hit_id)] = rd.get(gene, gene)
 
