@@ -12,7 +12,7 @@ def manhattan_plot(data):
     df = pd.read_csv(data, sep='\t', usecols=['strain', 'start', 'end', 'lrt-pvalue', 'gene'])
     df['pos'] = (df['start'] + df['end']) / (2 * 1_000_000)
     reference_strains = df['strain'].unique()
-    #threshold = 3.11E-08
+    threshold = !python3 count_patterns.py out/associations/phenotypes/unitigs_patterns.txt
     for reference in reference_strains:
         reference_data = df[df['strain'] == reference]
 
