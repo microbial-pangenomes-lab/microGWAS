@@ -9,17 +9,17 @@ def get_options():
     parser = argparse.ArgumentParser(description=description)
 
     parser.add_argument('cog', 
-												help='COG.tsv from enrichment analysis')
-    parser.add_argument('cog_plot', 
-												help='Output plot for COG enrichment analysis')
-    parser.add_argument('go', 
-												help='GO.tsv from GO term analysis')
-    parser.add_argument('go_plot', 
-												help='Output plot for GO term analysis')
-    parser.add_argument('kegg', 
-												help='KEGG.tsv from KEGG enrichment analysis')
-    parser.add_argument('kegg_plot', 
-												help='Output plot for KEGG enrichment analysis')
+			help='COG.tsv from enrichment analysis')
+    parser.add_argument('cog_plot',
+			help='Output plot for COG enrichment analysis')
+    parser.add_argument('go',
+			help='GO.tsv from GO term analysis')
+    parser.add_argument('go_plot',
+			help='Output plot for GO term analysis')
+    parser.add_argument('kegg',
+			help='KEGG.tsv from KEGG enrichment analysis')
+    parser.add_argument('kegg_plot',
+			help='Output plot for KEGG enrichment analysis')
 
     return parser.parse_args()
 
