@@ -883,6 +883,7 @@ rule enrichment:
            model=["ridge", "lasso"]),
     expand("out/wg/{target}/KEGG_{model}.tsv",
            target=config["targets"],
+           model=["ridge", "lasso"]),
 
 rule run_enrich:
   input:
