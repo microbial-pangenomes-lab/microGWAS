@@ -30,7 +30,6 @@ def plot_enrichment(data, plot_file, category_label):
     enrichment_data_sorted = enrichment_data.sort_values(by='gene_count', ascending=True)
     enrichment_data_sorted['-log10(padj)'] = -np.log10(enrichment_data_sorted['empirical-qvalue'])
 
-    # Plotting
     plt.figure(figsize=(6, 8))
     bars = plt.barh(enrichment_data_sorted['category'], enrichment_data_sorted['gene_count'],
                     color=plt.cm.viridis(enrichment_data_sorted['-log10(padj)'] / max(enrichment_data_sorted['-log10(padj)'])))
