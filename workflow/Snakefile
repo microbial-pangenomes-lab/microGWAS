@@ -648,14 +648,23 @@ rule run_map_back_all:
     python workflow/scripts/make_skyline.py {input.unitigs} {params}/mapped.tsv > {output} 2>> {log}
     """
 
-rule manhattan_plot:
-    input:
-        tsv_file = "out/associations/{target}/mapped_all.tsv"
-    output:
-        plot = "out/plots/{target}_manhattan.png"
-    script:
-        "workflow/scripts/manhattan_plot.py"
+rule manhattan_plots:
+  input:
+    expand("out/associations/{target}/manhattan.png",
+           target=config["targets"])
 
+rule run_manhattan_plot:
+  input:
+    mapped="out/associations/{target}/mapped_all.tsv",
+    patterns="out/associations/{target}/unitigs_patterns.txt"
+  output: "out/associations/{target}/manhattan.png"
+  params: config["enrichment_reference"]
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/manhattan_plot_{target}.log"
+  shell:
+    """
+    python workflow/scripts/manhattan_plot.py {input} {params} {output}
+    """
 
 rule run_map_back_wg:
   input:
@@ -1000,12 +1009,21 @@ rule enrichment_plots:
     expand("out/associations/{target}/COG.png", target=config["targets"]),
     expand("out/associations/{target}/GO.png", target=config["targets"]),
     expand("out/associations/{target}/KEGG.png", target=config["targets"]),
+    expand('out/associations/{target}/COG_{kind}.png',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
+    expand('out/associations/{target}/GO_{kind}.png',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
+    expand('out/associations/{target}/KEGG_{kind}.png',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
     expand("out/wg/{target}/COG_{model}.png", target=config["targets"],
-					      model=["ridge", "lasso"]),
+                                              model=["ridge", "lasso"]),
     expand("out/wg/{target}/GO_{model}.png", target=config["targets"],
-					      model=["ridge", "lasso"]),
+                                              model=["ridge", "lasso"]),
     expand("out/wg/{target}/KEGG_{model}.png", target=config["targets"],
-					      model=["ridge", "lasso"]),
+                                              model=["ridge", "lasso"]),
 
 rule run_enrichment_plots:
   input:
