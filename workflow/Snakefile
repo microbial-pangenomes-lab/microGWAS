@@ -537,13 +537,13 @@ rule run_rare_summary:
 
 rule qq_plots:
   input:
-    expand('out/associations/{target}/{variant}.png',
+    expand('out/associations/{target}/qq_{variant}.png',
            target=config["targets"],
            variant=["unitigs", "gpa", "rare"]),
 
 rule run_qq_plot:
   input: "out/associations/{target}/{variant}.tsv"
-  output: "out/associations/{target}/{variant}.png"
+  output: "out/associations/{target}/qq_{variant}.png"
   conda: "envs/pyseer.yaml"
   log: "out/logs/qq_{variant}_{target}.log"
   shell: "python workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
@@ -646,6 +646,24 @@ rule run_map_back_all:
     echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {params}/mapped.tsv
     python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details >> {params}/mapped.tsv 2> {log}
     python workflow/scripts/make_skyline.py {input.unitigs} {params}/mapped.tsv > {output} 2>> {log}
+    """
+
+rule manhattan_plots:
+  input:
+    expand("out/associations/{target}/manhattan.png",
+           target=config["targets"])
+
+rule run_manhattan_plot:
+  input:
+    mapped="out/associations/{target}/mapped_all.tsv",
+    patterns="out/associations/{target}/unitigs_patterns.txt"
+  output: "out/associations/{target}/manhattan.png"
+  params: config["enrichment_reference"]
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/manhattan_plot_{target}.log"
+  shell:
+    """
+    python workflow/scripts/manhattan_plot.py {input} {params} {output}
     """
 
 rule run_map_back_wg:
@@ -914,16 +932,24 @@ rule enrichment:
            target=config["targets"]),
     expand('out/associations/{target}/GO.tsv',
            target=config["targets"]),
+    expand('out/associations/{target}/KEGG.tsv',
+           target=config["targets"]),
     expand('out/associations/{target}/COG_{kind}.tsv',
            target=config["targets"],
            kind=['gpa', 'rare']),
     expand('out/associations/{target}/GO_{kind}.tsv',
            target=config["targets"],
            kind=['gpa', 'rare']),
+    expand('out/associations/{target}/KEGG_{kind}.tsv',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
     expand("out/wg/{target}/COG_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
     expand("out/wg/{target}/GO_{model}.tsv",
+           target=config["targets"],
+           model=["ridge", "lasso"]),
+    expand("out/wg/{target}/KEGG_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
 
@@ -935,6 +961,7 @@ rule run_enrich:
   output:
     cog="out/associations/{target}/COG.tsv",
     go="out/associations/{target}/GO.tsv",
+    kegg="out/associations/{target}/KEGG.tsv",
   conda: "envs/enrich.yaml"
   log: "out/logs/enrich_{target}.log"
   shell:
@@ -951,6 +978,7 @@ rule run_enrich_alt:
   output:
     cog="out/associations/{target}/COG_{kind}.tsv",
     go="out/associations/{target}/GO_{kind}.tsv",
+    kegg="out/associations/{target}/KEGG_{kind}.tsv"
   conda: "envs/enrich.yaml"
   log: "out/logs/enrich_{target}_{kind}.log"
   shell:
@@ -967,12 +995,85 @@ rule run_enrich_wg:
   output:
     cog="out/wg/{target}/COG_{model}.tsv",
     go="out/wg/{target}/GO_{model}.tsv",
+    kegg="out/wg/{target}/KEGG_{model}.tsv"
   conda: "envs/enrich.yaml"
   log: "out/logs/enrich_{target}_{model}.log"
   shell:
     """
     python workflow/scripts/functional_enrichment.py {input.sample} \
             {input.reference} {input.obo} {output} 2> {log}
+    """
+
+rule enrichment_plots:
+  input:
+    expand("out/associations/{target}/COG.png", target=config["targets"]),
+    expand("out/associations/{target}/GO.png", target=config["targets"]),
+    expand("out/associations/{target}/KEGG.png", target=config["targets"]),
+    expand('out/associations/{target}/COG_{kind}.png',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
+    expand('out/associations/{target}/GO_{kind}.png',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
+    expand('out/associations/{target}/KEGG_{kind}.png',
+           target=config["targets"],
+           kind=['gpa', 'rare']),
+    expand("out/wg/{target}/COG_{model}.png", target=config["targets"],
+                                              model=["ridge", "lasso"]),
+    expand("out/wg/{target}/GO_{model}.png", target=config["targets"],
+                                              model=["ridge", "lasso"]),
+    expand("out/wg/{target}/KEGG_{model}.png", target=config["targets"],
+                                              model=["ridge", "lasso"]),
+
+rule run_enrichment_plots:
+  input:
+    cog="out/associations/{target}/COG.tsv",
+    go="out/associations/{target}/GO.tsv",
+    kegg="out/associations/{target}/KEGG.tsv"
+  output:
+    cog_plot="out/associations/{target}/COG.png",
+    go_plot="out/associations/{target}/GO.png",
+    kegg_plot="out/associations/{target}/KEGG.png"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/enrich_plots_{target}.log"
+  shell:
+    """
+    python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
+           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
+    """
+
+rule run_enrichment_plots_alt:
+  input:
+    cog="out/associations/{target}/COG_{kind}.tsv",
+    go="out/associations/{target}/GO_{kind}.tsv",
+    kegg="out/associations/{target}/KEGG_{kind}.tsv"
+  output:
+    cog_plot="out/associations/{target}/COG_{kind}.png",
+    go_plot="out/associations/{target}/GO_{kind}.png",
+    kegg_plot="out/associations/{target}/KEGG_{kind}.png"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/enrich_plots_{target}_{kind}.log"
+  shell:
+    """
+    python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
+           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
+    """
+
+rule run_enrichment_plots_wg:
+  input:
+    cog="out/wg/{target}/COG_{model}.tsv",
+    go="out/wg/{target}/GO_{model}.tsv",
+    kegg="out/wg/{target}/KEGG_{model}.tsv"
+  output:
+    cog_plot="out/wg/{target}/COG_{model}.png",
+    go_plot="out/wg/{target}/GO_{model}.png",
+    kegg_plot="out/wg/{target}/KEGG_{model}.png"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/enrich_plots_{target}_{model}.log"
+  shell:
+    """
+    python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
+           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
     """
 
 rule panfeed_kmers:
