@@ -118,7 +118,7 @@ if __name__ == "__main__":
     r['qvalue'] = sm.stats.multipletests(r['pvalue'], alpha=0.05, method='fdr_bh')[1]
     r = r[['cog', 'category', 'pvalue', 'qvalue', 'empirical-qvalue']]
     cog_genes_dict = m.groupby('COG_category')['Preferred_name'].apply(list).to_dict()
-    r['genes'] = r['cog'].apply(lambda x: cog_genes_dict.get(x, []))
+    r['gene_count'] = r['cog'].apply(lambda x: len(cog_genes_dict.get(x, [])))
     r.to_csv(options.cog, sep='\t', index=False)
 
     obodag = GODag(options.obo)
@@ -151,31 +151,32 @@ if __name__ == "__main__":
         f = open(options.go, 'w')
         f.close()
 
-    m['KEGG_ko'] = m['KEGG_ko'].str.split(':').str[1].str.split(',').str[0]
-    m['KEGG_ko'] = m['KEGG_ko'].fillna('X')
+    m = m.assign(KEGG_Pathway=m['KEGG_Pathway'].str.split(',')).explode('KEGG_Pathway').reset_index(drop=True)
+    m['KEGG_Pathway'] = m['KEGG_Pathway'].fillna('-')
 
-    n['KEGG_ko'] = n['KEGG_ko'].str.split(':').str[1].str.split(',').str[0]
-    n['KEGG_ko'] = n['KEGG_ko'].fillna('X') 
+    n = n.assign(KEGG_Pathway=n['KEGG_Pathway'].str.split(',')).explode('KEGG_Pathway').reset_index(drop=True)
+    n['KEGG_Pathway'] = n['KEGG_Pathway'].fillna('-') 
     
     res = []
-    kegg_categories = m['KEGG_ko'].unique()
+    kegg_categories = m['KEGG_Pathway'].unique()
     for kegg_category in kegg_categories:
-        pop_c = m[m['KEGG_ko'].str.contains(kegg_category)].shape[0]
-        pop_n = m[~m['KEGG_ko'].str.contains(kegg_category)].shape[0]
+        pop_c = m[m['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
+        pop_n = m[~m['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
     
-        study_c = n[n['KEGG_ko'].str.contains(kegg_category)].shape[0]
-        study_n = n[~n['KEGG_ko'].str.contains(kegg_category)].shape[0]
+        study_c = n[n['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
+        study_n = n[~n['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
     
         table = [[study_c, pop_c],
                  [study_n, pop_n]]
     
         odds_ratio, pvalue = stats.fisher_exact(table, alternative='greater')
     
-        res.append((kegg_category, pvalue))
-    kegg = pd.DataFrame(res, columns=['KEGG_ko', 'pvalue'])
-    kegg['qvalue'] = sm.stats.multipletests(kegg['pvalue'], alpha=0.05, method='fdr_bh')[1]
-    if len(kegg) > 0:
-       kegg.to_csv(options.kegg, sep='\t', index=False)
+        res.append((kegg_category, pop_c, pvalue))
+
+    if len(res) > 0:
+        kegg = pd.DataFrame(res, columns=['KEGG_pathway', 'gene_count', 'pvalue'])
+        kegg['qvalue'] = sm.stats.multipletests(kegg['pvalue'], alpha=0.05, method='fdr_bh')[1]
+        kegg.to_csv(options.kegg, sep='\t', index=False)
     else:
-       f = open(options.kegg, 'w')
-       f.close()
+        f = open(options.kegg, 'w')
+        f.close()

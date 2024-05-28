@@ -537,13 +537,13 @@ rule run_rare_summary:
 
 rule qq_plots:
   input:
-    expand('out/associations/{target}/{variant}.png',
+    expand('out/associations/{target}/qq_{variant}.png',
            target=config["targets"],
            variant=["unitigs", "gpa", "rare"]),
 
 rule run_qq_plot:
   input: "out/associations/{target}/{variant}.tsv"
-  output: "out/associations/{target}/{variant}.png"
+  output: "out/associations/{target}/qq_{variant}.png"
   conda: "envs/pyseer.yaml"
   log: "out/logs/qq_{variant}_{target}.log"
   shell: "python workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
@@ -995,24 +995,50 @@ rule run_enrich_wg:
             {input.reference} {input.obo} {output} 2> {log}
     """
 
-rule enrich_plots:
-  input:
-    expand("out/associations/{target}/cog.png", target=config["targets"]),
-    expand("out/associations/{target}/go.png", target=config["targets"]),
-    expand("out/associations/{target}/kegg.png", target=config["targets"])
-
 rule enrichment_plots:
+  input:
+    expand("out/associations/{target}/COG.png", target=config["targets"]),
+    expand("out/associations/{target}/GO.png", target=config["targets"]),
+    expand("out/associations/{target}/KEGG.png", target=config["targets"]),
+    expand("out/wg/{target}/COG_{model}.png", target=config["targets"],
+					      model=["ridge", "lasso"]),
+    expand("out/wg/{target}/GO_{model}.png", target=config["targets"],
+					      model=["ridge", "lasso"]),
+    expand("out/wg/{target}/KEGG_{model}.png", target=config["targets"],
+					      model=["ridge", "lasso"]),
+
+rule run_enrichment_plots:
   input:
     cog="out/associations/{target}/COG.tsv",
     go="out/associations/{target}/GO.tsv",
     kegg="out/associations/{target}/KEGG.tsv"
   output:
-    cog_plot="out/associations/{target}/cog.png",
-    go_plot="out/associations/{target}/go.png",
-    kegg_plot="out/associations/{target}/kegg.png"
+    cog_plot="out/associations/{target}/COG.png",
+    go_plot="out/associations/{target}/GO.png",
+    kegg_plot="out/associations/{target}/KEGG.png"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/enrich_plots_{target}.log"
   shell:
     """
-    python3 workflow/scripts/enrichment_plot.py {input.cog} {output.cog_plot} {input.go} {output.go_plot} {input.kegg} {output.kegg_plot}
+    python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
+           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
+    """
+
+rule run_enrichment_plots_wg:
+  input:
+    cog="out/wg/{target}/COG_{model}.tsv",
+    go="out/wg/{target}/GO_{model}.tsv",
+    kegg="out/wg/{target}/KEGG_{model}.tsv"
+  output:
+    cog_plot="out/wg/{target}/COG_{model}.png",
+    go_plot="out/wg/{target}/GO_{model}.png",
+    kegg_plot="out/wg/{target}/KEGG_{model}.png"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/enrich_plots_{target}_{model}.log"
+  shell:
+    """
+    python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
+           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
     """
 
 rule panfeed_kmers:
