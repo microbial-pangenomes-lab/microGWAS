@@ -598,6 +598,15 @@ rule run_map_back_all:
     python workflow/scripts/make_skyline.py {input.unitigs} {params}/mapped.tsv > {output} 2>> {log}
     """
 
+rule manhattan_plot:
+    input:
+        tsv_file = "out/associations/{target}/mapped_all.tsv"
+    output:
+        plot = "out/plots/{target}_manhattan.png"
+    script:
+        "workflow/scripts/manhattan_plot.py"
+
+
 rule run_map_back_wg:
   input:
     unitigs="out/wg/{target}/{model}.tsv",
