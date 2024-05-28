@@ -4,4 +4,6 @@ channels:
  - defaults
 dependencies:
  - python >= 3.7
+ - parallel
+ - gzip
  - mlst=2.16

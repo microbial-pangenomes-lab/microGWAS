@@ -13,13 +13,13 @@ fi
 # unpack the test dataset
 tar -xvf small_fastas.tgz 
 tar -xvf stripped_small_gffs.tgz 
-mv small_fastas ../data/fastas
-mv stripped_small_gffs ../data/gffs
+mkdir -p small_gffs
 # generate the full GFF files
-for i in $(ls ../data/fastas);
+for i in $(ls small_fastas);
 do
-  echo "##FASTA" >> ../data/gffs/$(basename $i .fasta).gff;
-  cat ../data/fastas/$i >>../data/gffs/$(basename $i .fasta).gff;
+  cat stripped_small_gffs/$(basename $i .fasta).gff > small_gffs/$(basename $i .fasta).gff;
+  echo "##FASTA" >> small_gffs/$(basename $i .fasta).gff;
+  cat small_fastas/$i >> small_gffs/$(basename $i .fasta).gff;
 done
 
 # move phenotypic data
