@@ -15,14 +15,29 @@ def get_options():
 
     parser.add_argument('vcf',
                         help='vcf input')
-    parser.add_argument('sift',
+    parser.add_argument('--sift',
+                        default=None,
                         help='SIFT directory')
+    parser.add_argument('--unet',
+                        default=None,
+                        help='sequence_unet directory')
 
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     options = get_options()
+
+    if options.sift is None and options.unet is None:
+        sys.stderr.write('indicate either a --sift or a --unet argument!\n')
+        sys.exit(1)
+    elif options.sift is not None and options.unet is not None:
+        sys.stderr.write('indicate one of --sift or --unet, not both!\n')
+        sys.exit(1)
+    elif options.sift is not None:
+        prediction = 'sift'
+    else:
+        prediction = 'unet'
 
     s = None
 
@@ -58,9 +73,14 @@ if __name__ == "__main__":
                 prot = a[10]
                 if s is None or s[0] != gene:
                     try:
-                        m = pd.read_csv(os.path.join(options.sift,
-                                                     f'{gene}.tsv'),
-                                        sep='\t')
+                        if prediction == 'sift':
+                            m = pd.read_csv(os.path.join(options.sift,
+                                                         f'{gene}.tsv'),
+                                            sep='\t')
+                        else:
+                            m = pd.read_csv(os.path.join(options.unet,
+                                                         f'{gene}.tsv.gz'),
+                                            sep='\t')
                         s = (gene, m)
                     except FileNotFoundError:
                         continue
@@ -104,14 +124,22 @@ if __name__ == "__main__":
                         continue
                     m = s[1]
                     try:
-                        entry = m[(m['pos'] == pos_aa) &
-                                  (m['ref'] == wt_aa) &
-                                  (m['alt'] == mut_aa) &
-                                  (m['median_ic'] < 3.25)].iloc[0]
+                        if prediction == 'sift':
+                            entry = m[(m['pos'] == pos_aa) &
+                                      (m['ref'] == wt_aa) &
+                                      (m['alt'] == mut_aa) &
+                                      (m['median_ic'] < 3.25)].iloc[0]
+                        else:
+                            entry = m[(m['position'] == pos_aa) &
+                                      (m['wt'] == wt_aa) &
+                                      (m['mut'] == mut_aa)].iloc[0]
                     except IndexError:
                         # no score, ignore
                         continue
-                    if entry['score'] <= 0.05:
+                    if prediction == 'sift' and entry['score'] <= 0.05:
+                        to_print = True
+                        break
+                    elif prediction == 'unet' and entry['pred'] >= 0.5:
                         to_print = True
                         break
         

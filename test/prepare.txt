@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# this script is just a reminder of how the test dataset was created
+# using the data coming from these two FigShare datasets:
+# https://figshare.com/articles/dataset/Escherichia_coli_pathogenicity_GWAS_input_genome_sequences_updated_/11879340/1
+# https://figshare.com/articles/dataset/Escherichia_coli_pathogenicity_GWAS_input_genome_sequences_annotations/19536163
+# and this phenotypic data table
+# https://github.com/mgalardini/2018_ecoli_pathogenicity/raw/master/data/phenotypes/phenotypes.tsv
+
+cat *.fasta > targets.fasta
+
+mkdir blast
+for i in $(ls fastas); do echo 'tblastn -query targets.fasta -subject fastas/'$i' -outfmt "6 qseqid sseqid sstart send pident qlen length nident evalue slen" -evalue 1E-4 > blast/'$(basename $i .fasta)'.txt'; done > blast_jobs.txt
+parallel -j 7 --progress < blast_jobs.txt 
+
+mkdir bed
+for i in $(ls blast); do echo "python3 blast2bed.py blast/$i > bed/$(basename $i .txt).bed"; done > blast2bed_jobs.txt
+parallel -j 7 --progress < blast2bed_jobs.txt 
+
+mkdir small_fastas
+for i in $(ls bed); do bedtools getfasta -bed bed/$i -fi fastas/$(basename $i .bed).fasta > small_fastas/$(basename $i .bed).fasta; done
+
+mkdir -p prokka
+for i in $(ls small_fastas); do echo prokka --outdir prokka/$(basename $i .fasta) --force --prefix $(basename $i .fasta) --cpus 1 small_fastas/$i; done > prokka_jobs.txt
+parallel -j 8 --progress < prokka_jobs.txt
+
+mkdir small_gffs
+cp prokka/*/*.gff small_gffs/

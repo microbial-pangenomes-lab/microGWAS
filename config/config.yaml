@@ -2,8 +2,8 @@
 
 # targets for associations
 targets: [
-         "phenotype1",
-         "phenotype2",
+         "phenotype",
+         #"phenotype2",
          ]
 
 # MLST scheme
@@ -17,6 +17,17 @@ enrichment_reference: "IAI39"
 #summary_references: "--reference PAO1 --reference UCBPP-PA14"
 #annotation_references: "--focus-strain PAO1 --focus-strain UCBPP-PA14"
 #enrichment_reference: "UCBPP-PA14"
+
+# species to be used for AMR and virulence predictions
+species_amr: "Escherichia"
+# species_amr: "Pseudomonas_aeruginosa"
+# species_amr: "Klebsiella"
+
+# which lineage file to use?
+# use "out/lineages_mlst.txt" to use mlst
+# or "out/lineages_poppunk.tsv" for poppunk
+# or an existing file for a custom lineages list
+lineages_file: "out/lineages_mlst.txt"
 
 ##### inputs (there already) #####
 
@@ -47,10 +58,7 @@ references_fastas: "data/references/fastas"
 references_gffs: "data/references/gffs"
 
 # rare variants
-# path to uniref50 unzipped fasta file
-# note: can also be a symbolic link
-uniref50: "data/uniref50.fasta"
-snps_reference_faa: "data/sift4g.faa"
+snps_reference_faa: "data/reference.faa"
 snps_reference_gff: "data/reference.gff"
 snps_reference: "data/reference.gbk"
 
@@ -81,6 +89,7 @@ unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
 panaroo_input: "out/panaroo_input.txt"
 #
 panaroo_dir: "out/panaroo"
+panaroo_dir_tmp: "out/panaroo_tmp"
 pangenome: "out/panaroo/gene_presence_absence.Rtab"
 pangenome_csv: "out/panaroo/gene_presence_absence.csv"
 pangenome_genes: "out/panaroo/gene_data.csv"
@@ -113,9 +122,11 @@ distances: "out/distances.tsv"
 similarities: "out/similarity.tsv"
 
 ### rare variants
+snippy_dir_tmp: "out/snps/tmp"
 rare_snps: "out/snps/rare.vcf.gz"
 regions: "out/snps/regions.tsv"
-sift: "out/snps/sift"
+sequence_unet: "data/models"
+unet: "out/snps/unet"
 
 ### associations
 association_inputs: "out/associations/inputs"

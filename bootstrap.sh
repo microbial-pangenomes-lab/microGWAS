@@ -54,8 +54,9 @@ for ref in $(ls data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/)
 do
   echo $ref;
   zcat data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/*_genomic.fna.gz > data/references/fastas/$ref.fasta;
-  zcat data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/*_genomic.gff.gz > /tmp/$ref.gff;
-  python3 workflow/scripts/convert_refseq_to_prokka_gff.py -g /tmp/$ref.gff -f data/references/fastas/$ref.fasta -o data/references/gffs/$ref.gff;
+  tempfile=$(mktemp);
+  zcat data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/*_genomic.gff.gz > $tempfile;
+  python3 workflow/scripts/convert_refseq_to_prokka_gff.py -g $tempfile -f data/references/fastas/$ref.fasta -o data/references/gffs/$ref.gff;
   zcat data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/*_genomic.gbff.gz > data/references/gbks/$ref.gbk;
   zcat data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/*_protein.faa.gz > data/references/faas/$ref.faa;
   echo "data/references/fastas/"$ref".fasta" >> out/mash_input.txt;
@@ -64,7 +65,7 @@ do
   echo -e "data/references/fastas/"$ref".fasta\tdata/references/gffs/"$ref".gff\tref" >> out/annotate_input.txt;
 done
 
-python3 workflow/scripts/gbk2faa.py data/references/gbks/$REFERENCE.gbk > data/sift4g.faa
+python3 workflow/scripts/gbk2faa.py data/references/gbks/$REFERENCE.gbk > data/reference.faa
 cp data/references/gffs/$REFERENCE.gff data/reference.gff
 cp data/references/gbks/$REFERENCE.gbk data/reference.gbk
 
