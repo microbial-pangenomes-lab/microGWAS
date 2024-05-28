@@ -37,6 +37,6 @@ bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000
 # to speed up its annotation and rare variants analysis
 cp test/reference.faa data/
 # first dry run
-snakemake -np annotate_summary panfeed map_back heritability enrichment qq_plots tree --cores 8 --use-conda --conda-frontend mamba
+snakemake -np annotate_summary panfeed map_back manhattan_plot heritability enrichment enrichment_plots qq_plots tree --cores 8 --use-conda --conda-frontend mamba
 # actual run (brace yourself)
-snakemake -p annotate_summary panfeed map_back heritability enrichment qq_plots tree --cores 8 --use-conda --conda-frontend mamba
+snakemake -p annotate_summary panfeed map_back manhattan_plot heritability enrichment enrichment_plots  qq_plots tree --cores 8 --use-conda --conda-frontend mamba
