@@ -1042,6 +1042,23 @@ rule run_enrichment_plots:
            {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
     """
 
+rule run_enrichment_plots_alt:
+  input:
+    cog="out/associations/{target}/COG_{kind}.tsv",
+    go="out/associations/{target}/GO_{kind}.tsv",
+    kegg="out/associations/{target}/KEGG_{kind}.tsv"
+  output:
+    cog_plot="out/associations/{target}/COG_{kind}.png",
+    go_plot="out/associations/{target}/GO_{kind}.png",
+    kegg_plot="out/associations/{target}/KEGG_{kind}.png"
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/enrich_plots_{target}_{kind}.log"
+  shell:
+    """
+    python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
+           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
+    """
+
 rule run_enrichment_plots_wg:
   input:
     cog="out/wg/{target}/COG_{model}.tsv",
