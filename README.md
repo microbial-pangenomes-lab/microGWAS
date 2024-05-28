@@ -69,7 +69,7 @@ to install each environment:
     
 The following example instead uses "vanilla" `conda` and skips the generation of the phylogenetic tree:
 
-    snakemake -p annotate_summary panfeed map_back heritability enrichment qq_plots --cores 24 --use-conda
+    snakemake -p annotate_summary panfeed map_back manhattan_plot heritability enrichment enrichment_plots qq_plots --cores 24 --use-conda
 
 ## Outputs
 
