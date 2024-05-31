@@ -132,7 +132,7 @@ tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few
 
 The test dataset has been created from that [used in a mouse model of bloodstream infection]().
 
-To run the tests, prepare the symbolic links to the uniref50.fasta file and the eggnog-mapper
+To run the tests, prepare a symbolic link to the eggnog-mapper
 databases (as explained above), then do the following:
 
     cd test
