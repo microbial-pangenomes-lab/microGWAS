@@ -14,8 +14,8 @@ def get_options():
     parser.add_argument('kmers',
                         help='Filtered kmers table')
     parser.add_argument('genome',
-                        help='Original genome fasta file directory '
-                             '(format SAMPLE.fasta)')
+                        help='Original genome fasta file directory, '
+                             'or a file-of-files (format SAMPLE.fasta)')
 
     parser.add_argument("--bwa",
                         help="Location of bwa executable "
@@ -31,8 +31,8 @@ def get_options():
                         default=os.getcwd())
     parser.add_argument('--gff',
                         default=None,
-                        help='Annotation directory in GFF format '
-                             '(format SAMPLE.gff)')
+                        help='Annotation directory in GFF format, '
+                             'or a file-of-files (format SAMPLE.gff)')
     parser.add_argument("--pangenome",
                         help="Panaroo's genes presence/absence table (w/ gene names)",
                         default=None)
@@ -117,10 +117,14 @@ if __name__ == "__main__":
     kmers_file.close()
 
     # assumption: strain names are in the fasta file name
-    for fgenome in os.listdir(options.genome):
+    if os.path.isfile(options.genome):
+        genomes = [x.rstrip() for x in open(options.genome)]
+    else:
+        genomes = os.listdir(options.genome)
+    for fgenome in genomes:
         if not fgenome.endswith('.fasta'):
             continue
-        strain_id = '.'.join(fgenome.split('.')[:-1])
+        strain_id = '.'.join(os.path.split(fgenome)[-1].split('.')[:-1])
         genome = strain_id
 
         # pangenome dictionary
@@ -138,7 +142,15 @@ if __name__ == "__main__":
 
 
         if options.gff is not None:
-            fgff = os.path.join(options.gff, f'{genome}.gff')
+            if os.path.isfile(options.gff):
+                fgff = [x.rstrip() for x in open(options.gff)
+                        if '.'.join(os.path.split(x.rstrip())[-1].split('.')[:-1]) == genome]
+                if len(fgff) != 1:
+                    sys.stderr.write(f'Could not find matching GFF file for {genome}\n')
+                    sys.exit(1)
+                fgff = fgff[0]
+            else:
+                fgff = os.path.join(options.gff, f'{genome}.gff')
             # Fix ref annotation
             tmp_bed = tempfile.NamedTemporaryFile(dir=options.tmp_prefix)
             try:
@@ -153,8 +165,12 @@ if __name__ == "__main__":
             kmers = []
             map_pos = {}
 
-        shutil.copy(os.path.join(options.genome, fgenome), options.tmp_prefix)
-        genome_file = os.path.join(options.tmp_prefix, fgenome)
+        if os.path.isfile(options.genome):
+            shutil.copy(fgenome, options.tmp_prefix)
+            genome_file = os.path.join(options.tmp_prefix, os.path.split(fgenome)[-1])
+        else:
+            shutil.copy(os.path.join(options.genome, fgenome), options.tmp_prefix)
+            genome_file = os.path.join(options.tmp_prefix, fgenome)
         bwa_index(genome_file)
         for mapping, kmer in zip(bwa_iter(genome_file, kmers_fasta, options.bwa_algorithm),
                                  SeqIO.parse(kmers_fasta, 'fasta')):

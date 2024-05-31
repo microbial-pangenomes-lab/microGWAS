@@ -1,369 +1,369 @@
-strain	killed	phenotype
-ECOR-01	0	0
-ECOR-02	10	1
-ECOR-03	0	0
-ECOR-04	0	0
-ECOR-05	1	0
-ECOR-06	1	0
-ECOR-07	1	0
-ECOR-08	10	1
-ECOR-09	1	0
-ECOR-10	9	1
-ECOR-11	10	1
-ECOR-12	7	1
-ECOR-13	1	0
-ECOR-14	10	1
-ECOR-15	2	0
-ECOR-16	9	1
-ECOR-17	0	0
-ECOR-18	2	0
-ECOR-19	0	0
-ECOR-20	10	1
-ECOR-21	1	0
-ECOR-22	0	0
-ECOR-23	0	0
-ECOR-24	8	1
-ECOR-25	0	0
-ECOR-26	0	0
-ECOR-27	0	0
-ECOR-28	0	0
-ECOR-29	0	0
-ECOR-30	0	0
-ECOR-31	10	1
-ECOR-32	0	0
-ECOR-33	9	1
-ECOR-34	0	0
-ECOR-35	10	1
-ECOR-36	0	0
-ECOR-37	1	0
-ECOR-38	10	1
-ECOR-39	10	1
-ECOR-40	10	1
-ECOR-41	10	1
-ECOR-42	1	0
-ECOR-43	10	1
-ECOR-44	0	0
-ECOR-45	0	0
-ECOR-46	0	0
-ECOR-47	1	0
-ECOR-48	7	1
-ECOR-49	8	1
-ECOR-50	10	1
-ECOR-51	8	1
-ECOR-52	6	1
-ECOR-53	9	1
-ECOR-54	2	0
-ECOR-55	10	1
-ECOR-56	10	1
-ECOR-57	7	1
-ECOR-58	10	1
-ECOR-59	10	1
-ECOR-60	1	0
-ECOR-61	10	1
-ECOR-62	10	1
-ECOR-63	10	1
-ECOR-64	10	1
-ECOR-65	10	1
-ECOR-66	10	1
-ECOR-67	1	0
-ECOR-69	1	0
-ECOR-70	8	1
-ECOR-71	1	0
-ECOR-72	10	1
-NILS01	10	1
-NILS02	0	0
-NILS03	0	0
-NILS04	0	0
-NILS05	0	0
-NILS06	0	0
-NILS07	10	1
-NILS08	1	0
-NILS09	10	1
-NILS10	0	0
-NILS11	7	1
-NILS12	10	1
-NILS13	0	0
-NILS14	0	0
-NILS15	7	1
-NILS16	0	0
-NILS17	0	0
-NILS18	10	1
-NILS19	10	1
-NILS20	4	1
-NILS21	10	1
-NILS22	10	1
-NILS23	9	1
-NILS24	0	0
-NILS25	10	1
-NILS26	9	1
-NILS27	10	1
-NILS28	10	1
-NILS29	10	1
-NILS30	0	0
-NILS31	1	0
-NILS32	10	1
-NILS33	0	0
-NILS34	10	1
-NILS35	10	1
-NILS36	5	1
-NILS37	0	0
-NILS38	0	0
-NILS39	10	1
-NILS40	0	0
-NILS41	0	0
-NILS42	10	1
-NILS43	0	0
-NILS44	10	1
-NILS45	1	0
-NILS46	9	1
-NILS47	10	1
-NILS48	9	1
-NILS49	7	1
-NILS50	9	1
-NILS51	1	0
-NILS52	10	1
-NILS53	10	1
-NILS54	9	1
-NILS55	9	1
-NILS56	10	1
-NILS57	10	1
-NILS58	10	1
-NILS59	8	1
-NILS60	6	1
-NILS61	9	1
-NILS62	10	1
-NILS63	10	1
-NILS64	8	1
-NILS65	9	1
-NILS66	10	1
-NILS67	10	1
-NILS68	10	1
-NILS69	10	1
-NILS70	10	1
-NILS71	10	1
-NILS72	7	1
-NILS73	10	1
-NILS74	9	1
-NILS75	7	1
-NILS76	10	1
-NILS77	9	1
-NILS78	10	1
-NILS79	10	1
-NILS80	10	1
-NILS81	10	1
-NILS82	10	1
-IAI01	0	0
-IAI02	0	0
-IAI03	0	0
-IAI04	0	0
-IAI05	0	0
-IAI06	0	0
-IAI07	0	0
-IAI08	0	0
-IAI09	0	0
-IAI10	0	0
-IAI11	0	0
-IAI12	0	0
-IAI13	0	0
-IAI14	0	0
-IAI15	0	0
-IAI16	0	0
-IAI17	0	0
-IAI18	0	0
-IAI19	0	0
-IAI20	0	0
-IAI21	0	0
-IAI22	0	0
-IAI23	0	0
-IAI24	0	0
-IAI25	0	0
-IAI26	0	0
-IAI27	0	0
-IAI28	0	0
-IAI29	0	0
-IAI30	0	0
-IAI31	0	0
-IAI32	0	0
-IAI33	0	0
-IAI34	0	0
-IAI35	10	1
-IAI36	10	1
-IAI37	0	0
-IAI38	10	1
-IAI40	0	0
-IAI41	0	0
-IAI42	5	1
-IAI43	0	0
-IAI44	7	1
-IAI45	0	0
-IAI46	9	1
-IAI47	0	0
-IAI48	0	0
-IAI49	10	1
-IAI50	0	0
-IAI51	10	1
-IAI53	0	0
-IAI54	0	0
-IAI55	10	1
-IAI56	9	1
-IAI57	9	1
-IAI58	9	1
-IAI59	10	1
-IAI60	0	0
-IAI61	9	1
-IAI62	10	1
-IAI63	10	1
-IAI64	10	1
-IAI65	10	1
-IAI66	9	1
-IAI67	0	0
-IAI68	3	1
-IAI69	10	1
-IAI70	10	1
-IAI71	10	1
-IAI72	10	1
-IAI73	10	1
-IAI74	10	1
-IAI75	10	1
-IAI76	3	1
-IAI77	10	1
-IAI78	5	1
-IAI79	10	1
-IAI80	10	1
-IAI81	9	1
-IAI82	10	1
-EDL933	0	0
-025-010	0	0
-B6A1	0	0
-LMR-3158	4	1
-ROAR012	0	0
-ROAR029	0	0
-ROAR036	0	0
-ROAR059	0	0
-ROAR131	10	1
-ROAR274	10	1
-ROAR387	5	1
-EC6230	0	0
-H1-001-0027-S-G	10	1
-H1-001-0093-R-A	0	0
-H1-001-0125-B-M	0	0
-H1-002-0064-E-M	5	1
-H1-003-0010-G-J	6	1
-H1-004-0017-B-M	3	1
-H1-005-0058-M-A	8	1
-H14	8	1
-H4	2	0
-H47	0	0
-H48	1	0
-H70	0	0
-ROAR047	0	0
-ROAR061	1	0
-ROAR072	0	0
-ROAR082	3	1
-ROAR178	9	1
-ROAR205	9	1
-ROAR334	10	1
-ROAR400	10	1
-ROAR419	8	1
-H1-001-0003-S-J	0	0
-H1-001-0013-L-J	7	1
-H1-001-0020-M-O	1	0
-H1-001-0121-Q-J	0	0
-H1-001-0131-C-A	7	1
-H1-001-0154-T-K	3	1
-H1-002-0007-M-M	0	0
-H1-002-0011-M-G	10	1
-H1-002-0060-C-T	2	0
-H1-003-0071-C-J	3	1
-H1-003-0079-G-R	10	1
-H1-003-0088-B-J	6	1
-H1-003-0090-V-J	2	0
-H1-003-0105-C-R	6	1
-H1-003-0115-L-R	8	1
-H1-003-0116-V-R	10	1
-H1-003-0120-P-R	10	1
-H1-004-0021-W-I	8	1
-H1-005-0012-L-M	10	1
-H1-005-0065-L-P	4	1
-H1-006-0003-S-L	7	1
-H1-006-0022-L-R	10	1
-H1-007-0015-D-G	10	1
-H1-007-0037-H-D	0	0
-AN03	10	1
-B1932	10	1
-916A	10	1
-921A	6	1
-E1426	0	0
-001-023	0	0
-003-026	0	0
-ROAR434	0	0
-H1-002-0069-V-G	0	0
-H1-001-0034-S-M	9	1
-H1-001-0053-K-C	7	1
-H1-001-0155-M-I	10	1
-H1-003-0054-P-P	10	1
-H095	2	0
-ROAR185	0	0
-B12I13	0	0
-370D	0	0
-H1-004-0007-O-M	3	1
-H1-003-0019-B-M	1	0
-M863	0	0
-H442	2	0
-E1492	0	0
-B1747	10	1
-C2-119	10	1
-E4962	0	0
-H384	1	0
-H009	10	1
-E7519	1	0
-E2052	0	0
-TW10509	0	0
-VDG427	0	0
-381A	0	0
-Ben4d	0	0
-colF12g	0	0
-001-031-c1	0	0
-013-008	0	0
-034-008	0	0
-034-026-c1	3	1
-035-004	1	0
-E2348-69	0	0
-DEC1a	1	0
-DEC2a	0	0
-FN-B7	0	0
-ASP51g	0	0
-H1-003-0035-D-E	10	1
-S1-76	0	0
-FN89	0	0
-FN-B9	0	0
-FN116	0	0
-FN126	0	0
-S1-11	1	0
-FN-B4	0	0
-S2-1	10	1
-CIP107988T	0	0
-B156	0	0
-B090	0	0
-B992	0	0
-S1-84	0	0
-S1-91	0	0
-S1-109	0	0
-ATCC35469T	0	0
-ROAR344	0	0
-B253	7	1
-B691	1	0
-fergusIVAN	6	1
-ROAR019	0	0
-B1147	0	0
-ROAR116	0	0
-ROAR438	0	0
-ROAR291	0	0
-B49	0	0
-ROAR043	0	0
-ROAR129	0	0
-ROAR130	0	0
-ROAR145	0	0
-ROAR176	6	1
-ROAR220	0	0
-ROAR292	0	0
+strain	fasta	gff	killed	phenotype
+ECOR-01	test/small_fastas/ECOR-01.fasta	test/small_gffs/ECOR-01.gff	0	0
+ECOR-02	test/small_fastas/ECOR-02.fasta	test/small_gffs/ECOR-02.gff	10	1
+ECOR-03	test/small_fastas/ECOR-03.fasta	test/small_gffs/ECOR-03.gff	0	0
+ECOR-04	test/small_fastas/ECOR-04.fasta	test/small_gffs/ECOR-04.gff	0	0
+ECOR-05	test/small_fastas/ECOR-05.fasta	test/small_gffs/ECOR-05.gff	1	0
+ECOR-06	test/small_fastas/ECOR-06.fasta	test/small_gffs/ECOR-06.gff	1	0
+ECOR-07	test/small_fastas/ECOR-07.fasta	test/small_gffs/ECOR-07.gff	1	0
+ECOR-08	test/small_fastas/ECOR-08.fasta	test/small_gffs/ECOR-08.gff	10	1
+ECOR-09	test/small_fastas/ECOR-09.fasta	test/small_gffs/ECOR-09.gff	1	0
+ECOR-10	test/small_fastas/ECOR-10.fasta	test/small_gffs/ECOR-10.gff	9	1
+ECOR-11	test/small_fastas/ECOR-11.fasta	test/small_gffs/ECOR-11.gff	10	1
+ECOR-12	test/small_fastas/ECOR-12.fasta	test/small_gffs/ECOR-12.gff	7	1
+ECOR-13	test/small_fastas/ECOR-13.fasta	test/small_gffs/ECOR-13.gff	1	0
+ECOR-14	test/small_fastas/ECOR-14.fasta	test/small_gffs/ECOR-14.gff	10	1
+ECOR-15	test/small_fastas/ECOR-15.fasta	test/small_gffs/ECOR-15.gff	2	0
+ECOR-16	test/small_fastas/ECOR-16.fasta	test/small_gffs/ECOR-16.gff	9	1
+ECOR-17	test/small_fastas/ECOR-17.fasta	test/small_gffs/ECOR-17.gff	0	0
+ECOR-18	test/small_fastas/ECOR-18.fasta	test/small_gffs/ECOR-18.gff	2	0
+ECOR-19	test/small_fastas/ECOR-19.fasta	test/small_gffs/ECOR-19.gff	0	0
+ECOR-20	test/small_fastas/ECOR-20.fasta	test/small_gffs/ECOR-20.gff	10	1
+ECOR-21	test/small_fastas/ECOR-21.fasta	test/small_gffs/ECOR-21.gff	1	0
+ECOR-22	test/small_fastas/ECOR-22.fasta	test/small_gffs/ECOR-22.gff	0	0
+ECOR-23	test/small_fastas/ECOR-23.fasta	test/small_gffs/ECOR-23.gff	0	0
+ECOR-24	test/small_fastas/ECOR-24.fasta	test/small_gffs/ECOR-24.gff	8	1
+ECOR-25	test/small_fastas/ECOR-25.fasta	test/small_gffs/ECOR-25.gff	0	0
+ECOR-26	test/small_fastas/ECOR-26.fasta	test/small_gffs/ECOR-26.gff	0	0
+ECOR-27	test/small_fastas/ECOR-27.fasta	test/small_gffs/ECOR-27.gff	0	0
+ECOR-28	test/small_fastas/ECOR-28.fasta	test/small_gffs/ECOR-28.gff	0	0
+ECOR-29	test/small_fastas/ECOR-29.fasta	test/small_gffs/ECOR-29.gff	0	0
+ECOR-30	test/small_fastas/ECOR-30.fasta	test/small_gffs/ECOR-30.gff	0	0
+ECOR-31	test/small_fastas/ECOR-31.fasta	test/small_gffs/ECOR-31.gff	10	1
+ECOR-32	test/small_fastas/ECOR-32.fasta	test/small_gffs/ECOR-32.gff	0	0
+ECOR-33	test/small_fastas/ECOR-33.fasta	test/small_gffs/ECOR-33.gff	9	1
+ECOR-34	test/small_fastas/ECOR-34.fasta	test/small_gffs/ECOR-34.gff	0	0
+ECOR-35	test/small_fastas/ECOR-35.fasta	test/small_gffs/ECOR-35.gff	10	1
+ECOR-36	test/small_fastas/ECOR-36.fasta	test/small_gffs/ECOR-36.gff	0	0
+ECOR-37	test/small_fastas/ECOR-37.fasta	test/small_gffs/ECOR-37.gff	1	0
+ECOR-38	test/small_fastas/ECOR-38.fasta	test/small_gffs/ECOR-38.gff	10	1
+ECOR-39	test/small_fastas/ECOR-39.fasta	test/small_gffs/ECOR-39.gff	10	1
+ECOR-40	test/small_fastas/ECOR-40.fasta	test/small_gffs/ECOR-40.gff	10	1
+ECOR-41	test/small_fastas/ECOR-41.fasta	test/small_gffs/ECOR-41.gff	10	1
+ECOR-42	test/small_fastas/ECOR-42.fasta	test/small_gffs/ECOR-42.gff	1	0
+ECOR-43	test/small_fastas/ECOR-43.fasta	test/small_gffs/ECOR-43.gff	10	1
+ECOR-44	test/small_fastas/ECOR-44.fasta	test/small_gffs/ECOR-44.gff	0	0
+ECOR-45	test/small_fastas/ECOR-45.fasta	test/small_gffs/ECOR-45.gff	0	0
+ECOR-46	test/small_fastas/ECOR-46.fasta	test/small_gffs/ECOR-46.gff	0	0
+ECOR-47	test/small_fastas/ECOR-47.fasta	test/small_gffs/ECOR-47.gff	1	0
+ECOR-48	test/small_fastas/ECOR-48.fasta	test/small_gffs/ECOR-48.gff	7	1
+ECOR-49	test/small_fastas/ECOR-49.fasta	test/small_gffs/ECOR-49.gff	8	1
+ECOR-50	test/small_fastas/ECOR-50.fasta	test/small_gffs/ECOR-50.gff	10	1
+ECOR-51	test/small_fastas/ECOR-51.fasta	test/small_gffs/ECOR-51.gff	8	1
+ECOR-52	test/small_fastas/ECOR-52.fasta	test/small_gffs/ECOR-52.gff	6	1
+ECOR-53	test/small_fastas/ECOR-53.fasta	test/small_gffs/ECOR-53.gff	9	1
+ECOR-54	test/small_fastas/ECOR-54.fasta	test/small_gffs/ECOR-54.gff	2	0
+ECOR-55	test/small_fastas/ECOR-55.fasta	test/small_gffs/ECOR-55.gff	10	1
+ECOR-56	test/small_fastas/ECOR-56.fasta	test/small_gffs/ECOR-56.gff	10	1
+ECOR-57	test/small_fastas/ECOR-57.fasta	test/small_gffs/ECOR-57.gff	7	1
+ECOR-58	test/small_fastas/ECOR-58.fasta	test/small_gffs/ECOR-58.gff	10	1
+ECOR-59	test/small_fastas/ECOR-59.fasta	test/small_gffs/ECOR-59.gff	10	1
+ECOR-60	test/small_fastas/ECOR-60.fasta	test/small_gffs/ECOR-60.gff	1	0
+ECOR-61	test/small_fastas/ECOR-61.fasta	test/small_gffs/ECOR-61.gff	10	1
+ECOR-62	test/small_fastas/ECOR-62.fasta	test/small_gffs/ECOR-62.gff	10	1
+ECOR-63	test/small_fastas/ECOR-63.fasta	test/small_gffs/ECOR-63.gff	10	1
+ECOR-64	test/small_fastas/ECOR-64.fasta	test/small_gffs/ECOR-64.gff	10	1
+ECOR-65	test/small_fastas/ECOR-65.fasta	test/small_gffs/ECOR-65.gff	10	1
+ECOR-66	test/small_fastas/ECOR-66.fasta	test/small_gffs/ECOR-66.gff	10	1
+ECOR-67	test/small_fastas/ECOR-67.fasta	test/small_gffs/ECOR-67.gff	1	0
+ECOR-69	test/small_fastas/ECOR-69.fasta	test/small_gffs/ECOR-69.gff	1	0
+ECOR-70	test/small_fastas/ECOR-70.fasta	test/small_gffs/ECOR-70.gff	8	1
+ECOR-71	test/small_fastas/ECOR-71.fasta	test/small_gffs/ECOR-71.gff	1	0
+ECOR-72	test/small_fastas/ECOR-72.fasta	test/small_gffs/ECOR-72.gff	10	1
+NILS01	test/small_fastas/NILS01.fasta	test/small_gffs/NILS01.gff	10	1
+NILS02	test/small_fastas/NILS02.fasta	test/small_gffs/NILS02.gff	0	0
+NILS03	test/small_fastas/NILS03.fasta	test/small_gffs/NILS03.gff	0	0
+NILS04	test/small_fastas/NILS04.fasta	test/small_gffs/NILS04.gff	0	0
+NILS05	test/small_fastas/NILS05.fasta	test/small_gffs/NILS05.gff	0	0
+NILS06	test/small_fastas/NILS06.fasta	test/small_gffs/NILS06.gff	0	0
+NILS07	test/small_fastas/NILS07.fasta	test/small_gffs/NILS07.gff	10	1
+NILS08	test/small_fastas/NILS08.fasta	test/small_gffs/NILS08.gff	1	0
+NILS09	test/small_fastas/NILS09.fasta	test/small_gffs/NILS09.gff	10	1
+NILS10	test/small_fastas/NILS10.fasta	test/small_gffs/NILS10.gff	0	0
+NILS11	test/small_fastas/NILS11.fasta	test/small_gffs/NILS11.gff	7	1
+NILS12	test/small_fastas/NILS12.fasta	test/small_gffs/NILS12.gff	10	1
+NILS13	test/small_fastas/NILS13.fasta	test/small_gffs/NILS13.gff	0	0
+NILS14	test/small_fastas/NILS14.fasta	test/small_gffs/NILS14.gff	0	0
+NILS15	test/small_fastas/NILS15.fasta	test/small_gffs/NILS15.gff	7	1
+NILS16	test/small_fastas/NILS16.fasta	test/small_gffs/NILS16.gff	0	0
+NILS17	test/small_fastas/NILS17.fasta	test/small_gffs/NILS17.gff	0	0
+NILS18	test/small_fastas/NILS18.fasta	test/small_gffs/NILS18.gff	10	1
+NILS19	test/small_fastas/NILS19.fasta	test/small_gffs/NILS19.gff	10	1
+NILS20	test/small_fastas/NILS20.fasta	test/small_gffs/NILS20.gff	4	1
+NILS21	test/small_fastas/NILS21.fasta	test/small_gffs/NILS21.gff	10	1
+NILS22	test/small_fastas/NILS22.fasta	test/small_gffs/NILS22.gff	10	1
+NILS23	test/small_fastas/NILS23.fasta	test/small_gffs/NILS23.gff	9	1
+NILS24	test/small_fastas/NILS24.fasta	test/small_gffs/NILS24.gff	0	0
+NILS25	test/small_fastas/NILS25.fasta	test/small_gffs/NILS25.gff	10	1
+NILS26	test/small_fastas/NILS26.fasta	test/small_gffs/NILS26.gff	9	1
+NILS27	test/small_fastas/NILS27.fasta	test/small_gffs/NILS27.gff	10	1
+NILS28	test/small_fastas/NILS28.fasta	test/small_gffs/NILS28.gff	10	1
+NILS29	test/small_fastas/NILS29.fasta	test/small_gffs/NILS29.gff	10	1
+NILS30	test/small_fastas/NILS30.fasta	test/small_gffs/NILS30.gff	0	0
+NILS31	test/small_fastas/NILS31.fasta	test/small_gffs/NILS31.gff	1	0
+NILS32	test/small_fastas/NILS32.fasta	test/small_gffs/NILS32.gff	10	1
+NILS33	test/small_fastas/NILS33.fasta	test/small_gffs/NILS33.gff	0	0
+NILS34	test/small_fastas/NILS34.fasta	test/small_gffs/NILS34.gff	10	1
+NILS35	test/small_fastas/NILS35.fasta	test/small_gffs/NILS35.gff	10	1
+NILS36	test/small_fastas/NILS36.fasta	test/small_gffs/NILS36.gff	5	1
+NILS37	test/small_fastas/NILS37.fasta	test/small_gffs/NILS37.gff	0	0
+NILS38	test/small_fastas/NILS38.fasta	test/small_gffs/NILS38.gff	0	0
+NILS39	test/small_fastas/NILS39.fasta	test/small_gffs/NILS39.gff	10	1
+NILS40	test/small_fastas/NILS40.fasta	test/small_gffs/NILS40.gff	0	0
+NILS41	test/small_fastas/NILS41.fasta	test/small_gffs/NILS41.gff	0	0
+NILS42	test/small_fastas/NILS42.fasta	test/small_gffs/NILS42.gff	10	1
+NILS43	test/small_fastas/NILS43.fasta	test/small_gffs/NILS43.gff	0	0
+NILS44	test/small_fastas/NILS44.fasta	test/small_gffs/NILS44.gff	10	1
+NILS45	test/small_fastas/NILS45.fasta	test/small_gffs/NILS45.gff	1	0
+NILS46	test/small_fastas/NILS46.fasta	test/small_gffs/NILS46.gff	9	1
+NILS47	test/small_fastas/NILS47.fasta	test/small_gffs/NILS47.gff	10	1
+NILS48	test/small_fastas/NILS48.fasta	test/small_gffs/NILS48.gff	9	1
+NILS49	test/small_fastas/NILS49.fasta	test/small_gffs/NILS49.gff	7	1
+NILS50	test/small_fastas/NILS50.fasta	test/small_gffs/NILS50.gff	9	1
+NILS51	test/small_fastas/NILS51.fasta	test/small_gffs/NILS51.gff	1	0
+NILS52	test/small_fastas/NILS52.fasta	test/small_gffs/NILS52.gff	10	1
+NILS53	test/small_fastas/NILS53.fasta	test/small_gffs/NILS53.gff	10	1
+NILS54	test/small_fastas/NILS54.fasta	test/small_gffs/NILS54.gff	9	1
+NILS55	test/small_fastas/NILS55.fasta	test/small_gffs/NILS55.gff	9	1
+NILS56	test/small_fastas/NILS56.fasta	test/small_gffs/NILS56.gff	10	1
+NILS57	test/small_fastas/NILS57.fasta	test/small_gffs/NILS57.gff	10	1
+NILS58	test/small_fastas/NILS58.fasta	test/small_gffs/NILS58.gff	10	1
+NILS59	test/small_fastas/NILS59.fasta	test/small_gffs/NILS59.gff	8	1
+NILS60	test/small_fastas/NILS60.fasta	test/small_gffs/NILS60.gff	6	1
+NILS61	test/small_fastas/NILS61.fasta	test/small_gffs/NILS61.gff	9	1
+NILS62	test/small_fastas/NILS62.fasta	test/small_gffs/NILS62.gff	10	1
+NILS63	test/small_fastas/NILS63.fasta	test/small_gffs/NILS63.gff	10	1
+NILS64	test/small_fastas/NILS64.fasta	test/small_gffs/NILS64.gff	8	1
+NILS65	test/small_fastas/NILS65.fasta	test/small_gffs/NILS65.gff	9	1
+NILS66	test/small_fastas/NILS66.fasta	test/small_gffs/NILS66.gff	10	1
+NILS67	test/small_fastas/NILS67.fasta	test/small_gffs/NILS67.gff	10	1
+NILS68	test/small_fastas/NILS68.fasta	test/small_gffs/NILS68.gff	10	1
+NILS69	test/small_fastas/NILS69.fasta	test/small_gffs/NILS69.gff	10	1
+NILS70	test/small_fastas/NILS70.fasta	test/small_gffs/NILS70.gff	10	1
+NILS71	test/small_fastas/NILS71.fasta	test/small_gffs/NILS71.gff	10	1
+NILS72	test/small_fastas/NILS72.fasta	test/small_gffs/NILS72.gff	7	1
+NILS73	test/small_fastas/NILS73.fasta	test/small_gffs/NILS73.gff	10	1
+NILS74	test/small_fastas/NILS74.fasta	test/small_gffs/NILS74.gff	9	1
+NILS75	test/small_fastas/NILS75.fasta	test/small_gffs/NILS75.gff	7	1
+NILS76	test/small_fastas/NILS76.fasta	test/small_gffs/NILS76.gff	10	1
+NILS77	test/small_fastas/NILS77.fasta	test/small_gffs/NILS77.gff	9	1
+NILS78	test/small_fastas/NILS78.fasta	test/small_gffs/NILS78.gff	10	1
+NILS79	test/small_fastas/NILS79.fasta	test/small_gffs/NILS79.gff	10	1
+NILS80	test/small_fastas/NILS80.fasta	test/small_gffs/NILS80.gff	10	1
+NILS81	test/small_fastas/NILS81.fasta	test/small_gffs/NILS81.gff	10	1
+NILS82	test/small_fastas/NILS82.fasta	test/small_gffs/NILS82.gff	10	1
+IAI01	test/small_fastas/IAI01.fasta	test/small_gffs/IAI01.gff	0	0
+IAI02	test/small_fastas/IAI02.fasta	test/small_gffs/IAI02.gff	0	0
+IAI03	test/small_fastas/IAI03.fasta	test/small_gffs/IAI03.gff	0	0
+IAI04	test/small_fastas/IAI04.fasta	test/small_gffs/IAI04.gff	0	0
+IAI05	test/small_fastas/IAI05.fasta	test/small_gffs/IAI05.gff	0	0
+IAI06	test/small_fastas/IAI06.fasta	test/small_gffs/IAI06.gff	0	0
+IAI07	test/small_fastas/IAI07.fasta	test/small_gffs/IAI07.gff	0	0
+IAI08	test/small_fastas/IAI08.fasta	test/small_gffs/IAI08.gff	0	0
+IAI09	test/small_fastas/IAI09.fasta	test/small_gffs/IAI09.gff	0	0
+IAI10	test/small_fastas/IAI10.fasta	test/small_gffs/IAI10.gff	0	0
+IAI11	test/small_fastas/IAI11.fasta	test/small_gffs/IAI11.gff	0	0
+IAI12	test/small_fastas/IAI12.fasta	test/small_gffs/IAI12.gff	0	0
+IAI13	test/small_fastas/IAI13.fasta	test/small_gffs/IAI13.gff	0	0
+IAI14	test/small_fastas/IAI14.fasta	test/small_gffs/IAI14.gff	0	0
+IAI15	test/small_fastas/IAI15.fasta	test/small_gffs/IAI15.gff	0	0
+IAI16	test/small_fastas/IAI16.fasta	test/small_gffs/IAI16.gff	0	0
+IAI17	test/small_fastas/IAI17.fasta	test/small_gffs/IAI17.gff	0	0
+IAI18	test/small_fastas/IAI18.fasta	test/small_gffs/IAI18.gff	0	0
+IAI19	test/small_fastas/IAI19.fasta	test/small_gffs/IAI19.gff	0	0
+IAI20	test/small_fastas/IAI20.fasta	test/small_gffs/IAI20.gff	0	0
+IAI21	test/small_fastas/IAI21.fasta	test/small_gffs/IAI21.gff	0	0
+IAI22	test/small_fastas/IAI22.fasta	test/small_gffs/IAI22.gff	0	0
+IAI23	test/small_fastas/IAI23.fasta	test/small_gffs/IAI23.gff	0	0
+IAI24	test/small_fastas/IAI24.fasta	test/small_gffs/IAI24.gff	0	0
+IAI25	test/small_fastas/IAI25.fasta	test/small_gffs/IAI25.gff	0	0
+IAI26	test/small_fastas/IAI26.fasta	test/small_gffs/IAI26.gff	0	0
+IAI27	test/small_fastas/IAI27.fasta	test/small_gffs/IAI27.gff	0	0
+IAI28	test/small_fastas/IAI28.fasta	test/small_gffs/IAI28.gff	0	0
+IAI29	test/small_fastas/IAI29.fasta	test/small_gffs/IAI29.gff	0	0
+IAI30	test/small_fastas/IAI30.fasta	test/small_gffs/IAI30.gff	0	0
+IAI31	test/small_fastas/IAI31.fasta	test/small_gffs/IAI31.gff	0	0
+IAI32	test/small_fastas/IAI32.fasta	test/small_gffs/IAI32.gff	0	0
+IAI33	test/small_fastas/IAI33.fasta	test/small_gffs/IAI33.gff	0	0
+IAI34	test/small_fastas/IAI34.fasta	test/small_gffs/IAI34.gff	0	0
+IAI35	test/small_fastas/IAI35.fasta	test/small_gffs/IAI35.gff	10	1
+IAI36	test/small_fastas/IAI36.fasta	test/small_gffs/IAI36.gff	10	1
+IAI37	test/small_fastas/IAI37.fasta	test/small_gffs/IAI37.gff	0	0
+IAI38	test/small_fastas/IAI38.fasta	test/small_gffs/IAI38.gff	10	1
+IAI40	test/small_fastas/IAI40.fasta	test/small_gffs/IAI40.gff	0	0
+IAI41	test/small_fastas/IAI41.fasta	test/small_gffs/IAI41.gff	0	0
+IAI42	test/small_fastas/IAI42.fasta	test/small_gffs/IAI42.gff	5	1
+IAI43	test/small_fastas/IAI43.fasta	test/small_gffs/IAI43.gff	0	0
+IAI44	test/small_fastas/IAI44.fasta	test/small_gffs/IAI44.gff	7	1
+IAI45	test/small_fastas/IAI45.fasta	test/small_gffs/IAI45.gff	0	0
+IAI46	test/small_fastas/IAI46.fasta	test/small_gffs/IAI46.gff	9	1
+IAI47	test/small_fastas/IAI47.fasta	test/small_gffs/IAI47.gff	0	0
+IAI48	test/small_fastas/IAI48.fasta	test/small_gffs/IAI48.gff	0	0
+IAI49	test/small_fastas/IAI49.fasta	test/small_gffs/IAI49.gff	10	1
+IAI50	test/small_fastas/IAI50.fasta	test/small_gffs/IAI50.gff	0	0
+IAI51	test/small_fastas/IAI51.fasta	test/small_gffs/IAI51.gff	10	1
+IAI53	test/small_fastas/IAI53.fasta	test/small_gffs/IAI53.gff	0	0
+IAI54	test/small_fastas/IAI54.fasta	test/small_gffs/IAI54.gff	0	0
+IAI55	test/small_fastas/IAI55.fasta	test/small_gffs/IAI55.gff	10	1
+IAI56	test/small_fastas/IAI56.fasta	test/small_gffs/IAI56.gff	9	1
+IAI57	test/small_fastas/IAI57.fasta	test/small_gffs/IAI57.gff	9	1
+IAI58	test/small_fastas/IAI58.fasta	test/small_gffs/IAI58.gff	9	1
+IAI59	test/small_fastas/IAI59.fasta	test/small_gffs/IAI59.gff	10	1
+IAI60	test/small_fastas/IAI60.fasta	test/small_gffs/IAI60.gff	0	0
+IAI61	test/small_fastas/IAI61.fasta	test/small_gffs/IAI61.gff	9	1
+IAI62	test/small_fastas/IAI62.fasta	test/small_gffs/IAI62.gff	10	1
+IAI63	test/small_fastas/IAI63.fasta	test/small_gffs/IAI63.gff	10	1
+IAI64	test/small_fastas/IAI64.fasta	test/small_gffs/IAI64.gff	10	1
+IAI65	test/small_fastas/IAI65.fasta	test/small_gffs/IAI65.gff	10	1
+IAI66	test/small_fastas/IAI66.fasta	test/small_gffs/IAI66.gff	9	1
+IAI67	test/small_fastas/IAI67.fasta	test/small_gffs/IAI67.gff	0	0
+IAI68	test/small_fastas/IAI68.fasta	test/small_gffs/IAI68.gff	3	1
+IAI69	test/small_fastas/IAI69.fasta	test/small_gffs/IAI69.gff	10	1
+IAI70	test/small_fastas/IAI70.fasta	test/small_gffs/IAI70.gff	10	1
+IAI71	test/small_fastas/IAI71.fasta	test/small_gffs/IAI71.gff	10	1
+IAI72	test/small_fastas/IAI72.fasta	test/small_gffs/IAI72.gff	10	1
+IAI73	test/small_fastas/IAI73.fasta	test/small_gffs/IAI73.gff	10	1
+IAI74	test/small_fastas/IAI74.fasta	test/small_gffs/IAI74.gff	10	1
+IAI75	test/small_fastas/IAI75.fasta	test/small_gffs/IAI75.gff	10	1
+IAI76	test/small_fastas/IAI76.fasta	test/small_gffs/IAI76.gff	3	1
+IAI77	test/small_fastas/IAI77.fasta	test/small_gffs/IAI77.gff	10	1
+IAI78	test/small_fastas/IAI78.fasta	test/small_gffs/IAI78.gff	5	1
+IAI79	test/small_fastas/IAI79.fasta	test/small_gffs/IAI79.gff	10	1
+IAI80	test/small_fastas/IAI80.fasta	test/small_gffs/IAI80.gff	10	1
+IAI81	test/small_fastas/IAI81.fasta	test/small_gffs/IAI81.gff	9	1
+IAI82	test/small_fastas/IAI82.fasta	test/small_gffs/IAI82.gff	10	1
+EDL933	test/small_fastas/EDL933.fasta	test/small_gffs/EDL933.gff	0	0
+025-010	test/small_fastas/025-010.fasta	test/small_gffs/025-010.gff	0	0
+B6A1	test/small_fastas/B6A1.fasta	test/small_gffs/B6A1.gff	0	0
+LMR-3158	test/small_fastas/LMR-3158.fasta	test/small_gffs/LMR-3158.gff	4	1
+ROAR012	test/small_fastas/ROAR012.fasta	test/small_gffs/ROAR012.gff	0	0
+ROAR029	test/small_fastas/ROAR029.fasta	test/small_gffs/ROAR029.gff	0	0
+ROAR036	test/small_fastas/ROAR036.fasta	test/small_gffs/ROAR036.gff	0	0
+ROAR059	test/small_fastas/ROAR059.fasta	test/small_gffs/ROAR059.gff	0	0
+ROAR131	test/small_fastas/ROAR131.fasta	test/small_gffs/ROAR131.gff	10	1
+ROAR274	test/small_fastas/ROAR274.fasta	test/small_gffs/ROAR274.gff	10	1
+ROAR387	test/small_fastas/ROAR387.fasta	test/small_gffs/ROAR387.gff	5	1
+EC6230	test/small_fastas/EC6230.fasta	test/small_gffs/EC6230.gff	0	0
+H1-001-0027-S-G	test/small_fastas/H1-001-0027-S-G.fasta	test/small_gffs/H1-001-0027-S-G.gff	10	1
+H1-001-0093-R-A	test/small_fastas/H1-001-0093-R-A.fasta	test/small_gffs/H1-001-0093-R-A.gff	0	0
+H1-001-0125-B-M	test/small_fastas/H1-001-0125-B-M.fasta	test/small_gffs/H1-001-0125-B-M.gff	0	0
+H1-002-0064-E-M	test/small_fastas/H1-002-0064-E-M.fasta	test/small_gffs/H1-002-0064-E-M.gff	5	1
+H1-003-0010-G-J	test/small_fastas/H1-003-0010-G-J.fasta	test/small_gffs/H1-003-0010-G-J.gff	6	1
+H1-004-0017-B-M	test/small_fastas/H1-004-0017-B-M.fasta	test/small_gffs/H1-004-0017-B-M.gff	3	1
+H1-005-0058-M-A	test/small_fastas/H1-005-0058-M-A.fasta	test/small_gffs/H1-005-0058-M-A.gff	8	1
+H14	test/small_fastas/H14.fasta	test/small_gffs/H14.gff	8	1
+H4	test/small_fastas/H4.fasta	test/small_gffs/H4.gff	2	0
+H47	test/small_fastas/H47.fasta	test/small_gffs/H47.gff	0	0
+H48	test/small_fastas/H48.fasta	test/small_gffs/H48.gff	1	0
+H70	test/small_fastas/H70.fasta	test/small_gffs/H70.gff	0	0
+ROAR047	test/small_fastas/ROAR047.fasta	test/small_gffs/ROAR047.gff	0	0
+ROAR061	test/small_fastas/ROAR061.fasta	test/small_gffs/ROAR061.gff	1	0
+ROAR072	test/small_fastas/ROAR072.fasta	test/small_gffs/ROAR072.gff	0	0
+ROAR082	test/small_fastas/ROAR082.fasta	test/small_gffs/ROAR082.gff	3	1
+ROAR178	test/small_fastas/ROAR178.fasta	test/small_gffs/ROAR178.gff	9	1
+ROAR205	test/small_fastas/ROAR205.fasta	test/small_gffs/ROAR205.gff	9	1
+ROAR334	test/small_fastas/ROAR334.fasta	test/small_gffs/ROAR334.gff	10	1
+ROAR400	test/small_fastas/ROAR400.fasta	test/small_gffs/ROAR400.gff	10	1
+ROAR419	test/small_fastas/ROAR419.fasta	test/small_gffs/ROAR419.gff	8	1
+H1-001-0003-S-J	test/small_fastas/H1-001-0003-S-J.fasta	test/small_gffs/H1-001-0003-S-J.gff	0	0
+H1-001-0013-L-J	test/small_fastas/H1-001-0013-L-J.fasta	test/small_gffs/H1-001-0013-L-J.gff	7	1
+H1-001-0020-M-O	test/small_fastas/H1-001-0020-M-O.fasta	test/small_gffs/H1-001-0020-M-O.gff	1	0
+H1-001-0121-Q-J	test/small_fastas/H1-001-0121-Q-J.fasta	test/small_gffs/H1-001-0121-Q-J.gff	0	0
+H1-001-0131-C-A	test/small_fastas/H1-001-0131-C-A.fasta	test/small_gffs/H1-001-0131-C-A.gff	7	1
+H1-001-0154-T-K	test/small_fastas/H1-001-0154-T-K.fasta	test/small_gffs/H1-001-0154-T-K.gff	3	1
+H1-002-0007-M-M	test/small_fastas/H1-002-0007-M-M.fasta	test/small_gffs/H1-002-0007-M-M.gff	0	0
+H1-002-0011-M-G	test/small_fastas/H1-002-0011-M-G.fasta	test/small_gffs/H1-002-0011-M-G.gff	10	1
+H1-002-0060-C-T	test/small_fastas/H1-002-0060-C-T.fasta	test/small_gffs/H1-002-0060-C-T.gff	2	0
+H1-003-0071-C-J	test/small_fastas/H1-003-0071-C-J.fasta	test/small_gffs/H1-003-0071-C-J.gff	3	1
+H1-003-0079-G-R	test/small_fastas/H1-003-0079-G-R.fasta	test/small_gffs/H1-003-0079-G-R.gff	10	1
+H1-003-0088-B-J	test/small_fastas/H1-003-0088-B-J.fasta	test/small_gffs/H1-003-0088-B-J.gff	6	1
+H1-003-0090-V-J	test/small_fastas/H1-003-0090-V-J.fasta	test/small_gffs/H1-003-0090-V-J.gff	2	0
+H1-003-0105-C-R	test/small_fastas/H1-003-0105-C-R.fasta	test/small_gffs/H1-003-0105-C-R.gff	6	1
+H1-003-0115-L-R	test/small_fastas/H1-003-0115-L-R.fasta	test/small_gffs/H1-003-0115-L-R.gff	8	1
+H1-003-0116-V-R	test/small_fastas/H1-003-0116-V-R.fasta	test/small_gffs/H1-003-0116-V-R.gff	10	1
+H1-003-0120-P-R	test/small_fastas/H1-003-0120-P-R.fasta	test/small_gffs/H1-003-0120-P-R.gff	10	1
+H1-004-0021-W-I	test/small_fastas/H1-004-0021-W-I.fasta	test/small_gffs/H1-004-0021-W-I.gff	8	1
+H1-005-0012-L-M	test/small_fastas/H1-005-0012-L-M.fasta	test/small_gffs/H1-005-0012-L-M.gff	10	1
+H1-005-0065-L-P	test/small_fastas/H1-005-0065-L-P.fasta	test/small_gffs/H1-005-0065-L-P.gff	4	1
+H1-006-0003-S-L	test/small_fastas/H1-006-0003-S-L.fasta	test/small_gffs/H1-006-0003-S-L.gff	7	1
+H1-006-0022-L-R	test/small_fastas/H1-006-0022-L-R.fasta	test/small_gffs/H1-006-0022-L-R.gff	10	1
+H1-007-0015-D-G	test/small_fastas/H1-007-0015-D-G.fasta	test/small_gffs/H1-007-0015-D-G.gff	10	1
+H1-007-0037-H-D	test/small_fastas/H1-007-0037-H-D.fasta	test/small_gffs/H1-007-0037-H-D.gff	0	0
+AN03	test/small_fastas/AN03.fasta	test/small_gffs/AN03.gff	10	1
+B1932	test/small_fastas/B1932.fasta	test/small_gffs/B1932.gff	10	1
+916A	test/small_fastas/916A.fasta	test/small_gffs/916A.gff	10	1
+921A	test/small_fastas/921A.fasta	test/small_gffs/921A.gff	6	1
+E1426	test/small_fastas/E1426.fasta	test/small_gffs/E1426.gff	0	0
+001-023	test/small_fastas/001-023.fasta	test/small_gffs/001-023.gff	0	0
+003-026	test/small_fastas/003-026.fasta	test/small_gffs/003-026.gff	0	0
+ROAR434	test/small_fastas/ROAR434.fasta	test/small_gffs/ROAR434.gff	0	0
+H1-002-0069-V-G	test/small_fastas/H1-002-0069-V-G.fasta	test/small_gffs/H1-002-0069-V-G.gff	0	0
+H1-001-0034-S-M	test/small_fastas/H1-001-0034-S-M.fasta	test/small_gffs/H1-001-0034-S-M.gff	9	1
+H1-001-0053-K-C	test/small_fastas/H1-001-0053-K-C.fasta	test/small_gffs/H1-001-0053-K-C.gff	7	1
+H1-001-0155-M-I	test/small_fastas/H1-001-0155-M-I.fasta	test/small_gffs/H1-001-0155-M-I.gff	10	1
+H1-003-0054-P-P	test/small_fastas/H1-003-0054-P-P.fasta	test/small_gffs/H1-003-0054-P-P.gff	10	1
+H095	test/small_fastas/H095.fasta	test/small_gffs/H095.gff	2	0
+ROAR185	test/small_fastas/ROAR185.fasta	test/small_gffs/ROAR185.gff	0	0
+B12I13	test/small_fastas/B12I13.fasta	test/small_gffs/B12I13.gff	0	0
+370D	test/small_fastas/370D.fasta	test/small_gffs/370D.gff	0	0
+H1-004-0007-O-M	test/small_fastas/H1-004-0007-O-M.fasta	test/small_gffs/H1-004-0007-O-M.gff	3	1
+H1-003-0019-B-M	test/small_fastas/H1-003-0019-B-M.fasta	test/small_gffs/H1-003-0019-B-M.gff	1	0
+M863	test/small_fastas/M863.fasta	test/small_gffs/M863.gff	0	0
+H442	test/small_fastas/H442.fasta	test/small_gffs/H442.gff	2	0
+E1492	test/small_fastas/E1492.fasta	test/small_gffs/E1492.gff	0	0
+B1747	test/small_fastas/B1747.fasta	test/small_gffs/B1747.gff	10	1
+C2-119	test/small_fastas/C2-119.fasta	test/small_gffs/C2-119.gff	10	1
+E4962	test/small_fastas/E4962.fasta	test/small_gffs/E4962.gff	0	0
+H384	test/small_fastas/H384.fasta	test/small_gffs/H384.gff	1	0
+H009	test/small_fastas/H009.fasta	test/small_gffs/H009.gff	10	1
+E7519	test/small_fastas/E7519.fasta	test/small_gffs/E7519.gff	1	0
+E2052	test/small_fastas/E2052.fasta	test/small_gffs/E2052.gff	0	0
+TW10509	test/small_fastas/TW10509.fasta	test/small_gffs/TW10509.gff	0	0
+VDG427	test/small_fastas/VDG427.fasta	test/small_gffs/VDG427.gff	0	0
+381A	test/small_fastas/381A.fasta	test/small_gffs/381A.gff	0	0
+Ben4d	test/small_fastas/Ben4d.fasta	test/small_gffs/Ben4d.gff	0	0
+colF12g	test/small_fastas/colF12g.fasta	test/small_gffs/colF12g.gff	0	0
+001-031-c1	test/small_fastas/001-031-c1.fasta	test/small_gffs/001-031-c1.gff	0	0
+013-008	test/small_fastas/013-008.fasta	test/small_gffs/013-008.gff	0	0
+034-008	test/small_fastas/034-008.fasta	test/small_gffs/034-008.gff	0	0
+034-026-c1	test/small_fastas/034-026-c1.fasta	test/small_gffs/034-026-c1.gff	3	1
+035-004	test/small_fastas/035-004.fasta	test/small_gffs/035-004.gff	1	0
+E2348-69	test/small_fastas/E2348-69.fasta	test/small_gffs/E2348-69.gff	0	0
+DEC1a	test/small_fastas/DEC1a.fasta	test/small_gffs/DEC1a.gff	1	0
+DEC2a	test/small_fastas/DEC2a.fasta	test/small_gffs/DEC2a.gff	0	0
+FN-B7	test/small_fastas/FN-B7.fasta	test/small_gffs/FN-B7.gff	0	0
+ASP51g	test/small_fastas/ASP51g.fasta	test/small_gffs/ASP51g.gff	0	0
+H1-003-0035-D-E	test/small_fastas/H1-003-0035-D-E.fasta	test/small_gffs/H1-003-0035-D-E.gff	10	1
+S1-76	test/small_fastas/S1-76.fasta	test/small_gffs/S1-76.gff	0	0
+FN89	test/small_fastas/FN89.fasta	test/small_gffs/FN89.gff	0	0
+FN-B9	test/small_fastas/FN-B9.fasta	test/small_gffs/FN-B9.gff	0	0
+FN116	test/small_fastas/FN116.fasta	test/small_gffs/FN116.gff	0	0
+FN126	test/small_fastas/FN126.fasta	test/small_gffs/FN126.gff	0	0
+S1-11	test/small_fastas/S1-11.fasta	test/small_gffs/S1-11.gff	1	0
+FN-B4	test/small_fastas/FN-B4.fasta	test/small_gffs/FN-B4.gff	0	0
+S2-1	test/small_fastas/S2-1.fasta	test/small_gffs/S2-1.gff	10	1
+CIP107988T	test/small_fastas/CIP107988T.fasta	test/small_gffs/CIP107988T.gff	0	0
+B156	test/small_fastas/B156.fasta	test/small_gffs/B156.gff	0	0
+B090	test/small_fastas/B090.fasta	test/small_gffs/B090.gff	0	0
+B992	test/small_fastas/B992.fasta	test/small_gffs/B992.gff	0	0
+S1-84	test/small_fastas/S1-84.fasta	test/small_gffs/S1-84.gff	0	0
+S1-91	test/small_fastas/S1-91.fasta	test/small_gffs/S1-91.gff	0	0
+S1-109	test/small_fastas/S1-109.fasta	test/small_gffs/S1-109.gff	0	0
+ATCC35469T	test/small_fastas/ATCC35469T.fasta	test/small_gffs/ATCC35469T.gff	0	0
+ROAR344	test/small_fastas/ROAR344.fasta	test/small_gffs/ROAR344.gff	0	0
+B253	test/small_fastas/B253.fasta	test/small_gffs/B253.gff	7	1
+B691	test/small_fastas/B691.fasta	test/small_gffs/B691.gff	1	0
+fergusIVAN	test/small_fastas/fergusIVAN.fasta	test/small_gffs/fergusIVAN.gff	6	1
+ROAR019	test/small_fastas/ROAR019.fasta	test/small_gffs/ROAR019.gff	0	0
+B1147	test/small_fastas/B1147.fasta	test/small_gffs/B1147.gff	0	0
+ROAR116	test/small_fastas/ROAR116.fasta	test/small_gffs/ROAR116.gff	0	0
+ROAR438	test/small_fastas/ROAR438.fasta	test/small_gffs/ROAR438.gff	0	0
+ROAR291	test/small_fastas/ROAR291.fasta	test/small_gffs/ROAR291.gff	0	0
+B49	test/small_fastas/B49.fasta	test/small_gffs/B49.gff	0	0
+ROAR043	test/small_fastas/ROAR043.fasta	test/small_gffs/ROAR043.gff	0	0
+ROAR129	test/small_fastas/ROAR129.fasta	test/small_gffs/ROAR129.gff	0	0
+ROAR130	test/small_fastas/ROAR130.fasta	test/small_gffs/ROAR130.gff	0	0
+ROAR145	test/small_fastas/ROAR145.fasta	test/small_gffs/ROAR145.gff	0	0
+ROAR176	test/small_fastas/ROAR176.fasta	test/small_gffs/ROAR176.gff	6	1
+ROAR220	test/small_fastas/ROAR220.fasta	test/small_gffs/ROAR220.gff	0	0
+ROAR292	test/small_fastas/ROAR292.fasta	test/small_gffs/ROAR292.gff	0	0

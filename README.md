@@ -28,8 +28,11 @@ from Github's interface), including the submodules:
     cd MyGWAS
 
 Save your phenotype table as a tab-separated file as `data/data.tsv`.
-The first column should contain the sample names, and subsequent columns should
+The first column should contain the sample names, then there should be two columns
+listing the relative or absolute path to the assemblies (`fasta`, SAMPLE.fasta) and annotations (`gff`, SAMPLE.gff),
+and subsequent columns should
 contain the target phenotype(s). Additional columns are allowed and will be simply ignored.
+An example file can be found in the `test` directory (`test/data.tsv`).
 
 Edit the `params` section of the `config/config.yaml` file (at the top), and indicate the name
 of the phenotypes to be used in the association(s) (i.e. edit the `targets` variable).
@@ -43,10 +46,6 @@ Create a symbolic link to the directory in which the databases for eggnog-mapper
 
 Note: the above path would likely be different in your system. The best way to get these files is to install
 `eggnog-mapper` using a `conda` environment and then use the `download_eggnog_data.py` command.
-
-Place your genome assemblies in the `data/gffs` and `data/fastas` directories. The files should be named
-`SAMPLE.gff` and `SAMPLE.fasta`, respectively, and the sample names should match those in the phenotype file
-(i.e. `data/data.tsv`).
 
 Create and activate a `conda` environment to run the bootstrapping script and the pipeline (named `microGWAS`, can be skipped if it's already present):
 
@@ -157,7 +156,7 @@ test dataset is a reduced part of the E. coli genome.
 - [ ] Delete everything but the necessary files upon completion of a rule
     - [x] snippy
     - [x] panaroo
-- [ ] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
+- [x] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
 - [ ] Run QC on phenotypic data/genomes as part of bootstrapping
 - [x] Use snakemake resources system to budget memory requirements ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/9))
 - [x] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/10))

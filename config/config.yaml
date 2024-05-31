@@ -38,15 +38,6 @@ samples: "data/data.tsv"
 # all genomes, excluding reference
 inputs: "out/inputs.tsv"
 
-# genomes
-# WARNING: the bootstrap script expects the
-# two input folders to be called
-# "data/fastas" and "data/gffs",
-# if changed you need to fix the bootstrapping script as well
-# ALSO: file extensions must be ".fasta" and ".gff"
-fastas: "data/fastas"
-gffs: "data/gffs"
-
 # eggnog-mapper
 # path to eggnog-mapper data directory
 # note: can also be a symbolic link
@@ -122,6 +113,9 @@ distances: "out/distances.tsv"
 similarities: "out/similarity.tsv"
 
 ### rare variants
+# generated outside the workflow
+bcftools_input: "out/bcftools_input.txt"
+#
 snippy_dir_tmp: "out/snps/tmp"
 rare_snps: "out/snps/rare.vcf.gz"
 regions: "out/snps/regions.tsv"

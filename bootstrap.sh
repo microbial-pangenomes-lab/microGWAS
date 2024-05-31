@@ -25,25 +25,7 @@ set -e -o pipefail -u
 mkdir -p out
 mkdir -p out/logs
 
-echo -e "ID\tPath" > out/unitigs_input.tsv
-echo -e "ID\tPath" > out/inputs.tsv
-cat /dev/null > out/mash_input.txt
-cat /dev/null > out/panaroo_input.txt
-cat /dev/null > out/annotate_input.txt
-for strain in $(tail -n+2 data/data.tsv | awk -F'\t' '{print $1}');
-do
-  fasta="data/fastas/"$strain".fasta";
-  gff="data/gffs/"$strain".gff";
-  if [ -f "$fasta" ] && [ -f "$gff" ];
-  then
-    echo $strain;
-    echo "data/fastas/"$strain".fasta" >> out/mash_input.txt;
-    echo "data/gffs/"$strain".gff" >> out/panaroo_input.txt;
-    echo -e $strain"\tdata/fastas/"$strain".fasta" >> out/unitigs_input.tsv;
-    echo -e $strain"\tdata/fastas/"$strain".fasta" >> out/inputs.tsv;
-    echo -e "data/fastas/"$strain".fasta\tdata/gffs/"$strain".gff\tdraft" >> out/annotate_input.txt;
-  fi;
-done
+python workflow/scripts/aid_bootstrap.py data/data.tsv --out out
 
 ncbi-genome-download -H -F gff,fasta,genbank,protein-fasta -A $ASSEMBLIES -p 1 -o data/references bacteria
 mkdir -p data/references/fastas

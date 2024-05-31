@@ -9,16 +9,13 @@ configfile: "config/config.yaml"
 
 ##### functions #####
 
-def _read_samples(infile):
-  m = pd.read_csv(infile, sep='\t', index_col=0)
-  return set(m.index)
+def _get_sample_file(wildcards, table, extension):
+    m = pd.read_csv(table, sep='\t', index_col=0)
+    return m.loc[wildcards.sample, extension]
 
-def _read_files(indir, extension='.fasta'):
-  return {x.split(extension)[0] for x in os.listdir(indir)}
-
-def _read_directory(indir):
-  return {os.path.join(indir, x)
-          for x in os.listdir(indir)}
+def _get_all_samples(table):
+    m = pd.read_csv(table, sep='\t', index_col=0)
+    return m.index
 
 # used to generate a pseudorandom but persistent
 # folder name for temporary files
@@ -45,19 +42,22 @@ rule unitigs:
     """
 
 rule lineage_st:
-  input:
-    _read_directory(config["fastas"]).union(
-    _read_directory(config["references_fastas"]))
+  input: config["mash_input"]
   output: config["lineage_mlst"]
-  params: config["mlst_scheme"]
+  params:
+    scheme=config["mlst_scheme"],
+    tmp="/tmp/mlst_" + username
   threads: 16
   conda: "envs/mlst.yaml"
   log: "out/logs/mlst.log"
   shell:
     """
-    mlst --scheme {params} --threads {threads} {input} 2> {log} | cut -f1,3 > {output}.tmp
-    python workflow/scripts/sanitize_mlst.py {output}.tmp > {output}
-    rm {output}.tmp
+    mkdir -p {params.tmp} 2> {log}
+    for i in $(cat {input}); do echo "mlst --scheme {params.scheme} --threads 1 "$i" | cut -f1,3 > {params.tmp}/"$(basename $i)".mlst"; done > {params.tmp}/mlst_jobs.txt 2>> {log}
+    parallel -j {threads} --progress < {params.tmp}/mlst_jobs.txt 2>> {log}
+    cat {params.tmp}/*.mlst > {params.tmp}/all_mlst.txt 2>> {log}
+    python workflow/scripts/sanitize_mlst.py {params.tmp}/all_mlst.txt > {output} 2>> {log}
+    rm -rf {params.tmp} 2>> {log}
     """
 
 rule lineage_poppunk:
@@ -300,7 +300,7 @@ rule combine_heritability:
     "out/associations/{target}/heritability_all.tsv"
   log: "out/logs/combine_heritability_{target}.log"
   shell:
-    "python workflow/scripts/combine_heritability.py {input.h} {input.h_lineages} {input.h_ci} > {output}"
+    "python workflow/scripts/combine_heritability.py {input.h} {input.h_lineages} {input.h_ci} > {output} 2> {log}"
 
 rule download_sequence_unet:
   output: os.path.join(config["sequence_unet"], "freq_classifier.tf/saved_model.pb")
@@ -331,9 +331,9 @@ rule sequence_unet:
 
 rule prepare_rare_variants:
   input:
-    vcf=expand("out/snps/{sample}/snps.vcf.gz",
-               sample=_read_samples(config["inputs"])),
-    unet="out/snps/unet/unet.done"
+    vcf=config["bcftools_input"],
+    unet="out/snps/unet/unet.done",
+    snps="out/snps/snps.done"
   output: config["rare_snps"]
   params: config["unet"]
   threads: 36
@@ -341,7 +341,7 @@ rule prepare_rare_variants:
   log: "out/logs/prepare_rare_variants.log"
   shell:
     """
-    bcftools merge {input.vcf} -0 -O z --threads {threads} > out/snps/merged.vcf.gz 2> {log}
+    bcftools merge -l {input.vcf} -0 -O z --threads {threads} > out/snps/merged.vcf.gz 2> {log}
     bcftools norm -m - -O z --threads {threads} out/snps/merged.vcf.gz > out/snps/norm.vcf.gz 2>> {log}
     bcftools view -Q 0.05 out/snps/norm.vcf.gz -O z --threads {threads} > out/snps/filtered.vcf.gz 2>> {log}
     python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz --unet {params} | bgzip > {output} 2>> {log}
@@ -349,10 +349,17 @@ rule prepare_rare_variants:
     rm out/snps/merged.vcf.gz out/snps/norm.vcf.gz out/snps/filtered.vcf.gz
     """
 
+rule snps:
+  input:
+    expand("out/snps/{sample}/snps.vcf.gz",
+           sample=_get_all_samples(config["samples"]))
+  output: "out/snps/snps.done"
+  shell: "touch {output}"
+
 rule get_snps:
   input:
     ref=config["snps_reference"],
-    ctgs=os.path.join(config["fastas"], "{sample}.fasta")
+    ctgs=lambda wildcards: _get_sample_file(wildcards, config["samples"], 'fasta')
   output:
     "out/snps/{sample}/snps.vcf.gz"
   params:
@@ -610,10 +617,8 @@ rule map_back:
 rule run_map_back:
   input:
     unitigs="out/associations/{target}/unitigs_filtered.tsv",
-    fastadir=config["fastas"],
-    gffdir=config["gffs"],
-    reffastadir=os.path.join(config["references_dir"], "fastas"),
-    refgffdir=os.path.join(config["references_dir"], "gffs"),
+    fasta=config["mash_input"],
+    gff=config["panaroo_input"],
     pangenome=config['pangenome_csv']
   output:
     "out/associations/{target}/mapped.tsv"
@@ -625,8 +630,7 @@ rule run_map_back:
     """
     mkdir -p {params}
     echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
-    python workflow/scripts/map_back.py {input.unitigs} {input.fastadir} --tmp-prefix {params} --gff {input.gffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
-    python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+    python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
     """
 
 rule run_map_back_all:
@@ -669,10 +673,8 @@ rule run_manhattan_plot:
 rule run_map_back_wg:
   input:
     unitigs="out/wg/{target}/{model}.tsv",
-    fastadir=config["fastas"],
-    gffdir=config["gffs"],
-    reffastadir=os.path.join(config["references_dir"], "fastas"),
-    refgffdir=os.path.join(config["references_dir"], "gffs"),
+    fasta=config["mash_input"],
+    gff=config["panaroo_input"],
     pangenome=config['pangenome_csv']
   output:
     "out/wg/{target}/mapped_{model}.tsv"
@@ -684,8 +686,7 @@ rule run_map_back_wg:
     """
     mkdir -p {params}
     echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
-    python workflow/scripts/map_back.py {input.unitigs} {input.fastadir} --tmp-prefix {params} --gff {input.gffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
-    python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+    python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
     """
 
 rule map_summary:
@@ -1079,41 +1080,29 @@ rule run_enrichment_plots_wg:
 rule panfeed_kmers:
   input:
     pangenome=config["pangenome"],
+    gff=config["panaroo_input"],
+    fasta=config["mash_input"],
   output:
     config["panfeed_patterns"],
     config["panfeed_conversion"],
   params:
     input=config["pangenome_csv"],
-    outdir=config["panfeed_dir"],
-    indir=config["panfeed_input_dir"],
-    gffdir1=config["gffs"],
-    gffdir2=config["references_gffs"],
-    indirfasta=config["panfeed_input_fasta_dir"],
-    fastadir1=config["fastas"],
-    fastadir2=config["references_fastas"],
+    outdir=config["panfeed_dir"]
   threads: 4
   conda: "envs/panfeed.yaml"
   log: "out/logs/panfeed.log"
   shell:
     """
-    rm -rf {params.outdir} && \
-    mkdir -p {params.indir} && rm -rf {params.indir}/* && \
-    cp {params.gffdir1}/*.gff {params.indir} && \
-    cp {params.gffdir2}/*.gff {params.indir} && \
-    mkdir -p {params.indirfasta} && rm -rf {params.indirfasta}/* && \
-    cp {params.fastadir1}/*.fasta {params.indirfasta} && \
-    cp {params.fastadir2}/*.fasta {params.indirfasta} && \
+    rm -rf {params.outdir} || true && \
     panfeed \
-        --gff {params.indir} \
-        --fasta {params.indirfasta} \
+        --gff {input.gff} \
+        --fasta {input.fasta} \
         -o {params.outdir} \
         -p {params.input} \
         --upstream 250 --downstream 100 \
         --no-filter \
         -v \
-        --cores {threads} 2> {log} && \
-    rm -rf {params.indir} && \
-    rm -rf {params.indirfasta}
+        --cores {threads} 2> {log}
     """
 
 rule panfeed_first_pass:
@@ -1159,17 +1148,14 @@ rule panfeed_downstream:
     patterns="out/associations/{target}/unitigs_patterns.txt",
     panfeed="out/associations/{target}/panfeed.tsv",
     panfeed_conversion=config["panfeed_conversion"],
+    gff=config["panaroo_input"],
+    fasta=config["mash_input"],
+    samples=config["unitigs_input"]
   output:
     "out/associations/{target}/panfeed_annotated_kmers.tsv.gz"
   params:
     input=config["pangenome_csv"],
     outdir="out/associations/{target}/panfeed_second_pass",
-    indir="out/associations/{target}/panfeed_gffs",
-    gffdir1=config["gffs"],
-    gffdir2=config["references_gffs"],
-    indirfasta="out/associations/{target}/panfeed_fastas",
-    fastadir1=config["fastas"],
-    fastadir2=config["references_fastas"],
     clusters="out/associations/{target}/panfeed_clusters.txt",
     targets="out/associations/{target}/panfeed_targets.txt",
     k2h="out/associations/{target}/panfeed_second_pass/kmers_to_hashes.tsv",
@@ -1185,16 +1171,10 @@ rule panfeed_downstream:
         -t $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
         > {params.clusters} 2> {log} && \
     rm -rf {params.outdir} 2>> {log} || true && \
-    mkdir -p {params.indir} 2>> {log} && rm -rf {params.indir}/* 2>> {log} || true && \
-    cp {params.gffdir1}/*.gff {params.indir} 2>> {log} && \
-    cp {params.gffdir2}/*.gff {params.indir} 2>> {log} && \
-    mkdir -p {params.indirfasta} 2>> {log} && rm -rf {params.indirfasta}/* 2>> {log} || true && \
-    cp {params.fastadir1}/*.fasta {params.indirfasta} 2>> {log} && \
-    cp {params.fastadir2}/*.fasta {params.indirfasta} 2>> {log}&& \
-    ls {params.indir} | sed 's/.gff//g' > {params.targets} 2>> {log} && \
+    tail -n+2 {input.samples} | awk '{{print $1}}' | sort | uniq > {params.targets} && \
     panfeed \
-        --gff {params.indir} \
-        --fasta {params.indirfasta} \
+        --gff {input.gff} \
+        --fasta {input.fasta} \
         -o {params.outdir} \
         -p {params.input} \
         --upstream 250 --downstream 100 \
@@ -1203,8 +1183,6 @@ rule panfeed_downstream:
         --genes {params.clusters} \
         --targets {params.targets} \
         --cores {threads} 2>> {log} && \
-    rm -rf {params.indir} 2>> {log} && \
-    rm -rf {params.indirfasta} 2>> {log} && \
     panfeed-get-kmers \
         -a {input.panfeed} \
         -p {params.k2h} \
