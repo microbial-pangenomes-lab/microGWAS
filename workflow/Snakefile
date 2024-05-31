@@ -300,7 +300,7 @@ rule combine_heritability:
     "out/associations/{target}/heritability_all.tsv"
   log: "out/logs/combine_heritability_{target}.log"
   shell:
-    "python workflow/scripts/combine_heritability.py {input.h} {input.h_lineages} {input.h_ci} > {output}"
+    "python workflow/scripts/combine_heritability.py {input.h} {input.h_lineages} {input.h_ci} > {output} 2> {log}"
 
 rule download_sequence_unet:
   output: os.path.join(config["sequence_unet"], "freq_classifier.tf/saved_model.pb")
