@@ -221,7 +221,7 @@ rule prepare_wg:
   params:
     directory=os.path.join(config["wg_inputs"], "{phenotype}"),
     variants=os.path.join(config["wg_inputs"], "{phenotype}/variants"),
-    covariates=lambda wildcards: config["covariates"][wildcards.phenotype]
+    covariates=lambda wildcards: config.get("covariates", {wildcards.phenotype: ''})[wildcards.phenotype]
   threads: 4
   conda: "envs/pyseer.yaml"
   log: "out/logs/prepare_wg_{phenotype}.log"
@@ -426,7 +426,7 @@ rule run_pyseer:
     struct="out/associations/{target}/struct.tsv",
     struct_f="out/associations/{target}/struct_filtered.tsv"
   params:
-    covariates=lambda wildcards: config["covariates"][wildcards.target]
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 2
   conda: "envs/pyseer.yaml"
   log: "out/logs/pyseer_{target}.log"
@@ -512,7 +512,7 @@ rule run_pyseer_rare:
     rare="out/associations/{target}/rare.tsv",
     rare_f="out/associations/{target}/rare_filtered.tsv",
   params:
-    covariates=lambda wildcards: config["covariates"][wildcards.target]
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   conda: "envs/pyseer.yaml"
   log: "out/logs/pyseer_rare_{target}.log"
   shell:
@@ -585,7 +585,7 @@ rule run_wg:
     variants = os.path.join(config["wg_inputs"], "{target}/variants"),
     ridge = "out/wg/{target}/ridge",
     lasso = "out/wg/{target}/lasso",
-    covariates=lambda wildcards: config["covariates"][wildcards.target]
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 4
   conda: "envs/pyseer.yaml"
   shell:
@@ -1219,7 +1219,7 @@ rule run_panfeed:
     p="out/associations/{target}/panfeed.tsv",
     p_f="out/associations/{target}/panfeed_filtered.tsv",
   params:
-    covariates=lambda wildcards: config["covariates"][wildcards.target]
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 2
   conda: "envs/pyseer.yaml"
   log: "out/logs/panfeed_{target}.log"
