@@ -1,10 +1,22 @@
 ##### params #####
 
 # targets for associations
+# i.e. the name of the columns in the phenotypes file
 targets: [
          "phenotype",
          #"phenotype2",
          ]
+
+# covariates for associations (if any)
+# the numbers refer to the columns in the
+# phenotype file that should be used as covariates
+# with the suffix "q" when they are quantitative and not binary
+# the column numbering is 1-based
+# each target phenotype can have its own set of covariates
+# see also: https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates
+#covariates:
+#        phenotype: "--use-covariates 6q 7"
+#        phenotype2: "--use-covariates 7"
 
 # MLST scheme
 mlst_scheme: ecoli

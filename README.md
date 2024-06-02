@@ -146,7 +146,7 @@ test dataset is a reduced part of the E. coli genome.
 
 ## TODO
 
-- [ ] Add the ability to use covariates in the associations
+- [x] Add the ability to use covariates in the associations
 - [ ] manhattan_plot.py : handle cases in which the reference genome has more than one chromosome (either because it has plasmids or because it is a draft genome) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/8))
 - [ ] Easily switch to poppunk for lineage computation
 - [ ] Combine all annotations in a series of webpages ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/6))
