@@ -64,11 +64,11 @@ And the following works for P. aeruginosa (and matches the references commented 
 You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores and `mamba` as the conda backend
 to install each environment:
 
-    snakemake -p annotate_summary panfeed map_back manhattan_plots heritability enrichment enrichment_plots qq_plots tree --cores 24 --use-conda --conda-frontend mamba
+    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
     
 The following example instead uses "vanilla" `conda` and skips the generation of the phylogenetic tree:
 
-    snakemake -p annotate_summary panfeed map_back manhattan_plots heritability enrichment enrichment_plots qq_plots --cores 24 --use-conda
+    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda
 
 ## Outputs
 
@@ -161,7 +161,7 @@ test dataset is a reduced part of the E. coli genome.
 - [ ] Use snakemake resources system to budget memory requirements ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/9))
 - [x] Swap sift4g for [more modern alternatives](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-023-02948-3) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/10))
 - [x] Create a minimal test set that yields some hits and runs in reasonable time (~300 Ecoli dataset from BSI mouse model)
-- [ ] Also generate panfeed plots
+- [x] Also generate panfeed plots, and annotate its results
 - [x] Harden panfeed rules against stochastic gzip file corruption ([fixed here](https://github.com/microbial-pangenomes-lab/gwas_template/pull/1))
 - [ ] Swap `unitig-counter` for `bifrost` or `cuttlefish` ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/11))
 - [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)

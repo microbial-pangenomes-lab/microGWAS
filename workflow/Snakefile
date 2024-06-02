@@ -707,6 +707,8 @@ rule map_summary:
   input:
     expand("out/associations/{target}/summary.tsv",
            target=config["targets"]),
+    expand("out/associations/{target}/summary_panfeed.tsv",
+           target=config["targets"]),
     expand("out/wg/{target}/summary_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
@@ -739,6 +741,32 @@ rule run_map_summary:
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-lrt-pvalue \
+           > {output.summary} 2> {log} || true
+    """
+
+rule run_map_summary_panfeed:
+  input:
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    pangenome=config["pangenome"],
+    pangenome2=config["pangenome_csv"],
+    mapped="out/associations/{target}/panfeed_annotated_kmers.tsv.gz",
+  output:
+    summary="out/associations/{target}/summary_panfeed.tsv"
+  params:
+    d=config["references_gffs"],
+    r=config["summary_references"]
+  log: "out/logs/map_summary_panfeed_{target}.log"
+  shell:
+    """
+    python workflow/scripts/mapped_summary.py {input.mapped} \
+           {input.phenotypes} {wildcards.target} /dev/null \
+           --pangenome {input.pangenome} \
+           --pangenome-genes {input.pangenome2} \
+           --minimum-hits 9 --maximum-genes 10 \
+           {params.r} \
+           --gff-dir {params.d} \
+           --unique --sort avg-lrt-pvalue \
+           --panfeed \
            > {output.summary} 2> {log} || true
     """
 
@@ -790,6 +818,8 @@ rule annotate_summary:
            target=config["targets"]),
     expand("out/associations/{target}/annotated_gpa_summary.tsv",
            target=config["targets"]),
+    expand("out/associations/{target}/annotated_panfeed_summary.tsv",
+           target=config["targets"]),
     expand("out/wg/{target}/annotated_summary_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
@@ -815,6 +845,10 @@ rule run_annotate_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -844,6 +878,10 @@ rule run_annotate_rare_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -873,6 +911,43 @@ rule run_annotate_gpa_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
+    emapper.py -i {params.sample} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+    python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
+    > {output} 2>> {log}
+    """
+
+rule run_annotate_panfeed_summary:
+  input:
+    summary="out/associations/{target}/summary_panfeed.tsv",
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"]
+  output:
+    "out/associations/{target}/annotated_panfeed_summary.tsv"
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/associations/{target}/panfeed_summary",
+    sample="out/associations/{target}/panfeed_sample.faa",
+    annotations="out/associations/{target}/panfeed_summary.emapper.annotations",
+    r=config["annotation_references"]
+  threads: 8
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_panfeed_{target}.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               {params.r} \
+               --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -902,6 +977,10 @@ rule run_annotate_summary_wg:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -929,6 +1008,10 @@ rule annotate_reference:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                --focus-strain {params.r} --only-focus \
                > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -951,13 +1034,13 @@ rule enrichment:
            target=config["targets"]),
     expand('out/associations/{target}/COG_{kind}.tsv',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/GO_{kind}.tsv',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/KEGG_{kind}.tsv',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand("out/wg/{target}/COG_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
@@ -1026,13 +1109,13 @@ rule enrichment_plots:
     expand("out/associations/{target}/KEGG.png", target=config["targets"]),
     expand('out/associations/{target}/COG_{kind}.png',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/GO_{kind}.png',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/KEGG_{kind}.png',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand("out/wg/{target}/COG_{model}.png", target=config["targets"],
                                               model=["ridge", "lasso"]),
     expand("out/wg/{target}/GO_{model}.png", target=config["targets"],
@@ -1149,17 +1232,21 @@ rule run_panfeed:
            --lmm --uncompressed \
            --output-patterns out/associations/{wildcards.target}/panfeed_patterns.txt \
            --cpu {threads} \
+           {params.covariates} \
            > {output.p} 2> {log}
     cat <(head -1 {output.p}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.p}) > {output.p_f}
     """
 
 rule panfeed:
   input:
-    expand('out/associations/{target}/panfeed_annotated_kmers.tsv.gz',
+    expand("out/associations/{target}/panfeed_annotated_kmers.tsv.gz",
+           target=config["targets"]),
+    expand("out/associations/{target}/panfeed_plots/plots.done",
            target=config["targets"])
 
 rule panfeed_downstream:
   input:
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
     pangenome=config["pangenome"],
     patterns="out/associations/{target}/unitigs_patterns.txt",
     panfeed="out/associations/{target}/panfeed.tsv",
@@ -1168,10 +1255,12 @@ rule panfeed_downstream:
     fasta=config["mash_input"],
     samples=config["unitigs_input"]
   output:
-    "out/associations/{target}/panfeed_annotated_kmers.tsv.gz"
+    kmers="out/associations/{target}/panfeed_annotated_kmers.tsv.gz",
+    plots="out/associations/{target}/panfeed_plots/plots.done"
   params:
     input=config["pangenome_csv"],
     outdir="out/associations/{target}/panfeed_second_pass",
+    plotsdir="out/associations/{target}/panfeed_plots",
     clusters="out/associations/{target}/panfeed_clusters.txt",
     targets="out/associations/{target}/panfeed_targets.txt",
     k2h="out/associations/{target}/panfeed_second_pass/kmers_to_hashes.tsv",
@@ -1203,7 +1292,14 @@ rule panfeed_downstream:
         -a {input.panfeed} \
         -p {params.k2h} \
         -k {params.k} 2>> {log} \
-        | gzip > {output} && \
-    rm -rf {params.outdir}
+        | gzip > {output.kmers} && \
+    rm -rf {params.outdir} && \
+    mkdir -p {params.plotsdir}
+    cd {params.plotsdir} && \
+    panfeed-plot -k $(realpath ../../../../{output.kmers}) \
+        -p $(realpath ../../../../{input.phenotypes}) \
+        --phenotype-column {wildcards.target} \
+        -t $(python ../../../../workflow/scripts/count_patterns.py --threshold $(realpath ../../../../{input.patterns})) 2>> $(realpath ../../../../{log}) && \
+    touch ../../../../{output.plots} 2>> $(realpath ../../../../{log})
     """
 

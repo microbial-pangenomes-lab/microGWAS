@@ -9,18 +9,22 @@ import pandas as pd
 
 
 def get_options():
-    description = 'Make a summary of mapped unitigs'
+    description = 'Make a summary of mapped unitigs/panfeed k-mers'
     parser = argparse.ArgumentParser(description=description)
 
     parser.add_argument('mapped',
-                        help='Mapped unitigs table (all strains)')
+                        help='Mapped unitigs table (all strains), or annotated k-mers '
+                             'from panfeed-get-kmers (`--panfeed` must be used)')
     parser.add_argument('phenotypes',
                         help='Phenotypes table')
     parser.add_argument('phenotype',
                         help='Phenotype to use (column name; should be binary)')
     parser.add_argument('filtered',
-                        help='Filtered variants table')
+                        help='Filtered variants table (ignored if `--panfeed` is used)')
 
+    parser.add_argument('--panfeed',
+                        default=False, action='store_true',
+                        help='Data comes from panfeed-get-kmers')
     parser.add_argument('--sort',
                         default='avg-lrt-pvalue',
                         help='Sort final table using this column (default: %(default)s)')
@@ -35,11 +39,11 @@ def get_options():
     parser.add_argument('--length',
                         type=int,
                         default=30,
-                        help='Minimum unitig length (default: %(default)d)')
+                        help='Minimum unitig length (default: %(default)d, ignored if `--panfeed` is used)')
     parser.add_argument('--minimum-hits',
                         type=int,
                         default=1,
-                        help='Minimum number of strains (default: %(default)d)')    
+                        help='Minimum number of strains (default: %(default)d)')
     parser.add_argument('--maximum-genes',
                         type=int,
                         default=10,
@@ -99,7 +103,15 @@ if __name__ == "__main__":
                 gene = l.split('gene=')[1].split(';')[0]
                 gene_names[locus_tag] = gene
 
-    m = pd.read_csv(options.mapped, sep='\t', index_col=0)
+    # index is the strain
+    if not options.panfeed:
+        m = pd.read_csv(options.mapped, sep='\t', index_col=0)
+    else:
+        m = pd.read_csv(options.mapped, sep='\t', index_col=9)
+        # rename a column to avoid much refactoring
+        m = m.rename(columns={'hashed_pattern': 'unitig',
+                              'gene_start': 'start',
+                              'cluster': 'gene'})
     # check empty
     if m.shape[0] == 0:
         sys.exit(0)
@@ -116,8 +128,9 @@ if __name__ == "__main__":
     u = m.groupby('unitig')['gene'].nunique()
     m = m[m['unitig'].isin(u[u <= options.maximum_genes].index)]
     # remove short unitigs
-    m['length'] = [len(x) for x in m['unitig'].values]
-    m = m[m['length'] >= options.length]
+    if not options.panfeed:
+        m['length'] = [len(x) for x in m['unitig'].values]
+        m = m[m['length'] >= options.length]
     # check empty
     if m.shape[0] == 0:
         sys.exit(0)
@@ -130,12 +143,15 @@ if __name__ == "__main__":
     n[np.isnan(n)] = 0
     n = n.rename(columns={'strain': 'strains'})
 
-    f = pd.read_csv(options.filtered, sep='\t', index_col=0)
-    # ugly hack
-    #if 'lineage' not in f.columns:
-    #    f.columns = ['af', 'filter-pvalue', 'lrt-pvalue', 'beta', 'lineage', 'notes']
-    #
-    v = m.reset_index().set_index('unitig').join(f, how='left')
+    if not options.panfeed:
+        f = pd.read_csv(options.filtered, sep='\t', index_col=0)
+        # ugly hack
+        #if 'lineage' not in f.columns:
+        #    f.columns = ['af', 'filter-pvalue', 'lrt-pvalue', 'beta', 'lineage', 'notes']
+        #
+        v = m.reset_index().set_index('unitig').join(f, how='left')
+    else:
+        v = m.reset_index().set_index('unitig')
     c = v.groupby('gene')[['af']].count().rename(columns={'af': 'unitigs'})
     if 'variant_h2' not in v.columns:
         v['variant_h2'] = np.nan
