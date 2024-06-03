@@ -91,9 +91,9 @@ rule find_amr_vag:
   shell:
     """
     mkdir -p out/abritamr && \
-    tail -n+2 {input} | sed 's/data/..\/..\/data/g' > out/abritamr/abritamr_input.tsv && \
+    tail -n+2 {input} | awk -v OFS='\t' '{{ cmd="realpath " $2; cmd | getline $2; close(cmd); print }}' > out/abritamr/abritamr_input.tsv 2> {log} && \
     cd out/abritamr && \
-    abritamr run --contigs abritamr_input.tsv --species {params.species} --jobs {threads}
+    abritamr run --contigs abritamr_input.tsv --species {params.species} --jobs {threads} 2>> ../../{log}
     """
 
 rule mash_sketch:
