@@ -206,12 +206,12 @@ rule prepare_pyseer:
 
 rule prepare_wg:
   input:
-    variants = config["unitigs_input"],
-    unitigs = config["unitigs"],
-    phenotypes = config["samples"],
-    similarity = config["similarities"],
-    distances = config["distances"],
-    lineage = config["lineages_file"]
+    variants=config["unitigs_input"],
+    unitigs=config["unitigs"],
+    phenotypes=config["samples"],
+    similarity=config["similarities"],
+    distances=config["distances"],
+    lineage=config["lineages_file"]
   output:
     phenotypes=os.path.join(config["wg_inputs"], "{phenotype}/phenotypes.tsv"),
     similarity=os.path.join(config["wg_inputs"], "{phenotype}/similarity.tsv"),
@@ -219,8 +219,9 @@ rule prepare_wg:
     lineage=os.path.join(config["wg_inputs"], "{phenotype}/lineages.tsv"),
     variants=os.path.join(config["wg_inputs"], "{phenotype}/variants.pkl")
   params:
-    directory = os.path.join(config["wg_inputs"], "{phenotype}"),
-    variants = os.path.join(config["wg_inputs"], "{phenotype}/variants")
+    directory=os.path.join(config["wg_inputs"], "{phenotype}"),
+    variants=os.path.join(config["wg_inputs"], "{phenotype}/variants"),
+    covariates=lambda wildcards: config.get("covariates", {wildcards.phenotype: ''})[wildcards.phenotype]
   threads: 4
   conda: "envs/pyseer.yaml"
   log: "out/logs/prepare_wg_{phenotype}.log"
@@ -234,6 +235,7 @@ rule prepare_wg:
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
             --cor-filter 0.0 \
+            {params.covariates} \
             --cpu {threads} > /dev/null 2>> {log}
     """
 
@@ -423,6 +425,8 @@ rule run_pyseer:
     gpa_f="out/associations/{target}/gpa_filtered.tsv",
     struct="out/associations/{target}/struct.tsv",
     struct_f="out/associations/{target}/struct_filtered.tsv"
+  params:
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 2
   conda: "envs/pyseer.yaml"
   log: "out/logs/pyseer_{target}.log"
@@ -437,6 +441,7 @@ rule run_pyseer:
            --lineage --lineage-clusters {input.lineages} \
            --lineage-file out/associations/{wildcards.target}/unitigs_lineage.txt \
            --distances {input.distances} \
+           {params.covariates} \
            > /dev/null 2> {log}
     pyseer --phenotypes {input.phenotypes} \
            --phenotype-column {wildcards.target} \
@@ -445,6 +450,7 @@ rule run_pyseer:
            --lmm \
            --output-patterns out/associations/{wildcards.target}/unitigs_patterns.txt \
            --cpu {threads} \
+           {params.covariates} \
            > {output.unitigs} 2>> {log} && \
     sleep 5 && \
     cat <(head -1 {output.unitigs}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold out/associations/{wildcards.target}/unitigs_patterns.txt) '$4<pval {{print $0}}' {output.unitigs}) > {output.unitigs_f}
@@ -455,6 +461,7 @@ rule run_pyseer:
            --lmm --uncompressed \
            --output-patterns out/associations/{wildcards.target}/gpa_patterns.txt \
            --cpu {threads} \
+           {params.covariates} \
            > {output.gpa} 2>> {log} && \
     sleep 5 && \
     cat <(head -1 {output.gpa}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold out/associations/{wildcards.target}/unitigs_patterns.txt) '$4<pval {{print $0}}' {output.gpa}) > {output.gpa_f}
@@ -465,6 +472,7 @@ rule run_pyseer:
            --lmm --uncompressed \
            --output-patterns out/associations/{wildcards.target}/struct_patterns.txt \
            --cpu {threads} \
+           {params.covariates} \
            > {output.struct} 2>> {log} && \
     sleep 5 && \
     cat <(head -1 {output.struct}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold out/associations/{wildcards.target}/unitigs_patterns.txt) '$4<pval {{print $0}}' {output.struct}) > {output.struct_f}
@@ -503,6 +511,8 @@ rule run_pyseer_rare:
   output:
     rare="out/associations/{target}/rare.tsv",
     rare_f="out/associations/{target}/rare_filtered.tsv",
+  params:
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   conda: "envs/pyseer.yaml"
   log: "out/logs/pyseer_rare_{target}.log"
   shell:
@@ -515,6 +525,7 @@ rule run_pyseer_rare:
            --lmm \
            --output-patterns out/associations/{wildcards.target}/rare_patterns.txt \
            --cpu 1 \
+           {params.covariates} \
            > {output.rare} 2> {log} && \
     cat <(head -1 {output.rare}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.rare}) > {output.rare_f}
     """
@@ -574,6 +585,7 @@ rule run_wg:
     variants = os.path.join(config["wg_inputs"], "{target}/variants"),
     ridge = "out/wg/{target}/ridge",
     lasso = "out/wg/{target}/lasso",
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 4
   conda: "envs/pyseer.yaml"
   shell:
@@ -589,6 +601,7 @@ rule run_wg:
            --sequence-reweighting \
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
+           {params.covariates} \
            > {output.ridge} 2> {output.ridge_o}
     pyseer --phenotypes {input.phenotypes} \
            --phenotype-column {wildcards.target} \
@@ -601,6 +614,7 @@ rule run_wg:
            --sequence-reweighting \
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
+           {params.covariates} \
            > {output.lasso} 2> {output.lasso_o}
     """
 
@@ -693,6 +707,8 @@ rule map_summary:
   input:
     expand("out/associations/{target}/summary.tsv",
            target=config["targets"]),
+    expand("out/associations/{target}/summary_panfeed.tsv",
+           target=config["targets"]),
     expand("out/wg/{target}/summary_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
@@ -725,6 +741,32 @@ rule run_map_summary:
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-lrt-pvalue \
+           > {output.summary} 2> {log} || true
+    """
+
+rule run_map_summary_panfeed:
+  input:
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+    pangenome=config["pangenome"],
+    pangenome2=config["pangenome_csv"],
+    mapped="out/associations/{target}/panfeed_annotated_kmers.tsv.gz",
+  output:
+    summary="out/associations/{target}/summary_panfeed.tsv"
+  params:
+    d=config["references_gffs"],
+    r=config["summary_references"]
+  log: "out/logs/map_summary_panfeed_{target}.log"
+  shell:
+    """
+    python workflow/scripts/mapped_summary.py {input.mapped} \
+           {input.phenotypes} {wildcards.target} /dev/null \
+           --pangenome {input.pangenome} \
+           --pangenome-genes {input.pangenome2} \
+           --minimum-hits 9 --maximum-genes 10 \
+           {params.r} \
+           --gff-dir {params.d} \
+           --unique --sort avg-lrt-pvalue \
+           --panfeed \
            > {output.summary} 2> {log} || true
     """
 
@@ -776,6 +818,8 @@ rule annotate_summary:
            target=config["targets"]),
     expand("out/associations/{target}/annotated_gpa_summary.tsv",
            target=config["targets"]),
+    expand("out/associations/{target}/annotated_panfeed_summary.tsv",
+           target=config["targets"]),
     expand("out/wg/{target}/annotated_summary_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
@@ -801,6 +845,10 @@ rule run_annotate_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -830,6 +878,10 @@ rule run_annotate_rare_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -859,6 +911,43 @@ rule run_annotate_gpa_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
+    emapper.py -i {params.sample} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+    python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
+    > {output} 2>> {log}
+    """
+
+rule run_annotate_panfeed_summary:
+  input:
+    summary="out/associations/{target}/summary_panfeed.tsv",
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"]
+  output:
+    "out/associations/{target}/annotated_panfeed_summary.tsv"
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/associations/{target}/panfeed_summary",
+    sample="out/associations/{target}/panfeed_sample.faa",
+    annotations="out/associations/{target}/panfeed_summary.emapper.annotations",
+    r=config["annotation_references"]
+  threads: 8
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_panfeed_{target}.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               {params.r} \
+               --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -888,6 +977,10 @@ rule run_annotate_summary_wg:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -915,6 +1008,10 @@ rule annotate_reference:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                --focus-strain {params.r} --only-focus \
                > {params.sample} 2> {log} && \
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
@@ -937,13 +1034,13 @@ rule enrichment:
            target=config["targets"]),
     expand('out/associations/{target}/COG_{kind}.tsv',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/GO_{kind}.tsv',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/KEGG_{kind}.tsv',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand("out/wg/{target}/COG_{model}.tsv",
            target=config["targets"],
            model=["ridge", "lasso"]),
@@ -1012,13 +1109,13 @@ rule enrichment_plots:
     expand("out/associations/{target}/KEGG.png", target=config["targets"]),
     expand('out/associations/{target}/COG_{kind}.png',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/GO_{kind}.png',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand('out/associations/{target}/KEGG_{kind}.png',
            target=config["targets"],
-           kind=['gpa', 'rare']),
+           kind=['gpa', 'rare', 'panfeed']),
     expand("out/wg/{target}/COG_{model}.png", target=config["targets"],
                                               model=["ridge", "lasso"]),
     expand("out/wg/{target}/GO_{model}.png", target=config["targets"],
@@ -1121,6 +1218,8 @@ rule run_panfeed:
   output:
     p="out/associations/{target}/panfeed.tsv",
     p_f="out/associations/{target}/panfeed_filtered.tsv",
+  params:
+    covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 2
   conda: "envs/pyseer.yaml"
   log: "out/logs/panfeed_{target}.log"
@@ -1133,17 +1232,21 @@ rule run_panfeed:
            --lmm --uncompressed \
            --output-patterns out/associations/{wildcards.target}/panfeed_patterns.txt \
            --cpu {threads} \
+           {params.covariates} \
            > {output.p} 2> {log}
     cat <(head -1 {output.p}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.p}) > {output.p_f}
     """
 
 rule panfeed:
   input:
-    expand('out/associations/{target}/panfeed_annotated_kmers.tsv.gz',
+    expand("out/associations/{target}/panfeed_annotated_kmers.tsv.gz",
+           target=config["targets"]),
+    expand("out/associations/{target}/panfeed_plots/plots.done",
            target=config["targets"])
 
 rule panfeed_downstream:
   input:
+    phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
     pangenome=config["pangenome"],
     patterns="out/associations/{target}/unitigs_patterns.txt",
     panfeed="out/associations/{target}/panfeed.tsv",
@@ -1152,10 +1255,12 @@ rule panfeed_downstream:
     fasta=config["mash_input"],
     samples=config["unitigs_input"]
   output:
-    "out/associations/{target}/panfeed_annotated_kmers.tsv.gz"
+    kmers="out/associations/{target}/panfeed_annotated_kmers.tsv.gz",
+    plots="out/associations/{target}/panfeed_plots/plots.done"
   params:
     input=config["pangenome_csv"],
     outdir="out/associations/{target}/panfeed_second_pass",
+    plotsdir="out/associations/{target}/panfeed_plots",
     clusters="out/associations/{target}/panfeed_clusters.txt",
     targets="out/associations/{target}/panfeed_targets.txt",
     k2h="out/associations/{target}/panfeed_second_pass/kmers_to_hashes.tsv",
@@ -1187,7 +1292,14 @@ rule panfeed_downstream:
         -a {input.panfeed} \
         -p {params.k2h} \
         -k {params.k} 2>> {log} \
-        | gzip > {output} && \
-    rm -rf {params.outdir}
+        | gzip > {output.kmers} && \
+    rm -rf {params.outdir} && \
+    mkdir -p {params.plotsdir}
+    cd {params.plotsdir} && \
+    panfeed-plot -k $(realpath ../../../../{output.kmers}) \
+        -p $(realpath ../../../../{input.phenotypes}) \
+        --phenotype-column {wildcards.target} \
+        -t $(python ../../../../workflow/scripts/count_patterns.py --threshold $(realpath ../../../../{input.patterns})) 2>> $(realpath ../../../../{log}) && \
+    touch ../../../../{output.plots} 2>> $(realpath ../../../../{log})
     """
 
