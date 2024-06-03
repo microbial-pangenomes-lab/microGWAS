@@ -64,11 +64,11 @@ And the following works for P. aeruginosa (and matches the references commented 
 You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores and `mamba` as the conda backend
 to install each environment:
 
-    snakemake -p annotate_summary panfeed map_back manhattan_plots heritability enrichment enrichment_plots qq_plots tree --cores 24 --use-conda --conda-frontend mamba
+    snakemake -p annotate_summary find_amr_vag panfeed map_back manhattan_plots heritability enrichment enrichment_plots qq_plots tree --cores 24 --use-conda --conda-frontend mamba
     
 The following example instead uses "vanilla" `conda` and skips the generation of the phylogenetic tree:
 
-    snakemake -p annotate_summary panfeed map_back manhattan_plots heritability enrichment enrichment_plots qq_plots --cores 24 --use-conda
+    snakemake -p annotate_summary find_amr_vag panfeed map_back manhattan_plots heritability enrichment enrichment_plots qq_plots --cores 24 --use-conda
 
 ## Outputs
 
