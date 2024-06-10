@@ -91,17 +91,20 @@ if __name__ == "__main__":
         table = [[study_c, pop_c],
                  [study_n, pop_n]]
         odds_ratio, pvalue = stats.fisher_exact(table, alternative='greater')
-            
+
         # empirical
         ratios = []
         for _ in range(100):
             pop_c = m[m['COG_category'].str.contains(cog)].shape[0]
             pop_n = m[~m['COG_category'].str.contains(cog)].shape[0]
-            
-            r = m.sample(n.shape[0])
+
+            # it is possible that there are more gene hits
+            # than genes in the reference (gene hits come from the pangenome)
+            n_sample = min([m.shape[0], n.shape[0]])
+            r = m.sample(n_sample)
             study_r_c = r[r['COG_category'].str.contains(cog)].shape[0]
             study_r_n = r[~r['COG_category'].str.contains(cog)].shape[0]
-            
+
             table = [[study_r_c, pop_c],
                      [study_r_n, pop_n]]
             ratios.append(stats.fisher_exact(table, alternative='greater')[0])
@@ -109,7 +112,7 @@ if __name__ == "__main__":
         zscores = stats.zscore(ratios + [odds_ratio])
         pvalues = stats.norm.sf(abs(zscores))
         qvalues = sm.stats.multipletests(pvalues, alpha=0.05, method='fdr_bh')[1]
-        
+
         res.append((cog, categs[cog], pvalue, qvalues[-1]))
 
     r = pd.DataFrame(res,
@@ -155,22 +158,22 @@ if __name__ == "__main__":
     m['KEGG_Pathway'] = m['KEGG_Pathway'].fillna('-')
 
     n = n.assign(KEGG_Pathway=n['KEGG_Pathway'].str.split(',')).explode('KEGG_Pathway').reset_index(drop=True)
-    n['KEGG_Pathway'] = n['KEGG_Pathway'].fillna('-') 
-    
+    n['KEGG_Pathway'] = n['KEGG_Pathway'].fillna('-')
+
     res = []
     kegg_categories = m['KEGG_Pathway'].unique()
     for kegg_category in kegg_categories:
         pop_c = m[m['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
         pop_n = m[~m['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
-    
+
         study_c = n[n['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
         study_n = n[~n['KEGG_Pathway'].str.contains(kegg_category)].shape[0]
-    
+
         table = [[study_c, pop_c],
                  [study_n, pop_n]]
-    
+
         odds_ratio, pvalue = stats.fisher_exact(table, alternative='greater')
-    
+
         res.append((kegg_category, pop_c, pvalue))
 
     if len(res) > 0:
