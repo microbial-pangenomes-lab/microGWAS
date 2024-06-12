@@ -36,12 +36,53 @@ Other preparatory steps
 Creating the base ``microGWAS`` environment
 ~~~~~~~~~~~~~~~~~~~~~~
 
-**Here explain how to install the microGWAS conda environment**
+If you do not have ``conda`` you can install it through
+`miniconda <https://conda.io/miniconda.html>`_ and then add the necessary
+channels::
+
+    conda config --add channels defaults
+    conda config --add channels bioconda
+    conda config --add channels conda-forge
+
+Then run::
+
+    conda env create -f environment.yml
+    conda activate microGWAS
 
 Create a symbolic link to the ``eggnog-mapper`` database
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Here explain how to create the symbolic link, optionally how to download the eggnog database**
+You can create a symbolic link for the eggnong-mapper database to be placed in the ``data/eggnog-mapper`` by using the following::
+
+   ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
+
+.. note::
+    The above path would likely be different in your system.
+
+If you do not have installed eggnog-mapper in your system, you can install it using conda::
+
+   conda install -c bioconda -c conda-forge eggnog-mapper
+
+Then use the ``download_eggnog_data.py`` command.
+
+You can find more information on how to download the eggnog database on the `eggnog-mapper documentation <https://github.com/eggnogdb/eggnog-mapper/wiki/eggNOG-mapper-v2.1.5-to-v2.1.12#user-content-Conda_bioconda_channel_version>`__
+
+Testing
+--------------------------
+
+We have included a small dataset in order to test the pipeline installation in reasonable time and resources. In its current state continuous integration (CI) in the cloud is not feasible because certain rules require significant time and resources to complete (``annotate_reference``, ``get_snps``). Some workarounds might be added in the future to bypass those rules. 
+In the meantime the tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few hours.
+
+The test dataset has been created from that `used in a mouse model of bloodstream infection <https://github.com/microbial-pangenomes-lab/gwas_template/blob/main>`__
+
+To run the tests, prepare a symbolic link to the eggnog-mapper databases (as explained above), then do the following::
+
+   cd test
+   bash run_tests.sh
+
+The script will prepare the input files, run the bootstrapping script, then run snakemake twice, first in "dry" mode, and then "for real".
+
+Please note that the only rule that is not tested is the one estimating lineages (``lineage_st``), as the test dataset is a reduced part of the *E. coli* genome.
 
 Configure the pipeline run
 --------------------------
@@ -49,31 +90,92 @@ Configure the pipeline run
 Prepare the input phenotype file
 ~~~~~~~~~~~~~~~~~~~
 
-**Here be very brief and link to the "inputs" page**
+The microGWAS pipeline requires as inputs: ``phenotype data``, ``assemblies`` and ``annotations``. See :doc:`inputs` for more information on the inputs formatting.
 
 Edit the pipeline configuration file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Here explain which entries can be edited and what they mean. Provide examples for E. coli and Pseudomonas**
+Next, edit the ``params`` section of the ``config/config.yaml`` file (at the top). These include:
+
+* targets for associations
+* covariates for associations (if any)
+* mlst scheme
+* references for association summaries and annotation
+* species to be used for AMR and virulence predictions
+* which lineage file to use?
+
+.. note::
+    For convenience the params for *E. coli* are placed as defaults, and those for *P. aeruginosa* are commented.
+
+Targets and covariates for associations
+""""""""""""""
+
+For the targets, specify the name of the columns on the phenotype file ``data/data.tsv`` that are the phenotypes to be used for the associations::
+
+   targets: [
+         "phenotype",
+         #"phenotype2",
+         ]
+
+.. note::
+    Here, phenotype2 is commented (#) and will be ignored.
+
+For the covariates, specify the position of the columns on the phenotype file ``data/data.tsv`` that should be used for the associations::
+
+   covariates:
+           phenotype: "--use-covariates 6q 7"
+   #        phenotype2: "--use-covariates 7"
+
+The numbers refer to the columns in the phenotype file that should be used as covariates. The column numering is 1-based. The suffix ``q`` should be added to the columns when they are quantitative and not binary.
+Take into account that each target phenotype have its own set of covariates.
+
+See more information on the `phenotypes and covariates <https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates>`__
+
+Which lineage file to use?
+""""""""""""""
+
+You can specify which lineage file to be used. Use ``"out/lineages_mlst.txt"`` to use mlst, ``"out/lineages_poppunk.tsv"`` for poppunk, or specify an existing file for a custom lineage list.
 
 Run the pipeline
 ----------------
 
-**First step is to activate the ``microGWAS`` environment**
+First step is to activate the ``microGWAS`` environment. For this, run::
+   
+   conda activate microGWAS
 
 Run the bootstrapping script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Provide examples for E. coli and Pseudomonas, and explain the relationship between the references and the assembly codes provided to the script**
+Then run the bootstrapping script to populate the input files for the pipeline and download the reference genomes used for annotation of hits and the rare variants analyses. 
+The bootstrap.sh script takes multiple arguments:
+
+* ``Genus``: Genus of the species under study (e.g. Escherichia)
+* ``Species``: Species of the species under study (e.g. coli)
+* ``Reference``: Strain name for the reference to be used for rare variants (e.g. IAI39, name should be the one NCBI uses)
+* ``Assemblies``: Comma separated list of NCBI assembly IDs to be downloaded as references (e.g. GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1)
+
+The following example works for *E. coli* (and downloads the references listed by default in ``config/config.yaml``)::
+
+   bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1 
+
+The following example works for *P. aeruginosa*::
+
+   bash bootstrap.sh Pseudomonas aeruginosa UCBPP-PA14 GCF_000006765.1,GCF_000014625.1 
 
 Run the actual snakemake pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Provide a couple of example snakemake commands, as in the current README, refer to the "rules" page for a breakdown of what each rule does**
+You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores and ``mamba`` as the conda backend to install each environment::
+
+   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
+
+The following example instead uses "vanilla" ``conda`` and skips the generation of the phylogenetic tree::
+
+   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda
+
+See :doc:`rules` for more information on what each rule does.
 
 Troubleshooting
 ------------
 
-**Here a few known and common failure modes could be listed, together with solutions.
-If we cannot think of any we can drop this section for now, or just link the issues page
-on github**
+For issues with installing or running the software please raise an `issue on github <https://github.com/microbial-pangenomes-lab/gwas_template/issues>`__

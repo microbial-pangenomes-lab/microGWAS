@@ -30,12 +30,23 @@ directory strcture in the ``out`` outputs folder:
 
 Which correspond to:
 
-* ``abritamr``: contains the predicted virulence associated genes (VAGs) and antimicrobial resistance gene (ARGs) for each sample
-* ``logs``: contains the log files generated during the execution of each rule by snakemake, and can be used to inspect errors
+* ``abritamr``: contains the predicted virulence associated genes (VAGs) and antimicrobial resistance gene (ARGs) for each sample.
+* ``associations``:
 
-**please describe the other folders using the same format as these examples.
-make sure to note that if multiple phenotypes are defined in the config file,
-then there will be multiple folders in ``associations`` and ``wg``**
+    * ``phenotype``: contains the output associations, annotated summaries and functional enrichments for the target phenotype.
+    * ``inputs``: contains the inputs for the associations.
+* ``panfeed``: contains the input for the gene cluster specific k-mers assocaitions.
+* ``snps``: contains the input for the rare variants assocaitions.
+* ``wg``:
+
+    * ``phenotype``: contains the output associations, annotated summaries and functional enrichmennts for the target phenotype for the whole genome model (for both lasso and ridge models).
+    * ``inputs``: contains the inputs for the whole genome model associations.
+* ``logs``: contains the log files generated during the execution of each rule by snakemake, and can be used to inspect errors
+* ``panaroo`` : contains the generated outputs from panaroo. You will also find the generated phylogenetic tree in this directory.
+* ``unitigs`` : contains a variant set from the input samples based on a "global" de Brujin graph.
+
+.. note::
+    If multiple phenotypes are defined in the config file, there will be multiple folders in ``associations`` and ``wg``.
 
 Output files
 ------------
