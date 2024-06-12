@@ -20,6 +20,7 @@ targets: [
 
 # MLST scheme
 mlst_scheme: ecoli
+#mlst_scheme: "ecoli_achtman_4"
 #mlst_scheme: "paeruginosa"
 
 # references for association summaries and annotation
