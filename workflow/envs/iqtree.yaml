@@ -1,7 +1,0 @@
-channels:
- - bioconda
- - conda-forge
- - defaults
-dependencies:
- - python >= 3.7
- - iqtree=2.1.2
