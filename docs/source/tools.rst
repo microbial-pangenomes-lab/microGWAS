@@ -28,4 +28,3 @@ produced by the pipeline.
 * ``bedtools``: `10.1093/bioinformatics/btq033 <https://doi.org/10.1093/bioinformatics/btq033>`__ and `10.1093/bioinformatics/btr539 <https://doi.org/10.1093/bioinformatics/btr539>`__
 * ``eggnog-mapper``: `10.1093/molbev/msx148 <https://doi.org/10.1093/molbev/msx148>`__
 * ``panfeed``: `10.1099/mgen.0.001129 <https://doi.org/10.1099/mgen.0.001129>`__
-* ``rhierbaps``: `10.12688/wellcomeopenres.14694.1 <https://wellcomeopenresearch.org/articles/3-93/v1>`__ and `10.1093/molbev/mst028 <https://doi.org/10.1093/molbev/mst028>`__

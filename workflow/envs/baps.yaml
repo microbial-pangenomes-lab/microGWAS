@@ -1,9 +1,0 @@
-channels:
- - conda-forge
- - hcc
- - bioconda
- - defaults
-dependencies:
- - python >= 3.7
- - r-argparse
- - r-rhierbaps=1.1.2
