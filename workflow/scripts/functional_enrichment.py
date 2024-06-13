@@ -113,15 +113,13 @@ if __name__ == "__main__":
         pvalues = stats.norm.sf(abs(zscores))
         qvalues = sm.stats.multipletests(pvalues, alpha=0.05, method='fdr_bh')[1]
 
-        res.append((cog, categs[cog], pvalue, qvalues[-1]))
+        res.append((cog, categs[cog], study_c, pvalue, qvalues[-1]))
 
     r = pd.DataFrame(res,
-                     columns=['cog', 'category', 'pvalue', 'empirical-qvalue'])
+                     columns=['cog', 'category', 'gene_count', 'pvalue', 'empirical-qvalue'])
 
     r['qvalue'] = sm.stats.multipletests(r['pvalue'], alpha=0.05, method='fdr_bh')[1]
-    r = r[['cog', 'category', 'pvalue', 'qvalue', 'empirical-qvalue']]
-    cog_genes_dict = m.groupby('COG_category')['Preferred_name'].apply(list).to_dict()
-    r['gene_count'] = r['cog'].apply(lambda x: len(cog_genes_dict.get(x, [])))
+    r = r[['cog', 'category', 'gene_count', 'pvalue', 'qvalue', 'empirical-qvalue']]
     r.to_csv(options.cog, sep='\t', index=False)
 
     obodag = GODag(options.obo)
@@ -174,7 +172,7 @@ if __name__ == "__main__":
 
         odds_ratio, pvalue = stats.fisher_exact(table, alternative='greater')
 
-        res.append((kegg_category, pop_c, pvalue))
+        res.append((kegg_category, study_c, pvalue))
 
     if len(res) > 0:
         kegg = pd.DataFrame(res, columns=['KEGG_pathway', 'gene_count', 'pvalue'])
