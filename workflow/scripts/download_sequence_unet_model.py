@@ -21,6 +21,14 @@ if __name__ == "__main__":
     options = get_options()
 
     # download a model
-    model_path = models.download_trained_model("freq_classifier",
-            root=options.folder, model_format="tf")
+    try:
+        model_path = models.download_trained_model("freq_classifier",
+                root=options.folder, model_format="tf")
+    except ConnectionError as e:
+        sys.stderr.write('Could not download model through the FTP\n')
+        sys.stderr.write(f'Exception was: {str(e)}\n')
+        sys.stderr.write('Trying again through HTTPS\n')
+        model_path = models.download_trained_model("freq_classifier",
+                root=options.folder, model_format="tf",
+                use_ftp=False)
 
