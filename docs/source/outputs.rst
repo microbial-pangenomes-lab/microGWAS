@@ -28,8 +28,6 @@ directory strcture in the ``out`` outputs folder:
     |____panaroo
     |____unitigs
 
-Which correspond to:
-
 * ``abritamr``: contains the predicted virulence associated genes (VAGs) and antimicrobial resistance gene (ARGs) for each sample.
 * ``associations``:
 
@@ -139,6 +137,26 @@ so that the list becomes shorter. Also it would be best to sort the files,
 either alphabetically or by "type". For the ``panfeed_plots`` folder I have left
 three example files, but the names are irrelevant**
 
+* ``annotated_*.tsv``: contains gene annotations. The rows are the genes, and the columns the COG name, category, GO ids and KEGG terms and other description partaining to the genes. 
+* ``COG_*.tsv``: files with results from COG analysis. Each row represents a COG category and the columns the category name, pvalue and adjusted pvalues (qvalue, emperical-qvalue).
+* ``COG_*.png``: plots to visualise COG analysis.
+* ``distances.tsv``: contains pairwise distances between samples. 
+* ``GO_*.tsv``: files with GO terms .
+* ``GO_*.png``: plots to visualise GO terms.
+* ``filtered_*.tsv``: associations filtered based on computed threshold  to contain only variants significantly associated with the test phenotype.
+* ``heritability_*.tsv``: contains information about what proportion of the phenotypic variation can be explained by the genetic variants. Each row represents the phenotype or trait on which the analysis was conducted on. The `phenotype` column indicates the phenotype or trait being anlaysed, `genetics` column indicates the likelihood model used for the heritability estimation, `lik` the likelihood model used for the heritability estimation, `h2`, the proportion of phenotypic variance explained by the genetic effects. 
+* ``lineages.tsv```: contains information about the lineages present in the samples. 
+* ``lineages_covariance.tsv```: contains details on the covariances or correlations between the lineages present in the samples. 
+* ``manhattan.png``: manhattan plot to visualise association results.
+* ``mapped_all.tsv``: all unitigs mapped backed to the reference genome(s).
+* ``mapped.tsv``: unitigs passing association threshold mapped to reference genome(s).
+* ``KEGG_*.tsv``: files with results from KEGG analysis.
+* ``KEGG_*.png``: plots to visualise KEGG analysis.
+* ``panfeed_plots``: plots to visualise k-mers panfeed results (`might need to explain this better once I see what the plots look like`).
+* ``qq_*.png``: qq plot to assess the distribution of observed p-values with the expected distribution under the null hypothesis of the test statistics. 
+* ``similarity.tsv``: contains similarity matrix between samples. Used to account for relatedness between samples.
+* ``struc.tsv``: 
+
 ..  code-block:: console
 
     out
@@ -147,13 +165,20 @@ three example files, but the names are irrelevant**
     | |____kmers.tsv
     | |____hashes_to_patterns.tsv
     
+* ``kmers_to_hashes.tsv``: file used to match gene clusters, k-mer sequences and the hash for the respective presence/absence pattern.
+* ``kmers.tsv``:  k-mers metadata file
+* ``hashes_to_patterns.tsv``: file contains binary presence/absence matrix for all unique k-mer patterns (rows) across samples (columns)
+
 ..  code-block:: console
 
     out
     |____similarity.tsv
     |____distances.tsv
     |____annotated_reference.tsv
-    
+
+* ``similarity.tsv`` and ``distances.tsv`` provides information about the genetic reletedness of the test strains. They are both used to account for population structure during the association analysis. 
+* ``annotated_reference.tsv`` is the functional annotation of the reference using Eggnog. It provides mappings to COG categories, KEGG terms, pathways and more. 
+
 ..  code-block:: console
 
     out
@@ -164,6 +189,9 @@ three example files, but the names are irrelevant**
     | | |____PROTEIN_ID_2.tsv.gz
     | | |____[...]
     
+* ``rare.vcf.gz``: all rare variants merged into a single file. 
+* ``unet``: this directory contains the snp information for each strain.  
+
 ..  code-block:: console
 
     out
@@ -200,6 +228,21 @@ three example files, but the names are irrelevant**
     | | | |____variants.npz
     | | | |____lineages.tsv
     
+* ``annotated_*.tsv``: contains gene annotations as previously described.  
+* ``COG_*.tsv``: files with results from COG analysis as previously described.
+* ``COG_*.png``: plots to visualise COG analysis
+* ``GO_*.tsv``: files with GO terms 
+* ``GO_*.png``: plots to visualise GO terms
+* ``KEGG_*.tsv``: files with results from KEGG analysis
+* ``KEGG_*.png``: plots to visualise KEGG analysis
+* ``lasso.tsv``: association output between each unitig and the phenotype. Based on lasso model. 
+* ``lasso.txt``: the table shows the prediction perfomance of the lasso model. The size represents the number of samples, R2 the model performance and the True and False predictions. 
+* ``lasso.pkl``
+* ``mapped_*.tsv``: all unitigs mapped backed to the reference genome(s). 
+* ``ridge.tsv``: association output between each unitig and the phenotype. Based on the ridge model. 
+* ``ridge.txt``: the table shows the prediction perfomance of the ridge model. The size represents the number of samples, R2 the model performance and the True and False predictions. 
+* ``ridge.pkl``: 
+
 ..  code-block:: console
 
     out
@@ -211,7 +254,16 @@ three example files, but the names are irrelevant**
     | |____core_gene_alignment.vcf.gz.csi
     | |____struct_presence_absence.Rtab
     | |____core_gene_alignment.aln
-    
+      
+* ``core_gene_alignment.vcf.gz``: file containing the variants identified in the core genome alignment. This file allows one to examine the sequence variations within the core genes across the different samples. 
+* ``core_gene_alignment.vcf.gz.csi``:  an index file associated with the `core_gene_alignment.vcf.gz` file. It aids the efficient access and querying of the compressed file. 
+* ``core_gene_alignment.aln``: contains alignments of genes present in the fraction of genomes specified when running the `Panaroo` analysis.
+* ``core_gene_alignment.aln.treefile``: contains a phylogenetic tree constructed from the core genome alignment file `core_gene_alignment.aln`. The tree file maybe visualized and analyzed using any tree viewing software.  
+* ``gene_presence_absence.csv``: file describes which gene clusters are present in which samples. If the gene gene cluster is present in a sample, the sequence name of the representative sequence for the sample is given in the matrix. 
+* ``gene_presence_absence.Rtab``: this is tab separated version of the `gene_presence_absence.csv` file. It binarises the gene presence and absence information in each sample. 
+* ``struct_presence_absence.Rtab``: file details the presence and absence of various genomic rearrangements events, with the involved genes enlisted in the respective column headers. 
+
+
 ..  code-block:: console
 
     out
@@ -219,3 +271,7 @@ three example files, but the names are irrelevant**
     | |____unitigs.unique_rows.Rtab.gz
     | |____unitigs.unique_rows_to_all_rows.txt
     | |____unitigs.txt.gz
+
+* ``unitigs.unique_rows.Rtab.gz``: contains the unique unitig patterns found across the input genomes. The number of lines represents the number of unique tests that need to be corrected for in the association analysis.
+* ``unitigs.unique_rows_to_all_rows.txt``:  provides information on the mapping from the unique unitig patterns to all instances of those patterns observed across the input genomes.
+* ``unitigs.txt.gz``: file contains the list of unitigs counted across the input genomes.
