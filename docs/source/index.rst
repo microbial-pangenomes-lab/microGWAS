@@ -1,5 +1,9 @@
 Welcome to microGWAS's documentation!
-===================================
+==========================================
+
+.. image:: ../images/logo.png
+   :alt:  microGWAS (a computational pipeline to perform large scale bacterial genome-wide association studies)
+   :align: left
 
 **microGWAS** is a snakemake-powered pipeline to carry out
 an end-to-end microbial GWAS analysis.
