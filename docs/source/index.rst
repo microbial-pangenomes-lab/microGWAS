@@ -15,8 +15,11 @@ as generating a number of functional enrichment tests.
 Citation
 --------
 
-**Here place a link to the preprint, as well as a link to the
-underlying tools page**
+If you find the ``microGWAS`` pipeline useful, please cite as:
+
+**Here place a link to the preprint**
+
+See :doc:`tools` for more details.
 
 Contents
 --------
