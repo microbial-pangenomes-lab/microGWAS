@@ -9,7 +9,9 @@ microGWAS can be obtained in three ways:
 Download the latest release from GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**to be implemented**
+Go to the `releases page on GitHub <https://github.com/microbial-pangenomes-lab/gwas_template/releases>`__
+and download the ``microGWAS.tar.gz`` file from the latest available release. Then unpack it
+(``tar -xvf microGWAS.tar.gz``) and move into it (``cd microGWAS``).
 
 Clone the repository using ``git``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
