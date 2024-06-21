@@ -15,10 +15,11 @@ as generating a number of functional enrichment tests.
 Citation
 --------
 
-If you find the ``microGWAS`` pipeline useful, please cite as:
+If you find the ``microGWAS`` pipeline useful, please cite it as:
 
-**Here place a link to the preprint**
+**TBD**
 
+Please also consider citing the underlying tools used by the pipeline.
 See :doc:`tools` for more details.
 
 Contents

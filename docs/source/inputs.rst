@@ -1,17 +1,17 @@
 Inputs
-=====
+======
 
 Phenotype file
-------------
+--------------
 
 Save your phenotype data as a tab-separated file as ``data/data.tsv``. The phenotype file should contain at least 4 columns with headers:
 
 * ``strain``:  sample names.
 * ``fasta``: relative or absolute path to the assemblies (SAMPLE.fasta).
 * ``gff``: relative or absolute path to the annotations (SAMPLE.gff).
-* ``phenotype``: target phenotype.
+* ``phenotype``: target phenotype(s). There can be more than one target phenotye and the column name will be used in populating the output directory.
 
-Subsequent columns can contain other target phenotypes. Additional columns are allowed and will be simply ignored. See an example phenotype data from the `test data <https://github.com/microbial-pangenomes-lab/gwas_template/tree/main/test>`__::
+Subsequent columns can contain other target phenotypes and/or any covariate. Additional columns are allowed and will be simply ignored. See an example phenotype data from the `test data <https://github.com/microbial-pangenomes-lab/gwas_template/tree/main/test>`__::
 
     strain	fasta	gff	killed	phenotype	covariate1	covariate2
     ECOR-01	test/small_fastas/ECOR-01.fasta	test/small_gffs/ECOR-01.gff	0	0	0.20035297602710966	1
@@ -28,4 +28,4 @@ Sample's genome sequences and annotations
 -----------------------------------------
 
 By default, the microGWAS pipeline takes the assemblies and annotations with the ``.fasta`` and ``.gff`` extensions.
-Make sure you have the right format before running the analysis.
+Make sure that each sample assembly and annotation file follow this naming convention before running the analysis.
