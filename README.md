@@ -99,10 +99,10 @@ test dataset is a reduced part of the E. coli genome.
 - [ ] manhattan_plot.py : handle cases in which the reference genome has more than one chromosome (either because it has plasmids or because it is a draft genome) ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/8))
 - [ ] Easily switch to poppunk for lineage computation
 - [ ] Combine all annotations in a series of webpages ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/6))
-- [ ] Add references to the tools used in the pipeline ([documentation issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/7))
+- [x] Add references to the tools used in the pipeline ([documentation issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/7))
 - [x] Use random file names for things that go in `/tmp` to avoid conflicts
-- [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
-- [ ] Delete everything but the necessary files upon completion of a rule
+- [x] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
+- [x] Delete everything but the necessary files upon completion of a rule
     - [x] snippy
     - [x] panaroo
 - [x] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
@@ -115,12 +115,32 @@ test dataset is a reduced part of the E. coli genome.
 - [ ] Swap `unitig-counter` for `bifrost` or `cuttlefish` ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/11))
 - [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)
 - [x] Add [abritamr](https://github.com/MDU-PHL/abritamr) to detect known AMR/VAGs - necessary for this pipeline???
-- [ ] Add txt file that describes outputs produced from running the pipeline (in progress)
-- [ ] Add documentation using something like read the docs
+- [x] Add txt file that describes outputs produced from running the pipeline (in progress)
+- [X] Add documentation using something like read the docs
 
 ## Reference
 
 TBD
+
+## Used tools
+
+- unitig-counter: [10.1371/journal.pgen.1007758](10.1371/journal.pgen.1007758) and [10.1128/mbio.01344-20](10.1128/mbio.01344-20)
+- mlst: [https://doi.org/10.12688/wellcomeopenres.14826.1](https://doi.org/10.12688/wellcomeopenres.14826.1)
+- abritamr: [10.1038/s41467-022-35713-4](10.1038/s41467-022-35713-4)
+- mash: [10.1186/s13059-016-0997-x](10.1186/s13059-016-0997-x)
+- panaroo: [10.1186/s13059-020-02090-4](10.1186/s13059-020-02090-4)
+- fasttree: [10.1371/journal.pone.0009490](10.1371/journal.pone.0009490)
+- snp-sites: [10.1099/mgen.0.000056](10.1099/mgen.0.000056)
+- snippy: [https://github.com/tseemann/snippy](https://github.com/tseemann/snippy)
+- bcftools: [10.1093/gigascience/giab008](10.1093/gigascience/giab008)
+- limix: [10.1101/003905](10.1101/003905)
+- ALBI: [10.1016/j.ajhg.2016.04.016](10.1016/j.ajhg.2016.04.016)
+- sequence_unet: [10.1186/s13059-023-02948-3](10.1186/s13059-023-02948-3)
+- pyseer: [10.1093/bioinformatics/bty539](10.1093/bioinformatics/bty539) and [10.1101/852426](10.1101/852426)
+- bwa: [arXiv:1303.3997](https://arxiv.org/abs/1303.3997)
+- bedtools: [10.1093/bioinformatics/btq033](10.1093/bioinformatics/btq033) and [10.1093/bioinformatics/btr539](10.1093/bioinformatics/btr539)
+- eggnog-mapper: [10.1093/molbev/msx148](10.1093/molbev/msx148)
+- panfeed: [10.1099/mgen.0.001129](10.1099/mgen.0.001129)
 
 ## Author
 
