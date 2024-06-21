@@ -1,5 +1,5 @@
 Underlying tools
-=====
+====================
 
 The ``microGWAS`` pipeline uses a number of computional tools
 underneath, which you should try to cite in any publication that uses the results
@@ -13,12 +13,12 @@ produced by the pipeline.
 
 * ``unitig-counter``: `10.1371/journal.pgen.1007758 <https://doi.org/10.1371/journal.pgen.1007758>`__ and `10.1128/mbio.01344-20 <https://doi.org/10.1128/mbio.01344-20>`__
 * ``mlst``: `Seemann T, mlst <https://github.com/tseemann/mlst>`__ and `https://doi.org/10.12688/wellcomeopenres.14826.1 <https://wellcomeopenresearch.org/articles/3-124/v1>`__
-* ``poppunk``: `10.1101/gr.241455.118 <https://genome.cshlp.org/content/29/2/304>`__
 * ``abritamr``: `10.1038/s41467-022-35713-4 <https://doi.org/10.1038/s41467-022-35713-4>`__
 * ``mash``: `10.1186/s13059-016-0997-x <https://doi.org/10.1186/s13059-016-0997-x>`__
 * ``panaroo``: `10.1186/s13059-020-02090-4 <https://doi.org/10.1186/s13059-020-02090-4>`__
 * ``fasttree``: `10.1371/journal.pone.0009490 <https://doi.org/10.1371/journal.pone.0009490>`__
 * ``snp-sites``: `10.1099/mgen.0.000056 <https://doi.org/10.1099/mgen.0.000056>`__
+* ``snippy``: `Seemann T, snippy <https://github.com/tseemann/snippy>`__
 * ``bcftools``: `10.1093/gigascience/giab008 <https://doi.org/10.1093/gigascience/giab008>`__
 * ``limix``: `10.1101/003905 <https://doi.org/10.1101/003905>`__
 * ``ALBI``: `10.1016/j.ajhg.2016.04.016  <https://doi.org/10.1016/j.ajhg.2016.04.016>`__

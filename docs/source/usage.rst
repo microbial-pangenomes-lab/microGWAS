@@ -34,7 +34,7 @@ Other preparatory steps
 -----------------------
 
 Creating the base ``microGWAS`` environment
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you do not have ``conda`` you can install it through
 `miniconda <https://conda.io/miniconda.html>`_ and then add the necessary
@@ -50,7 +50,7 @@ Then run::
     conda activate microGWAS
 
 Create a symbolic link to the ``eggnog-mapper`` database
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can create a symbolic link for the eggnong-mapper database to be placed in the ``data/eggnog-mapper`` by using the following::
 
@@ -88,7 +88,7 @@ Configure the pipeline run
 --------------------------
 
 Prepare the input phenotype file
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The microGWAS pipeline requires as inputs: ``phenotype data``, ``assemblies`` and ``annotations``. See :doc:`inputs` for more information on the inputs formatting.
 
@@ -108,7 +108,7 @@ Next, edit the ``params`` section of the ``config/config.yaml`` file (at the top
     For convenience the params for *E. coli* are placed as defaults, and those for *P. aeruginosa* are commented.
 
 Targets and covariates for associations
-""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""
 
 For the targets, specify the name of the columns on the phenotype file ``data/data.tsv`` that are the phenotypes to be used for the associations::
 
@@ -132,7 +132,7 @@ Take into account that each target phenotype have its own set of covariates.
 See more information on the `phenotypes and covariates <https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates>`__
 
 Which lineage file to use?
-""""""""""""""
+""""""""""""""""""""""""""""
 
 You can specify which lineage file to be used. Use ``"out/lineages_mlst.txt"`` to use mlst, ``"out/lineages_poppunk.tsv"`` for poppunk, or specify an existing file for a custom lineage list.
 
@@ -176,6 +176,12 @@ The following example instead uses "vanilla" ``conda`` and skips the generation 
 See :doc:`rules` for more information on what each rule does.
 
 Troubleshooting
-------------
+-----------------
 
 For issues with installing or running the software please raise an `issue on github <https://github.com/microbial-pangenomes-lab/gwas_template/issues>`__
+
+Avoid using samples as references
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using a strain both in the dataset and as a reference can cause errors with the ``map_back`` rule in the pipeline.
+Provide external references.
