@@ -9,6 +9,4 @@ dependencies:
 - pyfaidx
 - matplotlib
 - seaborn
-- pip
-- pip:
-    - panfeed>=1.6.0
+- panfeed>=1.6.1

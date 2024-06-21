@@ -1294,12 +1294,13 @@ rule panfeed_downstream:
         -k {params.k} 2>> {log} \
         | gzip > {output.kmers} && \
     rm -rf {params.outdir} && \
-    mkdir -p {params.plotsdir}
-    cd {params.plotsdir} && \
-    panfeed-plot -k $(realpath ../../../../{output.kmers}) \
-        -p $(realpath ../../../../{input.phenotypes}) \
+    mkdir -p {params.plotsdir} && \
+    panfeed-plot -k $(realpath {output.kmers}) \
+        -p $(realpath {input.phenotypes}) \
         --phenotype-column {wildcards.target} \
-        -t $(python ../../../../workflow/scripts/count_patterns.py --threshold $(realpath ../../../../{input.patterns})) 2>> $(realpath ../../../../{log}) && \
-    touch ../../../../{output.plots} 2>> $(realpath ../../../../{log})
+        -t $(python workflow/scripts/count_patterns.py \
+        --threshold {input.patterns}) \
+        --output-directory {params.plotsdir} 2>> {log} && \
+    touch {output.plots} 2>> {log}
     """
 
