@@ -163,6 +163,12 @@ Troubleshooting
 
 For issues with installing or running the software please raise an `issue on github <https://github.com/microbial-pangenomes-lab/gwas_template/issues>`__
 
+Avoid using samples as references
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using a strain with an identifier both in the dataset and as a reference can cause various errors (e.g. with the ``map_back`` rule) in the pipeline.
+Please make sure sample and reference identifiers do not overlap.
+
 Testing
 -------
 
@@ -179,4 +185,3 @@ first in "dry" mode, and then "for real". Please note that the only rule that is
 is the one estimating lineages (``lineage_st``), as the test dataset is a
 reduced part of the *E. coli* genome,
 and therefore it would report each isolate with an unknown ST.
-
