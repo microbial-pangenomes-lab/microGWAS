@@ -26,9 +26,6 @@ intersphinx_mapping = {
 intersphinx_disabled_domains = ['std']
 
 templates_path = ['_templates']
-html_additional_pages = {
-  'custom_template': 'tracking.html',
-}
 
 # -- Options for HTML output
 
