@@ -31,8 +31,8 @@ def manhattan_plot(data, patterns, reference, output):
     plt.rcParams['font.size'] = 14
     plt.scatter(reference_data['pos'], -np.log10(reference_data['lrt-pvalue']), color='grey', alpha=0.5)
     plt.axhline(-np.log10(threshold), color='red', linestyle='dashed')
-    plt.xlabel('Genome Position')
-    plt.ylabel('-log10(p-value)')
+    plt.xlabel('Genome Position (Mb)')
+    plt.ylabel('$-log_{10}(pvalue)$')
     plt.title(f'Manhattan Plot - {reference}')
     plt.savefig(output, dpi=300)
 
