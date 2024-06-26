@@ -118,6 +118,10 @@ if __name__ == "__main__":
     # remove duplicated rows (?!)
     m = m.drop_duplicates(keep='first')
     #
+    # remove short unitigs
+    if not options.panfeed:
+        m['length'] = [len(x) for x in m['unitig'].values]
+        m = m[m['length'] >= options.length]
     if options.unique:
         #singletons = m.groupby(['unitig', 'strain'])['start'].count().reset_index().groupby('unitig')['start'].max()
         singletons = m.groupby(['unitig', 'strain'])['start'].count()
@@ -127,10 +131,6 @@ if __name__ == "__main__":
     # remove unitigs that map to multiple genes across strains
     u = m.groupby('unitig')['gene'].nunique()
     m = m[m['unitig'].isin(u[u <= options.maximum_genes].index)]
-    # remove short unitigs
-    if not options.panfeed:
-        m['length'] = [len(x) for x in m['unitig'].values]
-        m = m[m['length'] >= options.length]
     # check empty
     if m.shape[0] == 0:
         sys.exit(0)
