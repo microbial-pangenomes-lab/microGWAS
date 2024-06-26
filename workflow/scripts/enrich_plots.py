@@ -46,7 +46,7 @@ def plot_enrichment(data, plot_file, category_label, count_col,
                         pad=0.05, shrink=0.5,
                         ax=plt.gca()
                         )
-    cbar.set_label('padj')
+    cbar.set_label('$-log_{10}(pvalue)$')
 
     plt.xscale('log')
 
