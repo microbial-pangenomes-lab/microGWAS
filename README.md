@@ -101,8 +101,8 @@ test dataset is a reduced part of the E. coli genome.
 - [ ] Combine all annotations in a series of webpages ([enhancement issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/6))
 - [x] Add references to the tools used in the pipeline ([documentation issue](https://github.com/microbial-pangenomes-lab/gwas_template/issues/7))
 - [x] Use random file names for things that go in `/tmp` to avoid conflicts
-- [x] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
-- [x] Delete everything but the necessary files upon completion of a rule
+- [ ] Use `/tmp` directories (as implemented by snakemake) to be efficient in I/O heavy rules
+- [ ] Delete everything but the necessary files upon completion of a rule
     - [x] snippy
     - [x] panaroo
 - [x] Avoid rules that list each input file as it might eventually become too long (including the current use of the `data/fastas` and `data/gffs` directories)
