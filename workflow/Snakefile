@@ -637,11 +637,12 @@ rule run_map_back:
   output:
     "out/associations/{target}/mapped.tsv"
   params:
-    "/tmp/{target}_" + username
+    "/tmp/{target}_map_back_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{target}.log"
   shell:
     """
+    rm -rf {params} || true
     mkdir -p {params}
     echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
     python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
@@ -655,11 +656,12 @@ rule run_map_back_all:
   output:
     "out/associations/{target}/mapped_all.tsv"
   params:
-    "/tmp/{target}_" + username
+    "/tmp/{target}_map_back_all_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_all_{target}.log"
   shell:
     """
+    rm -rf {params} || true
     mkdir -p {params}
     echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {params}/mapped.tsv
     python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details >> {params}/mapped.tsv 2> {log}
@@ -693,11 +695,12 @@ rule run_map_back_wg:
   output:
     "out/wg/{target}/mapped_{model}.tsv"
   params:
-    "/tmp/{target}_{model}_" + username
+    "/tmp/{target}_{model}_map_back_" + username
   conda: "envs/pyseer.yaml"
   log: "out/logs/map_back_{model}_{target}.log"
   shell:
     """
+    rm -rf {params} || true
     mkdir -p {params}
     echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
     python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
