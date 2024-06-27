@@ -28,6 +28,7 @@ def plot_enrichment(data, plot_file, category_label, count_col,
         return
     enrichment_data = enrichment_data[enrichment_data[count_col] > 0]
     if enrichment_data.empty:
+        open(plot_file, 'w').close()
         return
     enrichment_data[qval_col] = enrichment_data[qval_col].fillna(1)
     enrichment_data_sorted = enrichment_data.sort_values(by=count_col, ascending=True)
