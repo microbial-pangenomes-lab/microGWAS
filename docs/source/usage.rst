@@ -103,6 +103,10 @@ For the targets, specify the name of the columns on the phenotype file ``data/da
 .. note::
     Here, phenotype2 is commented (#) and will be ignored.
 
+..  tip::
+
+    If you have many phenotypes (>5), consider applying a more stringent cutoff post-analysis.
+
 For the covariates, specify the position of the columns on the phenotype file ``data/data.tsv`` that should be used for the associations::
 
    covariates:
