@@ -9,7 +9,7 @@ microGWAS can be obtained in three ways:
 Download the latest release from GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Go to the `releases page on GitHub <https://github.com/microbial-pangenomes-lab/gwas_template/releases>`__
+Go to the `releases page on GitHub <https://github.com/microbial-pangenomes-lab/microGWAS/releases>`__
 and download the ``microGWAS.tar.gz`` file from the latest available release. Then unpack it
 (``tar -xvf microGWAS.tar.gz``) and move into it (``cd microGWAS``).
 
@@ -18,7 +18,7 @@ Clone the repository using ``git``
 
 .. code-block:: console
 
-   git clone --recursive https://github.com/microbial-pangenomes-lab/gwas_template.git microGWAS
+   git clone --recursive https://github.com/microbial-pangenomes-lab/microGWAS.git microGWAS
    cd microGWAS
 
 You can change ``microGWAS`` to a name of your choice
@@ -29,8 +29,8 @@ Create a new repository from the GitHub template
 This is useful if you are planning to release your specific analysis as a reproducible
 code repository, for instance by sharing your phenotype file and specific configurations
 (or even edits to the existing rules). This method requires a GitHub account. Go to the
-`pipeline's repository webpage <https://github.com/microbial-pangenomes-lab/gwas_template>`__
-and click on the green "Use this template" button, then "Create a new repository" (or `use this link directly <https://github.com/new?template_name=gwas_template&template_owner=microbial-pangenomes-lab>`__). Once your repository is ready you can clone it locally using the
+`pipeline's repository webpage <https://github.com/microbial-pangenomes-lab/microGWAS>`__
+and click on the green "Use this template" button, then "Create a new repository" (or `use this link directly <https://github.com/new?template_name=microGWAS&template_owner=microbial-pangenomes-lab>`__). Once your repository is ready you can clone it locally using the
 ``git clone --recursive`` command.
 
 Other preparatory steps
@@ -167,7 +167,7 @@ See :doc:`rules` for more information on what each rule does.
 Troubleshooting
 ---------------
 
-For issues with installing or running the software please raise an `issue on github <https://github.com/microbial-pangenomes-lab/gwas_template/issues>`__
+For issues with installing or running the software please raise an `issue on github <https://github.com/microbial-pangenomes-lab/microGWAS/issues>`__
 
 Avoid using samples as references
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,7 +179,7 @@ Testing
 -------
 
 We have included a small dataset in order to test the pipeline installation in reasonable time and resources. In its current state continuous integration (CI) in the cloud is not feasible because certain rules require significant time and resources to complete (``annotate_reference``, ``get_snps``). Some workarounds might be added in the future to bypass those rules. 
-In the meantime the tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few hours. The test dataset has been created from that `used in a mouse model of bloodstream infection <https://github.com/microbial-pangenomes-lab/gwas_template/blob/main>`__
+In the meantime the tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few hours. The test dataset has been created from that `used in a mouse model of bloodstream infection <https://github.com/microbial-pangenomes-lab/microGWAS/blob/main>`__
 
 To run the tests, prepare a symbolic link to the eggnog-mapper databases (as explained above), then do the following::
 
