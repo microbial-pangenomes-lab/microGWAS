@@ -1,5 +1,8 @@
 # Snakemake workflow: Bacterial GWAS
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12685497.svg)](https://doi.org/10.5281/zenodo.12685497)
+[![Documentation Status](https://readthedocs.org/projects/microgwas/badge/?version=latest)](https://microgwas.readthedocs.io/en/latest/?badge=latest)
+
 A battery included snakemake pipeline to run bacterial GWAS on a set of assembled genomes.
 Multiple phenotypes can be defined and used for the associations.
 
