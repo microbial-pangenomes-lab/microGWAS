@@ -145,6 +145,6 @@ test dataset is a reduced part of the E. coli genome.
 - eggnog-mapper: [10.1093/molbev/msx148](10.1093/molbev/msx148)
 - panfeed: [10.1099/mgen.0.001129](10.1099/mgen.0.001129)
 
-## Author
+## Authors
 
-Marco Galardini (marco.galardini@twincore.de)
+Marco Galardini, Judit Burgaya, Bamu F. Damaris, Jenny Fiebig
