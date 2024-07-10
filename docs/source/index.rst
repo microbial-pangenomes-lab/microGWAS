@@ -17,7 +17,9 @@ Citation
 
 If you find the ``microGWAS`` pipeline useful, please cite it as:
 
-**TBD**
+.. code-block:: console
+
+    Burgaya, J., Damaris, B. F., Fiebig, J., & Galardini, M. (2024). microGWAS: A computational pipeline to perform large scale bacterial genome-wide association studies (p. 2024.07.08.602456). bioRxiv. https://doi.org/10.1101/2024.07.08.602456
 
 Please also consider citing the underlying tools used by the pipeline.
 See :doc:`tools` for more details.
