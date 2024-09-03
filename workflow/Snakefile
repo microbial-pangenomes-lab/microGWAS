@@ -29,10 +29,11 @@ if username is None:
 rule download_eggnog:
   output: "data/eggnog-mapper/eggnog.db"
   conda: "envs/eggnog-mapper.yaml"
+  params: config["eggnogdb"]
   shell:
     """
     mkdir -p data/eggnog-mapper
-    download_eggnog_data.py --data_dir data/eggnog-mapper -y -P -M -H -d taxid -F > {log} 2>&1
+    download_eggnog_data.py --data_dir data/eggnog-mapper -y -P -M -H -d {params} -F
     """
 
 rule unitigs:

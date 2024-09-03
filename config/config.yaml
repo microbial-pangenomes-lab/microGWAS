@@ -40,7 +40,7 @@ species_amr: "Escherichia"
 # use "out/lineages_mlst.txt" to use mlst
 # or "out/lineages_poppunk.tsv" for poppunk
 # or an existing file for a custom lineages list
-lineages_file: "out/lineages_mlst.txt"
+lineages_file: "data/lineages.txt"
 
 ##### inputs (there already) #####
 
@@ -52,8 +52,12 @@ samples: "data/data.tsv"
 inputs: "out/inputs.tsv"
 
 # eggnog-mapper
-# path to eggnog-mapper data directory
+# eggnogdb: Tax ID of eggNOG HMM database to download
+# default: "2" for Bacteria; else can be "taxid"
+# Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
+# emmaper: path to eggnog-mapper data directory
 # note: can also be a symbolic link
+eggnogdb: "2"
 emapper: "data/eggnog-mapper"
 
 # snpeff
