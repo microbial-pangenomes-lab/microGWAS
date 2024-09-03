@@ -11,6 +11,7 @@ configfile: "config/config.yaml"
 
 def _get_sample_file(wildcards, table, extension):
     m = pd.read_csv(table, sep='\t', index_col=0)
+    m.index = m.index.astype(str)
     return m.loc[wildcards.sample, extension]
 
 def _get_all_samples(table):
@@ -24,6 +25,15 @@ if username is None:
     username = 'gwas'
 
 ##### rules #####
+
+rule download_eggnog:
+  output: "data/eggnog-mapper/eggnog.db"
+  conda: "envs/eggnog-mapper.yaml"
+  shell:
+    """
+    mkdir -p data/eggnog-mapper
+    download_eggnog_data.py --data_dir data/eggnog-mapper -y -P -M -H -d taxid -F > {log} 2>&1
+    """
 
 rule unitigs:
   input: config["unitigs_input"]
