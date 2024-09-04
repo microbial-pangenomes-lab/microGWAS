@@ -1249,6 +1249,7 @@ rule run_annotate_panfeed_small:
   input:
     associations="out/associations/{target}/panfeed.tsv",
     kmers=config["panfeed_conversion"],
+    hashes=config["panfeed_patterns"],
     patterns="out/associations/{target}/unitigs_patterns.txt",
   output:
     "out/associations/{target}/panfeed_kmers.tsv.gz"
@@ -1257,6 +1258,7 @@ rule run_annotate_panfeed_small:
     """
     python workflow/scripts/combine_panfeed.py \
            {input.associations} {input.kmers} \
+           {input.hashes} \
            --threshold $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
            | gzip > {output} 2> {log}
     """
