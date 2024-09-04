@@ -24,7 +24,7 @@ It can also optionally compute a phylogenetic tree of all samples.
 
 ## Quick start
 
-**1. Installation**
+### **1. Installation**
 
 Make a copy of this repository (optionally you can first create a new repository by clicking on the "Use this template" button
 from Github's interface), including the submodules:
@@ -32,14 +32,14 @@ from Github's interface), including the submodules:
     git clone --recursive https://github.com/microbial-pangenomes-lab/microGWAS.git microGWAS
     cd microGWAS
 
-**2. Create the base `microGWAS` environment**
+### **2. Create the base `microGWAS` environment**
 
 Create and activate a `conda` environment to run the bootstrapping script and the pipeline (named `microGWAS`, can be skipped if it's already present):
 
     conda env create -f environment.yml
     conda activate microGWAS
 
-**3. Prepare your phenotype file**
+### **3. Prepare your phenotype file**
 
 Save your phenotype table as a tab-separated file as `data/data.tsv`.
 The first column should contain the sample names, then there should be two columns
@@ -64,7 +64,7 @@ This is how it should look like:
 > [!TIP]
 > Do not have sample names as only numbers.
 
-**4. Edit the config file** 
+### **4. Edit the config file** 
 
 Edit the `params` section (##### params #####) of the `config/config.yaml` file (at the top).
 
@@ -91,7 +91,7 @@ covariates:
 * `lineages_file`: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
 * `eggnogdb`: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
 
-**5. Prepare the eggnog-db**
+### **5. Prepare the eggnog-db**
 
 If you already have the eggnog-db downloaded, create a symbolic link to the directory in which the databases for eggnog-mapper have been placed:
 
@@ -105,7 +105,7 @@ If you do not have the eggnog-db downloaded, activate the `microGWAS` envioronme
 
     snakemake -p data/eggnog-mapper/eggnog.db --cores 8 --use-conda --conda-frontend mamba
 
-**6. Run the bootstrapping script**
+### **6. Run the bootstrapping script**
 
 The bootstrapping script populates the input files for the pipeline and downloads the reference genomes
 used for annotation of hits and the rare variants analyses. The bootstrap.sh script takes multiple arguments:
@@ -129,7 +129,7 @@ And the following works for P. aeruginosa (and matches the references commented 
 > [!NOTE]
 > This are examples provided for convenience, but you would have to adapt them to your bacterial species of interest.
 
-**7. You are now ready to run the pipeline!**
+### **7. You are now ready to run the pipeline!**
 
 The following example runs **all the analyses** using 24 cores and `mamba` as the conda backend
 to install each environment:
