@@ -42,6 +42,11 @@ species_amr: "Escherichia"
 # or an existing file for a custom lineages list
 lineages_file: "out/lineages_mlst.txt"
 
+# eggnogdb: Tax ID of eggNOG HMM database to download
+# default: "2" for Bacteria; else can be "taxid"
+# Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
+eggnogdb: "2"
+
 ##### inputs (there already) #####
 
 # samples file
@@ -52,7 +57,7 @@ samples: "data/data.tsv"
 inputs: "out/inputs.tsv"
 
 # eggnog-mapper
-# path to eggnog-mapper data directory
+# emmaper: path to eggnog-mapper data directory
 # note: can also be a symbolic link
 emapper: "data/eggnog-mapper"
 

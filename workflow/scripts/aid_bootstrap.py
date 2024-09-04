@@ -41,10 +41,10 @@ if __name__ == "__main__":
 
         # check that the file names follow the SAMPLE.EXT convention
         # if not it would break panaroo and panfeed
-        if '.'.join(os.path.split(gff)[-1].split('.')[:-1]) != sample:
+        if '.'.join(os.path.split(gff)[-1].split('.')[:-1]) != str(sample):
             sys.stderr.write(f'GFF file name not matching sample name ({sample}, {gff})')
             name.add(sample)
-        if '.'.join(os.path.split(fasta)[-1].split('.')[:-1]) != sample:
+        if '.'.join(os.path.split(fasta)[-1].split('.')[:-1]) != str(sample):
             sys.stderr.write(f'FASTA file name not matching sample name ({sample}, {fasta})')
             name.add(sample)
 
