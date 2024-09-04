@@ -24,39 +24,100 @@ It can also optionally compute a phylogenetic tree of all samples.
 
 ## Quick start
 
+**1. Installation**
+
 Make a copy of this repository (optionally you can first create a new repository by clicking on the "Use this template" button
 from Github's interface), including the submodules:
 
     git clone --recursive https://github.com/microbial-pangenomes-lab/microGWAS.git microGWAS
     cd microGWAS
 
-Save your phenotype table as a tab-separated file as `data/data.tsv`.
-The first column should contain the sample names, then there should be two columns
-listing the relative or absolute path to the assemblies (`fasta`, SAMPLE.fasta) and annotations (`gff`, SAMPLE.gff),
-and subsequent columns should
-contain the target phenotype(s). Additional columns are allowed and will be simply ignored.
-An example file can be found in the `test` directory (`test/data.tsv`).
-
-Edit the `params` section of the `config/config.yaml` file (at the top), and indicate the name
-of the phenotypes to be used in the association(s) (i.e. edit the `targets` variable).
-Also change the mlst scheme to be used to compute lineages and the name of the references to be used
-for annotation of hits. For convenience the defaults for E. coli are placed as defaults, and those
-for P. aeruginosa are commented.
-
-Create a symbolic link to the directory in which the databases for eggnog-mapper have been placed:
-
-    ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
-
-Note: the above path would likely be different in your system. The best way to get these files is to install
-`eggnog-mapper` using a `conda` environment and then use the `download_eggnog_data.py` command.
+**2. Create the base `microGWAS` environment**
 
 Create and activate a `conda` environment to run the bootstrapping script and the pipeline (named `microGWAS`, can be skipped if it's already present):
 
     conda env create -f environment.yml
     conda activate microGWAS
 
-Then run the bootstrapping script to populate the input files for the pipeline and download the reference genomes
-used for annotation of hits and the rare variants analyses. The following example works for E. coli (and downloads the references listed by default in `config/config.yaml`):
+**3. Prepare your phenotype file**
+
+Save your phenotype table as a tab-separated file as `data/data.tsv`.
+The first column should contain the sample names, then there should be two columns
+listing the relative or absolute path to the assemblies (`fasta`, SAMPLE.fasta) and annotations (`gff`, SAMPLE.gff),
+and subsequent columns should
+contain the target phenotype(s). 
+
+> [!IMPORTANT]
+> The `fasta` and `gff` column names in your phenotype table, as well as the `SAMPLE.fasta` and `SAMPLE.gff` extensions in your assemblies and annotations, should follow this convention.
+
+Additional columns are allowed and will be simply ignored.
+An example file can be found in the `test` directory (`test/data.tsv`).
+
+This is how it should look like:
+
+    strain	fasta	gff	killed	phenotype	covariate1	covariate2
+    ECOR-01	test/small_fastas/ECOR-01.fasta	test/small_gffs/ECOR-01.gff	0	0	0.20035297602710966	1
+    ECOR-02	test/small_fastas/ECOR-02.fasta	test/small_gffs/ECOR-02.gff	10	1	0.8798471273587852	1
+    ECOR-03	test/small_fastas/ECOR-03.fasta	test/small_gffs/ECOR-03.gff	0	0	0.008404161045130532	0
+    ECOR-04	test/small_fastas/ECOR-04.fasta	test/small_gffs/ECOR-04.gff	0	0	0.04728873355931962	1
+
+> [!TIP]
+> Do not have sample names as only numbers.
+
+**4. Edit the config file** 
+
+Edit the `params` section (##### params #####) of the `config/config.yaml` file (at the top).
+
+* `targets`: Name of the columns in the phenotypes file to be used in the associations. In the example below the target `phenotype` will be the one considered to test for the associations. `phenotype2` is commented (# in front) and will simply be ignored.
+
+```
+targets: [
+         "phenotype"
+         #"phenotype2",
+         ]
+```
+
+* `covariates`: Covariates to be used for the associations for each phenotype. THe numbers refer to the columns in the phenotype file that should be used as covariates. The suffix "q" is added when they are quantitative and not binary. The column numering is 1-based. See also: https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates for more information. In the example below, the columns 6 and 7 are used for the target `phenotype`. The column 6 contains a quantitative covariate. The `phenotype2` is commented and will simply be ignored.
+
+```
+covariates:
+        phenotype: "--use-covariates 6q 7"
+#        phenotype2: "--use-covariates 7",
+```
+
+* `MLST scheme`: Change the mlst scheme to be used to compute lineages. Find more information on the available schemes: https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes
+* `references for association summaries and annotation`: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented.
+* `species_amr`: species to be used for AMR and virulence predictions
+* `lineages_file`: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
+* `eggnogdb`: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
+
+**5. Prepare the eggnog-db**
+
+If you already have the eggnog-db downloaded, create a symbolic link to the directory in which the databases for eggnog-mapper have been placed:
+
+    ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
+
+Note: the above path would likely be different in your system. The best way to get these files is to install
+`eggnog-mapper` using a `conda` environment and then use the `download_eggnog_data.py` command.
+
+If you do not have the eggnog-db downloaded, activate the `microGWAS` envioronment and run the following command:
+
+    snakemake -p data/eggnog-mapper/eggnog.db --cores 8 --use-conda --conda-frontend mamba
+
+**6. Run the bootstrapping script**
+
+The bootstrapping script populates the input files for the pipeline and downloads the reference genomes
+used for annotation of hits and the rare variants analyses. The bootstrap.sh script takes multiple arguments:
+
+* `Genus`: Genus of the species under study (e.g. Escherichia)
+* `Species`: Species of the species under study (e.g. coli)
+* `Reference`: Strain name for the reference to be used for rare variants (e.g. IAI39, name should be the one NCBI uses)
+* `Assemblies`: Comma separated list of NCBI assembly IDs to be downloaded as references (e.g. GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1)
+
+To run the boostrapping, activate the `microGWAS` environment and then run the `bootstrap.sh`.
+Here we provide some examples for _E. coli_ and _P. aeruginosa_.
+
+The following example works for E. coli (and downloads the references listed by default in `config/config.yaml`):
 
     bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1 
 
@@ -64,15 +125,23 @@ And the following works for P. aeruginosa (and matches the references commented 
 
     bash bootstrap.sh Pseudomonas aeruginosa UCBPP-PA14 GCF_000006765.1,GCF_000014625.1 
 
-You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores and `mamba` as the conda backend
+> [!NOTE]
+> This are examples provided for convenience, but you would have to adapt them to your bacterial species of interest.
+
+**7. You are now ready to run the pipeline!**
+
+The following example runs **all the analyses** using 24 cores and `mamba` as the conda backend
 to install each environment:
 
     snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
     
-The following example instead uses "vanilla" `conda` and skips the generation of the phylogenetic tree:
+If you want to run **only the GWAS**, without generating a phylogenetic tree and predicting antimicrobial resistance and virulence associated genes, you can use the following example instead, which uses "vanilla" `conda`:
 
-    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda
+    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda
 
+or using `mamba` as the conda backend:
+
+    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda --conda-frontend mamba
 
 ## Testing
 
@@ -84,7 +153,7 @@ tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few
 
 The test dataset has been created from that [used in a mouse model of bloodstream infection]().
 
-To run the tests, prepare a symbolic link to the eggnog-mapper
+To run the tests, prepare the eggnog-mapper
 databases (as explained above), then do the following:
 
     cd test
@@ -120,6 +189,7 @@ test dataset is a reduced part of the E. coli genome.
 - [x] Add [abritamr](https://github.com/MDU-PHL/abritamr) to detect known AMR/VAGs - necessary for this pipeline???
 - [x] Add txt file that describes outputs produced from running the pipeline (in progress)
 - [X] Add documentation using something like read the docs
+- [ ] Add script to check for duplicated contigs during the bootstrap
 
 ## Reference
 
