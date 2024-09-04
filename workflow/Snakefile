@@ -752,7 +752,7 @@ rule run_map_summary_panfeed:
     phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
     pangenome=config["pangenome"],
     pangenome2=config["pangenome_csv"],
-    mapped="out/associations/{target}/panfeed_annotated_kmers.tsv.gz",
+    mapped="out/associations/{target}/panfeed_kmers.tsv.gz",
   output:
     summary="out/associations/{target}/summary_panfeed.tsv"
   params:
@@ -1238,6 +1238,27 @@ rule run_panfeed:
            {params.covariates} \
            > {output.p} 2> {log}
     cat <(head -1 {output.p}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.p}) > {output.p_f}
+    """
+
+rule annotate_panfeed_small:
+  input:
+    expand("out/associations/{target}/panfeed_kmers.tsv.gz",
+           target=config["targets"])
+
+rule run_annotate_panfeed_small:
+  input:
+    associations="out/associations/{target}/panfeed.tsv",
+    kmers=config["panfeed_conversion"],
+    patterns="out/associations/{target}/unitigs_patterns.txt",
+  output:
+    "out/associations/{target}/panfeed_kmers.tsv.gz"
+  log: "out/logs/panfeed_annotate_small_{target}.log"
+  shell:
+    """
+    python workflow/scripts/combine_panfeed.py \
+           {input.associations} {input.kmers} \
+           --threshold $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
+           | gzip > {output} 2> {log}
     """
 
 rule panfeed:
