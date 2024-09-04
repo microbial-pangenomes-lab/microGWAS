@@ -97,7 +97,8 @@ If you already have the eggnog-db downloaded, create a symbolic link to the dire
 
     ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
 
-Note: the above path would likely be different in your system. The best way to get these files is to install
+> [!NOTE]
+> the above path would likely be different in your system. The best way to get these files is to install
 `eggnog-mapper` using a `conda` environment and then use the `download_eggnog_data.py` command.
 
 If you do not have the eggnog-db downloaded, activate the `microGWAS` envioronment and run the following command:
