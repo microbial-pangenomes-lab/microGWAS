@@ -14,7 +14,7 @@ def get_options():
 
     parser.add_argument('mapped',
                         help='Mapped unitigs table (all strains), or annotated k-mers '
-                             'from panfeed-get-kmers (`--panfeed` must be used)')
+                             'from combine_panfeed.py (`--panfeed` must be used)')
     parser.add_argument('phenotypes',
                         help='Phenotypes table')
     parser.add_argument('phenotype',
@@ -24,7 +24,7 @@ def get_options():
 
     parser.add_argument('--panfeed',
                         default=False, action='store_true',
-                        help='Data comes from panfeed-get-kmers')
+                        help='Data comes from combine_panfeed.py')
     parser.add_argument('--sort',
                         default='avg-lrt-pvalue',
                         help='Sort final table using this column (default: %(default)s)')
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         m = pd.read_csv(options.mapped, sep='\t', index_col=9)
         # rename a column to avoid much refactoring
         m = m.rename(columns={'hashed_pattern': 'unitig',
-                              'gene_start': 'start',
+                              'k-mer': 'start',
                               'cluster': 'gene'})
     # check empty
     if m.shape[0] == 0:
