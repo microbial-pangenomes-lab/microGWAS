@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outputs &mdash; microGWAS 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Rules" href="rules.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            microGWAS
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inputs.html">Inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Outputs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-output-folder-structure">General output folder structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Underlying tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">microGWAS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Outputs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/outputs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="outputs">
+<h1>Outputs<a class="headerlink" href="#outputs" title="Permalink to this heading"></a></h1>
+<section id="general-output-folder-structure">
+<h2>General output folder structure<a class="headerlink" href="#general-output-folder-structure" title="Permalink to this heading"></a></h2>
+<p>Running the suggested pipeline rules (<code class="docutils literal notranslate"><span class="pre">annotate_summary</span> <span class="pre">find_amr_vag</span> <span class="pre">map_back</span> <span class="pre">manhattan_plots</span> <span class="pre">heritability</span> <span class="pre">enrichment_plots</span> <span class="pre">qq_plots</span> <span class="pre">tree</span></code>)
+will yield the following
+directory strcture in the <code class="docutils literal notranslate"><span class="pre">out</span></code> outputs folder:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____associations</span>
+<span class="go">| |____inputs</span>
+<span class="go">| | |____phenotype</span>
+<span class="go">| |____phenotype</span>
+<span class="go">| | |____panfeed_plots</span>
+<span class="go">|____wg</span>
+<span class="go">| |____inputs</span>
+<span class="go">| | |____phenotype</span>
+<span class="go">| |____phenotype</span>
+<span class="go">|____panfeed</span>
+<span class="go">|____snps</span>
+<span class="go">| |____unet</span>
+<span class="go">|____panaroo</span>
+<span class="go">|____unitigs</span>
+<span class="go">|____abritamr</span>
+<span class="go">|____logs</span>
+</pre></div>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">associations</span></code>: contains the inputs and outputs for the locus and lineage associations, with one subfolder for each target phenotype</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">inputs</span></code>: contains the inputs for the associations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">phenotype</span></code>: contains the association outputs, annotated summaries and functional enrichments</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wg</span></code>: contains the inputs and outputs for the whole genome associations, with one subfolder for each target phenotype</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">inputs</span></code>: contains the inputs for the whole genome associations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">phenotype</span></code>: contains the associations output, annotated summaries and functional enrichmennts (for both lasso and ridge models)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">panfeed</span></code>: contains the input for the gene cluster specific k-mers associations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">snps</span></code>: contains the input for the rare variants associations</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unet</span></code>: contains the estimated impact of all possible non-synonymous variants across the reference genome’s proteome</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">panaroo</span></code> : contains the pangenome of all samples and references, as well as the core genome phylogenetic tree</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unitigs</span></code> : contains the unitigs variant set based on a “global” de Brujin graph.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">abritamr</span></code>: contains the predicted virulence associated genes (VAGs) and antimicrobial resistance gene (ARGs) for each sample</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">logs</span></code>: contains the log files generated during the execution of each rule by snakemake, which can be used to inspect errors</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If multiple phenotypes are defined in the config file, there will be multiple folders in <code class="docutils literal notranslate"><span class="pre">associations</span></code> and <code class="docutils literal notranslate"><span class="pre">wg</span></code>.</p>
+</div>
+</section>
+<section id="output-files">
+<h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this heading"></a></h2>
+<p>The above directories will contain the following files:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____abritamr</span>
+<span class="go">| |____summary_virulence.txt</span>
+<span class="go">| |____summary_matches.txt</span>
+</pre></div>
+</div>
+<p>The virulence associated genes (VAGs) will be listed in the <code class="docutils literal notranslate"><span class="pre">summary_virulence.txt</span></code> file
+(under the column <code class="docutils literal notranslate"><span class="pre">Virulence</span></code>),
+while the antimicrobial resistance genes (ARGs) will be listed in the <code class="docutils literal notranslate"><span class="pre">summary_matches.txt</span></code> file,
+with one column per antimicrobial “class”.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____associations</span>
+<span class="go">| |____inputs</span>
+<span class="go">| | |____phenotype</span>
+<span class="go">| | | |____distances.tsv</span>
+<span class="go">| | | |____lineages.tsv</span>
+<span class="go">| | | |____lineages_covariance.tsv</span>
+<span class="go">| | | |____phenotypes.tsv</span>
+<span class="go">| | | |____similarity.tsv</span>
+<span class="go">| |____phenotype</span>
+<span class="go">| | |____annotated_summary.tsv</span>
+<span class="go">| | |____annotated_gpa_summary.tsv</span>
+<span class="go">| | |____annotated_panfeed_summary.tsv</span>
+<span class="go">| | |____annotated_rare_summary.tsv</span>
+<span class="go">| | |____heritability_all.tsv</span>
+<span class="go">| | |____unitigs_lineage.txt</span>
+<span class="go">| | |____mapped.tsv</span>
+<span class="go">| | |____mapped_all.tsv</span>
+<span class="go">| | |____panfeed.tsv</span>
+<span class="go">| | |____panfeed_filtered.tsv</span>
+<span class="go">| | |____rare.tsv</span>
+<span class="go">| | |____rare_filtered.tsv</span>
+<span class="go">| | |____struct.tsv</span>
+<span class="go">| | |____struct_filtered.tsv</span>
+<span class="go">| | |____unitigs.tsv</span>
+<span class="go">| | |____unitigs_filtered.tsv</span>
+<span class="go">| | |____unitigs_patterns.txt</span>
+<span class="go">| | |____gpa.tsv</span>
+<span class="go">| | |____gpa_filtered.tsv</span>
+<span class="go">| | |____manhattan.png</span>
+<span class="go">| | |____qq_gpa.png</span>
+<span class="go">| | |____qq_rare.png</span>
+<span class="go">| | |____qq_unitigs.png</span>
+<span class="go">| | |____COG.png</span>
+<span class="go">| | |____COG.tsv</span>
+<span class="go">| | |____COG_gpa.png</span>
+<span class="go">| | |____COG_gpa.tsv</span>
+<span class="go">| | |____COG_panfeed.png</span>
+<span class="go">| | |____COG_panfeed.tsv</span>
+<span class="go">| | |____COG_rare.png</span>
+<span class="go">| | |____COG_rare.tsv</span>
+<span class="go">| | |____GO.png</span>
+<span class="go">| | |____GO.tsv</span>
+<span class="go">| | |____GO_gpa.png</span>
+<span class="go">| | |____GO_gpa.tsv</span>
+<span class="go">| | |____GO_panfeed.png</span>
+<span class="go">| | |____GO_panfeed.tsv</span>
+<span class="go">| | |____GO_rare.png</span>
+<span class="go">| | |____GO_rare.tsv</span>
+<span class="go">| | |____KEGG.png</span>
+<span class="go">| | |____KEGG.tsv</span>
+<span class="go">| | |____KEGG_gpa.png</span>
+<span class="go">| | |____KEGG_gpa.tsv</span>
+<span class="go">| | |____KEGG_panfeed.png</span>
+<span class="go">| | |____KEGG_panfeed.tsv</span>
+<span class="go">| | |____KEGG_rare.png</span>
+<span class="go">| | |____KEGG_rare.tsv</span>
+<span class="go">| | |____panfeed_annotated_kmers.tsv.gz</span>
+<span class="go">| | |____panfeed_plots</span>
+<span class="go">| | | |____hybrid_GENE.png</span>
+<span class="go">| | | |____sequence_GENE.png</span>
+<span class="go">| | | |____significance_GENE.png</span>
+<span class="go">| | | |____sequence_legend.png</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">inputs</span></code> folder: the <code class="docutils literal notranslate"><span class="pre">distances.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">linages.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">lineages_covariance.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">phenotypes.tsv</span></code>, and <code class="docutils literal notranslate"><span class="pre">similarity.tsv</span></code> files contain the association inputs for each target phenotype, so that they only contain the samples for which the phenotypic data is available</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">annotated_*.tsv</span></code>: contains the annotations of genes to which variants passing the association threshold map to; each row contains a gene, followed by the average associations’ summary statistics, the frequency of the gene in the pangenome, the locus tag and gene name of the gene if it’s encoded in the chosen reference(s), and finally the annotations given by <code class="docutils literal notranslate"><span class="pre">eggnog-maper</span></code>, including COGs, GO terms and KEGG annotations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">heritability_all.tsv</span></code>: contains information about what proportion of the phenotypic variation can be explained by either the lineage membership or the genetic variants. The <cite>genetics</cite> column indicates the likelihood model used for the heritability estimation, <cite>lik</cite> the likelihood model used for the heritability estimation, <cite>h2</cite>, the proportion of phenotypic variance explained by the genetic effects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unitigs_lineage.txt</span></code>: lineage associations output; for each lineage the association p-value is reported; the name is misleading, as the unitigs presence/absence patterns have not been used for this association tests</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mapped.tsv</span></code>: mapping information on the unitigs passing the association threshold, across all samples and reference(s)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mapped_all.tsv</span></code>: mapping information for all tested unitigs to the reference genome(s)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">panfeed.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">rare.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">struct.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">unitigs.tsv</span></code>, and <code class="docutils literal notranslate"><span class="pre">gpa.tsv</span></code>: contain the raw association results as given by <code class="docutils literal notranslate"><span class="pre">pyseer</span></code>, with one file per variant set</p></li>
+<li><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">panfeed_filtered.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">rare_filtered.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">struct_filtered.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">unitigs_filtered.tsv</span></code>, and <code class="docutils literal notranslate"><span class="pre">gpa_filtered.tsv</span></code>: contain the variants passing the association threshold</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manhattan.png</span></code>: manhattan plot for all unitigs mapping to the main reference genome</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">qq_*.png</span></code>: QQ plot to assess the distribution of observed p-values with the expected distribution under the null hypothesis of the test statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">COG_*.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">GO_*.tsv</span></code>, and <code class="docutils literal notranslate"><span class="pre">KEGG_*.tsv</span></code>: functional enrichment tests results for each variant set</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">COG_*.png</span></code>, <code class="docutils literal notranslate"><span class="pre">GO_*.png</span></code>, and <code class="docutils literal notranslate"><span class="pre">KEGG_*.png</span></code>: plots to visualise the results of the functional enrichment tests</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">panfeed_annotated_kmers.tsv.gz</span></code>: detailed annotation of all k-mers mapping to associated gene clusters, as given by <code class="docutils literal notranslate"><span class="pre">panfeed</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">panfeed_plots</span></code>: visualizaion of the gene-cluster specific k-mers, with 3 files for each associated gene cluster, as given by <code class="docutils literal notranslate"><span class="pre">panfeed</span></code></p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____panfeed</span>
+<span class="go">| |____kmers_to_hashes.tsv</span>
+<span class="go">| |____kmers.tsv</span>
+<span class="go">| |____hashes_to_patterns.tsv</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">kmers_to_hashes.tsv</span></code>: file used to match gene clusters, k-mer sequences and the hash for the respective presence/absence pattern.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kmers.tsv</span></code>:  k-mers metadata file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hashes_to_patterns.tsv</span></code>: file contains binary presence/absence matrix for all unique k-mer patterns (rows) across samples (columns)</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____similarity.tsv</span>
+<span class="go">|____distances.tsv</span>
+<span class="go">|____annotated_reference.tsv</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">similarity.tsv</span></code> and <code class="docutils literal notranslate"><span class="pre">distances.tsv</span></code> provides information about the genetic reletedness of the test strains. They are both used to account for population structure during the association analysis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">annotated_reference.tsv</span></code> is the functional annotation of the reference using <code class="docutils literal notranslate"><span class="pre">eggnog-mapper</span></code>. It provides mappings to COG categories, KEGG terms, pathways and more.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____snps</span>
+<span class="go">| |____rare.vcf.gz</span>
+<span class="go">| |____unet</span>
+<span class="go">| | |____PROTEIN_ID_1.tsv.gz</span>
+<span class="go">| | |____PROTEIN_ID_2.tsv.gz</span>
+<span class="go">| | |____[...]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rare.vcf.gz</span></code>: all rare deleterious variants identified across all samples merged into a single VCF file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unet</span></code>: this directory contains, for each protein sequence encoded in the reference genome, the estimated impact of every possible non-synonymous variants. The <code class="docutils literal notranslate"><span class="pre">pred</span></code> column indicates the probability that a variant is deleterious; the pipeline uses a threshold of 0.5.</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____inputs</span>
+<span class="go">| |____phenotype</span>
+<span class="go">| | |____distances.tsv</span>
+<span class="go">| | |____lineages.tsv</span>
+<span class="go">| | |____phenotypes.tsv</span>
+<span class="go">| | |____similarity.tsv</span>
+<span class="go">| | |____variants.npz</span>
+<span class="go">| | |____variants.pkl</span>
+<span class="go">|____wg</span>
+<span class="go">| |____phenotype</span>
+<span class="go">| | |____annotated_summary_lasso.tsv</span>
+<span class="go">| | |____annotated_summary_ridge.tsv</span>
+<span class="go">| | |____COG_lasso.png</span>
+<span class="go">| | |____COG_lasso.tsv</span>
+<span class="go">| | |____COG_ridge.png</span>
+<span class="go">| | |____COG_ridge.tsv</span>
+<span class="go">| | |____GO_lasso.png</span>
+<span class="go">| | |____GO_lasso.tsv</span>
+<span class="go">| | |____GO_ridge.png</span>
+<span class="go">| | |____GO_ridge.tsv</span>
+<span class="go">| | |____KEGG_lasso.png</span>
+<span class="go">| | |____KEGG_lasso.tsv</span>
+<span class="go">| | |____KEGG_ridge.png</span>
+<span class="go">| | |____KEGG_ridge.tsv</span>
+<span class="go">| | |____lasso.pkl</span>
+<span class="go">| | |____lasso.tsv</span>
+<span class="go">| | |____lasso.txt</span>
+<span class="go">| | |____mapped_lasso.tsv</span>
+<span class="go">| | |____mapped_ridge.tsv</span>
+<span class="go">| | |____ridge.pkl</span>
+<span class="go">| | |____ridge.tsv</span>
+<span class="go">| | |____ridge.txt</span>
+</pre></div>
+</div>
+<p>The contents of the <code class="docutils literal notranslate"><span class="pre">wg</span></code> are very similar to the equivalent files in the <code class="docutils literal notranslate"><span class="pre">associations</span></code> folder. The differences are:</p>
+<ul class="simple">
+<li><p>in the <code class="docutils literal notranslate"><span class="pre">inputs</span></code> subfolder: <code class="docutils literal notranslate"><span class="pre">variants.*</span></code> are the <code class="docutils literal notranslate"><span class="pre">pyseer</span></code> checkpoint files to avoid loading the full set of unitigsmultiple times</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lasso.tsv</span></code>: association output between each unitig and the phenotype; based on the lasso model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lasso.txt</span></code>: the table shows the prediction perfomance of the lasso model; the size represents the number of samples, R2 the model performance and the True and False predictions for each lineage</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ridge.tsv</span></code>: association output between each unitig and the phenotype; based on the ridge model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ridge.txt</span></code>: the table shows the prediction perfomance of the ridge model; the size represents the number of samples, R2 the model performance and the True and False predictions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lasso.pkl</span></code> and <code class="docutils literal notranslate"><span class="pre">ridge.pkl</span></code>: <code class="docutils literal notranslate"><span class="pre">pyseer</span></code> checkpoint file containing the trained machine learning model, which can be used to predict the phenotype in new samples</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____panaroo</span>
+<span class="go">| |____gene_presence_absence.Rtab</span>
+<span class="go">| |____gene_presence_absence.csv</span>
+<span class="go">| |____struct_presence_absence.Rtab</span>
+<span class="go">| |____core_gene_alignment.aln</span>
+<span class="go">| |____core_gene_alignment.aln.treefile</span>
+<span class="go">| |____core_gene_alignment.vcf.gz</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gene_presence_absence.Rtab</span></code>: gene clusters binary presence/absence file: for each orthologous gene identified by panaroo, its presence (1) and absence (0) is reported for all samples and the selected references</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gene_presence_absence.csv</span></code>: describes which gene clusters are present in which samples, and if so, it provides the gene IDs/locus tags; paralogs are separated by the <code class="docutils literal notranslate"><span class="pre">;</span></code> character</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">struct_presence_absence.Rtab</span></code>: gene ordering variants presence/absence file, with the involved genes enlisted in the first column, separated with the <code class="docutils literal notranslate"><span class="pre">-</span></code> character</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">core_gene_alignment.aln</span></code>: contains the core genome alignment generated through the concatenation of the alignment of each gene</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">core_gene_alignment.aln.treefile</span></code>: contains a phylogenetic tree constructed from the core genome alignment file <code class="docutils literal notranslate"><span class="pre">core_gene_alignment.aln</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">core_gene_alignment.vcf.gz</span></code>: contains the core genome alignment in VCF format</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">out</span>
+<span class="go">|____unitigs</span>
+<span class="go">| |____unitigs.unique_rows.Rtab.gz</span>
+<span class="go">| |____unitigs.unique_rows_to_all_rows.txt</span>
+<span class="go">| |____unitigs.txt.gz</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unitigs.unique_rows.Rtab.gz</span></code>: contains the unique unitig patterns found across the input genomes. The number of lines represents the number of unique tests that need to be corrected for in the association analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unitigs.unique_rows_to_all_rows.txt</span></code>:  provides information on the mapping from the unique unitig patterns to all instances of those patterns observed across the input genomes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unitigs.txt.gz</span></code>: contains the list of unitigs counted across the input genomes and which samples encode for them</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rules.html" class="btn btn-neutral float-right" title="Rules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Microbial Pangenomes Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+ 
+<!-- 100% privacy-first analytics -->
+<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

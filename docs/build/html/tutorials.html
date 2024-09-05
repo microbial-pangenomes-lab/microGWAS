@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beginner’s guide &mdash; microGWAS 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Underlying tools" href="tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            microGWAS
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inputs.html">Inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Underlying tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Beginner’s guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#before-you-begin">Before you begin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-microgwas-pipeline">Running the microGWAS pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#customizing-your-analysis">Customizing your analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-results">Understanding the results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unitig-based-association-analysis">Unitig-based association analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gene-cluster-specific-k-mer-association-analysis">Gene cluster-specific k-mer association analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functional-enrichment-analysis">Functional Enrichment analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">microGWAS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Beginner’s guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorials.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="beginner-s-guide">
+<h1>Beginner’s guide<a class="headerlink" href="#beginner-s-guide" title="Permalink to this heading"></a></h1>
+<p>Genome-wide association study (GWAS) is a power test in bacterial genomics that allows one to identify genetic variants associated with a specific phenotype(s).
+This guide will walk you through conducting a comprehensive GWAS analysis on 370 <em>Escherichia coli</em> strains using the <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> pipeline.
+In the <a class="reference external" href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009065">study by Galardini et al. (2020)</a> , a mouse model of sepsis was used to characterize the virulence phenotype of the strains.
+By following these steps, you will uncover genetic variants (unitigs, gene presence/absence, rare variants , gene cluster specific k-mers)  associated with the virulence phenotype in <em>Escherichia coli</em>.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Basic command-line knowledge</p></li>
+<li><p>Familiarity with genomic data</p></li>
+<li><p>A computer with at least 10 GB RAM with 8 cores</p></li>
+<li><p>Estimated time (<em>TBD</em>)</p></li>
+</ul>
+</section>
+<section id="before-you-begin">
+<h2>Before you begin<a class="headerlink" href="#before-you-begin" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Prepare Your Data</strong>:</p>
+<ol class="loweralpha simple">
+<li><p>Download the <a class="reference external" href="https://raw.githubusercontent.com/mgalardini/2018_ecoli_pathogenicity/master/data/phenotypes/phenotypes.tsv">phenotype data</a>  and save it as specified in <a class="reference internal" href="inputs.html"><span class="doc">Inputs</span></a>.</p></li>
+<li><p>Download sample genomes in the required formats:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://figshare.com/articles/dataset/Escherichia_coli_pathogenicity_GWAS_input_genome_sequences_annotations/19536163?file=34723351">.gff files</a></p></li>
+<li><p><a class="reference external" href="https://figshare.com/articles/dataset/Escherichia_coli_pathogenicity_GWAS_input_genome_sequences_updated_/11879340?file=21781689">.fasta files</a></p></li>
+</ul>
+</li>
+<li><p>Ensure that the downloaded genomes meet the requirements stipulated in <a class="reference internal" href="inputs.html"><span class="doc">Inputs</span></a></p></li>
+</ol>
+</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Double-check that your sample names are not just numbers, as this can cause issues in the analysis.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Set up the environment and configure the pipeline</strong>:</p>
+<ol class="loweralpha simple">
+<li><p>Install and setup the microGWAS conda environment and the eggnog database. See <a class="reference internal" href="usage.html"><span class="doc">Usage</span></a> for detailed instructions.</p></li>
+<li><p>Configure the pipeline by editing the <code class="docutils literal notranslate"><span class="pre">config/config.yaml</span></code> as stipulated in the <code class="docutils literal notranslate"><span class="pre">Edit</span> <span class="pre">the</span> <span class="pre">pipeline</span> <span class="pre">configuration</span> <span class="pre">file</span></code> in the <a class="reference internal" href="usage.html"><span class="doc">Usage</span></a> section of this documentation.</p></li>
+</ol>
+</li>
+</ol>
+</section>
+<section id="running-the-microgwas-pipeline">
+<h2>Running the microGWAS pipeline<a class="headerlink" href="#running-the-microgwas-pipeline" title="Permalink to this heading"></a></h2>
+<p>Activate the <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> conda environment.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda activate microGWAS</span>
+</pre></div>
+</div>
+<p>Run the bootsrapping script.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">bash bootstrap.sh 536.fasta,CFT073.fasta,ED1a.fasta,IAI1.fasta,IAI39.fasta,K-12_substr._MG1655.fasta,UMN026.fasta,UTI89.fasta</span>
+</pre></div>
+</div>
+<p>This script populates the input files used for the analysis and downloads the relevant reference genomes necessary for annotating the hits for <em>Escherichia coli</em> and analyse the variants</p>
+<p>To run the full analysis, use the following command.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba</span>
+</pre></div>
+</div>
+<p>This will:</p>
+<ul class="simple">
+<li><p>Run the GWAS analysis</p></li>
+<li><p>Annotate the GWAS results with biological and functional information.</p></li>
+<li><p>Identify antimicrobial resistant and virulence associated genes.</p></li>
+<li><p>Perform an enrichment analysis for the genes with the associated variants.</p></li>
+<li><p>Compute the heritability of the phenotype.</p></li>
+<li><p>Generate visualization plots.</p></li>
+</ul>
+</section>
+<section id="customizing-your-analysis">
+<h2>Customizing your analysis<a class="headerlink" href="#customizing-your-analysis" title="Permalink to this heading"></a></h2>
+<p>You also have specify which <a class="reference internal" href="rules.html"><span class="doc">Rules</span></a> you want the pipeline to run. For example, to run the pipeline without generating a phylogenetic tree:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots  --cores 24 --verbose --use-conda --conda-frontend mamba</span>
+</pre></div>
+</div>
+<p>This command runs all the same analyses as the previous one, except for generating a phylogenetic tree.</p>
+</section>
+<section id="understanding-the-results">
+<h2>Understanding the results<a class="headerlink" href="#understanding-the-results" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> generates multiple outputs files and figures which can be accessed from the <code class="docutils literal notranslate"><span class="pre">out/</span></code> directory. For a detailed descripition of all the outputs, refer to <a class="reference internal" href="outputs.html"><span class="doc">Outputs</span></a> section of this documentation.
+For the purpose of this tutorial, we will focus on key results that replicate the findings from the  <a class="reference external" href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1009065">Galardini et al. (2020) study</a></p>
+<section id="unitig-based-association-analysis">
+<h3>Unitig-based association analysis<a class="headerlink" href="#unitig-based-association-analysis" title="Permalink to this heading"></a></h3>
+<p>Unitigs are unique DNA sequences that serve as markers for genetic variation. <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> uses unitigs with a minimum allele frequency (MAF) of &gt; 1%, and excludes those shorter than 30bp or with problematic mapping.</p>
+<img alt="Manhattan plot of the associated variants" class="align-center" src="_images/manhattan.png" />
+<p>This Manhattan plot shows unitigs associated with virulences. Peaks above the red dashed line represent genomic regions strongly associated with  the virulence phenotype.
+These unitigs are related to three iron-uptake systems: the high-pathogenecity island (HPI), aerobactin, and the <em>sitABCD</em> operon.</p>
+<p>For a closer look at specific regions:</p>
+<img alt="A zoom-in on the associated areas of the Manhattan plot for the HPI, aerobacting and *sitABCD* operon regions." class="align-center" src="_images/zoom-in.png" />
+<p>This figure was generated using outputs from the <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> pipeline. See script (<em>insert links refrencing the scripts</em>).</p>
+</section>
+<section id="gene-cluster-specific-k-mer-association-analysis">
+<h3>Gene cluster-specific k-mer association analysis<a class="headerlink" href="#gene-cluster-specific-k-mer-association-analysis" title="Permalink to this heading"></a></h3>
+<p>This analysis links specific k-mers are linked to their source genes.</p>
+<img alt="Associations plots for gene cluster specific k-mers." class="align-center" src="_images/panfeed.png" />
+<p>These plots represent association  for gene cluster specific k-mers for <em>fyuA</em>, <em>iucC</em>, and <em>sitA</em> genes. The y-axis represents each isolate and the x-axis the k-mer positions relative to the gene start codon for each strain.
+The colors correspond to the -log10 of the association p-value. The dark gray regions imply that the isolates do not encode for the k-mers, while the light gray regions represent k-mers under the association threshold.</p>
+</section>
+<section id="functional-enrichment-analysis">
+<h3>Functional Enrichment analysis<a class="headerlink" href="#functional-enrichment-analysis" title="Permalink to this heading"></a></h3>
+<p>This analysis identified overrepresented functional categories among genes with associated variants.</p>
+<p><em>will have to update this figure to reflect the new color scheme</em></p>
+<img alt="Enrichment analysis of the associated unitigs for different COG categories." class="align-center" src="_images/enrichment.png" />
+<p>The plot shows enrichment of clusters of orthologous groups (COG) categories.
+The y-axis of the plot represents each COG catergory, and x-axis the number of gene hits belonging to each category.The bars are colored based on the  -log10 of the enrichment corrected p-value.</p>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading"></a></h2>
+<p>If you encounter issues:</p>
+<ol class="arabic simple">
+<li><p>Check the log files in the <code class="docutils literal notranslate"><span class="pre">out/logs/</span></code> directory for error messages.</p></li>
+<li><p>Ensure all input files are correctly formatted and placed in the right directories.</p></li>
+<li><p>Verify that all required databases and dependencies are properly installed.</p></li>
+</ol>
+<p>For persistent problems, consult the <code class="docutils literal notranslate"><span class="pre">Troubleshooting</span></code> <a class="reference internal" href="usage.html"><span class="doc">Usage</span></a> guide or seek help in the <a class="reference external" href="https://github.com/microbial-pangenomes-lab/microGWAS/issues">project’s issue tracker</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tools.html" class="btn btn-neutral float-left" title="Underlying tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Microbial Pangenomes Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+ 
+<!-- 100% privacy-first analytics -->
+<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage &mdash; microGWAS 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Outputs" href="outputs.html" />
+    <link rel="prev" title="Inputs" href="inputs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            microGWAS
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inputs.html">Inputs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download-the-latest-release-from-github">Download the latest release from GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clone-the-repository-using-git">Clone the repository using <code class="docutils literal notranslate"><span class="pre">git</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-new-repository-from-the-github-template">Create a new repository from the GitHub template</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#other-preparatory-steps">Other preparatory steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-the-base-microgwas-environment">Creating the base <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-symbolic-link-to-the-eggnog-mapper-database">Create a symbolic link to the <code class="docutils literal notranslate"><span class="pre">eggnog-mapper</span></code> database</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configure-the-pipeline-run">Configure the pipeline run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prepare-the-input-phenotype-file">Prepare the input phenotype file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edit-the-pipeline-configuration-file">Edit the pipeline configuration file</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#targets-and-covariates-for-associations">Targets and covariates for associations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#which-lineage-file-to-use">Which lineage file to use?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-pipeline">Run the pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#run-the-bootstrapping-script">Run the bootstrapping script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-the-actual-snakemake-pipeline">Run the actual snakemake pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-specific-rules">Running specific rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#avoid-using-samples-as-references">Avoid using samples as references</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rules.html">Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Underlying tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">microGWAS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Usage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<p>microGWAS can be obtained in three ways:</p>
+<section id="download-the-latest-release-from-github">
+<h3>Download the latest release from GitHub<a class="headerlink" href="#download-the-latest-release-from-github" title="Permalink to this heading"></a></h3>
+<p>Go to the <a class="reference external" href="https://github.com/microbial-pangenomes-lab/microGWAS/releases">releases page on GitHub</a>
+and download the <code class="docutils literal notranslate"><span class="pre">microGWAS.tar.gz</span></code> file from the latest available release. Then unpack it
+(<code class="docutils literal notranslate"><span class="pre">tar</span> <span class="pre">-xvf</span> <span class="pre">microGWAS.tar.gz</span></code>) and move into it (<code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">microGWAS</span></code>).</p>
+</section>
+<section id="clone-the-repository-using-git">
+<h3>Clone the repository using <code class="docutils literal notranslate"><span class="pre">git</span></code><a class="headerlink" href="#clone-the-repository-using-git" title="Permalink to this heading"></a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone --recursive https://github.com/microbial-pangenomes-lab/microGWAS.git microGWAS</span>
+<span class="go">cd microGWAS</span>
+</pre></div>
+</div>
+<p>You can change <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> to a name of your choice</p>
+</section>
+<section id="create-a-new-repository-from-the-github-template">
+<h3>Create a new repository from the GitHub template<a class="headerlink" href="#create-a-new-repository-from-the-github-template" title="Permalink to this heading"></a></h3>
+<p>This is useful if you are planning to release your specific analysis as a reproducible
+code repository, for instance by sharing your phenotype file and specific configurations
+(or even edits to the existing rules). This method requires a GitHub account. Go to the
+<a class="reference external" href="https://github.com/microbial-pangenomes-lab/microGWAS">pipeline’s repository webpage</a>
+and click on the green “Use this template” button, then “Create a new repository” (or <a class="reference external" href="https://github.com/new?template_name=microGWAS&amp;template_owner=microbial-pangenomes-lab">use this link directly</a>). Once your repository is ready you can clone it locally using the
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">--recursive</span></code> command.</p>
+</section>
+</section>
+<section id="other-preparatory-steps">
+<h2>Other preparatory steps<a class="headerlink" href="#other-preparatory-steps" title="Permalink to this heading"></a></h2>
+<section id="creating-the-base-microgwas-environment">
+<h3>Creating the base <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> environment<a class="headerlink" href="#creating-the-base-microgwas-environment" title="Permalink to this heading"></a></h3>
+<p>If you do not have <code class="docutils literal notranslate"><span class="pre">conda</span></code> you can install it through
+<a class="reference external" href="https://conda.io/miniconda.html">miniconda</a> and then add the necessary
+channels:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">defaults</span>
+<span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">bioconda</span>
+<span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+</pre></div>
+</div>
+<p>Then run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="n">microGWAS</span>
+</pre></div>
+</div>
+</section>
+<section id="create-a-symbolic-link-to-the-eggnog-mapper-database">
+<h3>Create a symbolic link to the <code class="docutils literal notranslate"><span class="pre">eggnog-mapper</span></code> database<a class="headerlink" href="#create-a-symbolic-link-to-the-eggnog-mapper-database" title="Permalink to this heading"></a></h3>
+<p>You can setup the eggnog-mapper dabase using one of the following approaches:</p>
+<ol class="arabic simple">
+<li><p>If you have already downloaded the eggnog-db: create a symbolic link for the directory where the eggnog-mapper databases are located.</p></li>
+</ol>
+<p>ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper</p>
+<ol class="arabic simple" start="2">
+<li><p>If you have not downloaded the eggnog-db: Activate the microGWAS environment and run the following command.</p></li>
+</ol>
+<p>snakemake -p data/eggnog-mapper/eggnog.db –cores 8 –use-conda –conda-frontend mamba</p>
+<p>This will download the eggnog-db, and you can now create a symbolic link as stated in 1 above.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">above</span> <span class="n">path</span> <span class="n">would</span> <span class="n">likely</span> <span class="n">be</span> <span class="n">different</span> <span class="ow">in</span> <span class="n">your</span> <span class="n">system</span><span class="o">.</span> <span class="n">Adjust</span> <span class="n">it</span> <span class="n">according</span> <span class="n">to</span> <span class="n">your</span> <span class="n">specific</span> <span class="n">installation</span> <span class="n">location</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configure-the-pipeline-run">
+<h2>Configure the pipeline run<a class="headerlink" href="#configure-the-pipeline-run" title="Permalink to this heading"></a></h2>
+<section id="prepare-the-input-phenotype-file">
+<h3>Prepare the input phenotype file<a class="headerlink" href="#prepare-the-input-phenotype-file" title="Permalink to this heading"></a></h3>
+<p>The microGWAS pipeline requires three inputs: the information on the target phenotype(s), and assemblies and annotations for each sample. See <a class="reference internal" href="inputs.html"><span class="doc">Inputs</span></a> for more information on the expected inputs.</p>
+</section>
+<section id="edit-the-pipeline-configuration-file">
+<h3>Edit the pipeline configuration file<a class="headerlink" href="#edit-the-pipeline-configuration-file" title="Permalink to this heading"></a></h3>
+<p>Next, edit the <code class="docutils literal notranslate"><span class="pre">#####</span> <span class="pre">params</span> <span class="pre">#####</span></code> section of the <code class="docutils literal notranslate"><span class="pre">config/config.yaml</span></code> file (at the top). These include:</p>
+<ul class="simple">
+<li><p>targets (phenotypes) for the associations</p></li>
+<li><p>covariates for the associations (if any)</p></li>
+<li><p>scheme to be used to compute the lineages (sequence types, STs), or a user-provided list of lineage definitions</p></li>
+<li><p>references for association summaries and annotation</p></li>
+<li><p>species to be used for AMR and virulence predictions</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For convenience the params for <em>E. coli</em> are placed as defaults, and those for <em>P. aeruginosa</em> are commented.</p>
+</div>
+<section id="targets-and-covariates-for-associations">
+<h4>Targets and covariates for associations<a class="headerlink" href="#targets-and-covariates-for-associations" title="Permalink to this heading"></a></h4>
+<p>For the targets, specify the name of the columns on the phenotype file <code class="docutils literal notranslate"><span class="pre">data/data.tsv</span></code> that are the phenotypes to be used for the associations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">targets</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;phenotype&quot;</span><span class="p">,</span>
+      <span class="c1">#&quot;phenotype2&quot;,</span>
+      <span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here, phenotype2 is commented (#) and will be ignored.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you have many phenotypes (&gt;5), consider applying a more stringent cutoff post-analysis.</p>
+</div>
+<p>For the covariates, specify the position of the columns on the phenotype file <code class="docutils literal notranslate"><span class="pre">data/data.tsv</span></code> that should be used for the associations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">covariates</span><span class="p">:</span>
+        <span class="n">phenotype</span><span class="p">:</span> <span class="s2">&quot;--use-covariates 6q 7&quot;</span>
+<span class="c1">#        phenotype2: &quot;--use-covariates 7&quot;</span>
+</pre></div>
+</div>
+<p>The numbers refer to the columns in the phenotype file that should be used as covariates.
+The column numering is 1-based. The suffix <code class="docutils literal notranslate"><span class="pre">q</span></code> should be added to the columns when
+they are quantitative and not binary.
+Take into account that each target phenotype has its own set of covariates.
+For more information on the <a class="reference external" href="https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates">phenotypes and covariates look here</a>.</p>
+</section>
+<section id="which-lineage-file-to-use">
+<h4>Which lineage file to use?<a class="headerlink" href="#which-lineage-file-to-use" title="Permalink to this heading"></a></h4>
+<p>If you prefer to use your own lineage definitions, and not those provided by <code class="docutils literal notranslate"><span class="pre">mlst</span></code> (e.g.
+if you prefer poppunk), you can specify a lineage file to be used, editing the <code class="docutils literal notranslate"><span class="pre">lineages_file</span></code> entry.</p>
+</section>
+</section>
+</section>
+<section id="run-the-pipeline">
+<h2>Run the pipeline<a class="headerlink" href="#run-the-pipeline" title="Permalink to this heading"></a></h2>
+<p>First step is to activate the <code class="docutils literal notranslate"><span class="pre">microGWAS</span></code> environment. For this, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">microGWAS</span>
+</pre></div>
+</div>
+<section id="run-the-bootstrapping-script">
+<h3>Run the bootstrapping script<a class="headerlink" href="#run-the-bootstrapping-script" title="Permalink to this heading"></a></h3>
+<p>Then run the bootstrapping script to populate the input files for the pipeline and download the reference genomes used for annotation of hits and the rare variants analyses.
+The bootstrap.sh script takes multiple arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Genus</span></code>: Genus of the species under study (e.g. Escherichia)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Species</span></code>: Species of the species under study (e.g. coli)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Reference</span></code>: Strain name for the reference to be used for rare variants (e.g. IAI39, name should be the one NCBI uses)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Assemblies</span></code>: Comma separated list of NCBI assembly IDs to be downloaded as references (e.g. GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1)</p></li>
+</ul>
+<p>The following example works for <em>E. coli</em> (and downloads the references listed by default in <code class="docutils literal notranslate"><span class="pre">config/config.yaml</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">bootstrap</span><span class="o">.</span><span class="n">sh</span> <span class="n">Escherichia</span> <span class="n">coli</span> <span class="n">IAI39</span> <span class="n">GCF_000013305</span><span class="mf">.1</span><span class="p">,</span><span class="n">GCF_000007445</span><span class="mf">.1</span><span class="p">,</span><span class="n">GCF_000026305</span><span class="mf">.1</span><span class="p">,</span><span class="n">GCF_000026265</span><span class="mf">.1</span><span class="p">,</span><span class="n">GCF_000026345</span><span class="mf">.1</span><span class="p">,</span><span class="n">GCF_000005845</span><span class="mf">.2</span><span class="p">,</span><span class="n">GCF_000026325</span><span class="mf">.1</span><span class="p">,</span><span class="n">GCF_000013265</span><span class="mf">.1</span>
+</pre></div>
+</div>
+<p>The following example works for <em>P. aeruginosa</em> and matches the references listed in the <code class="docutils literal notranslate"><span class="pre">config/config.yaml</span></code> file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">bootstrap</span><span class="o">.</span><span class="n">sh</span> <span class="n">Pseudomonas</span> <span class="n">aeruginosa</span> <span class="n">UCBPP</span><span class="o">-</span><span class="n">PA14</span> <span class="n">GCF_000006765</span><span class="mf">.1</span><span class="p">,</span><span class="n">GCF_000014625</span><span class="mf">.1</span>
+</pre></div>
+</div>
+</section>
+<section id="run-the-actual-snakemake-pipeline">
+<h3>Run the actual snakemake pipeline<a class="headerlink" href="#run-the-actual-snakemake-pipeline" title="Permalink to this heading"></a></h3>
+<p>You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores and <code class="docutils literal notranslate"><span class="pre">mamba</span></code> as the conda backend to install each environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">snakemake</span> <span class="o">-</span><span class="n">p</span> <span class="n">annotate_summary</span> <span class="n">find_amr_vag</span> <span class="n">map_back</span> <span class="n">manhattan_plots</span> <span class="n">heritability</span> <span class="n">enrichment_plots</span> <span class="n">qq_plots</span> <span class="n">tree</span> <span class="o">--</span><span class="n">cores</span> <span class="mi">24</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">conda</span> <span class="o">--</span><span class="n">conda</span><span class="o">-</span><span class="n">frontend</span> <span class="n">mamba</span>
+</pre></div>
+</div>
+</section>
+<section id="running-specific-rules">
+<h3>Running specific rules<a class="headerlink" href="#running-specific-rules" title="Permalink to this heading"></a></h3>
+<p>The pipeline also allows for executing specific rules.
+To run the pipeline up to the pangenome analysis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">snakemake</span> <span class="o">-</span><span class="n">p</span> <span class="n">pangenome</span> <span class="o">--</span><span class="n">cores</span> <span class="mi">24</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">conda</span> <span class="o">--</span><span class="n">cores</span> <span class="mi">24</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">conda</span>
+</pre></div>
+</div>
+<p>The following example instead uses “vanilla” <code class="docutils literal notranslate"><span class="pre">conda</span></code> and skips the generation of the phylogenetic tree:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">snakemake</span> <span class="o">-</span><span class="n">p</span> <span class="n">annotate_summary</span> <span class="n">find_amr_vag</span> <span class="n">map_back</span> <span class="n">manhattan_plots</span> <span class="n">heritability</span> <span class="n">enrichment_plots</span> <span class="n">qq_plots</span> <span class="o">--</span><span class="n">cores</span> <span class="mi">24</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">--</span><span class="n">use</span><span class="o">-</span><span class="n">conda</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="rules.html"><span class="doc">Rules</span></a> for more information on what each rule does.</p>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading"></a></h2>
+<p>For issues with installing or running the software please raise an <a class="reference external" href="https://github.com/microbial-pangenomes-lab/microGWAS/issues">issue on github</a></p>
+<section id="avoid-using-samples-as-references">
+<h3>Avoid using samples as references<a class="headerlink" href="#avoid-using-samples-as-references" title="Permalink to this heading"></a></h3>
+<p>Using a strain with an identifier both in the dataset and as a reference can cause various errors (e.g. with the <code class="docutils literal notranslate"><span class="pre">map_back</span></code> rule) in the pipeline.
+Please make sure sample and reference identifiers do not overlap.</p>
+</section>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading"></a></h2>
+<p>We have included a small dataset in order to test the pipeline installation in reasonable time and resources. In its current state continuous integration (CI) in the cloud is not feasible because certain rules require significant time and resources to complete (<code class="docutils literal notranslate"><span class="pre">annotate_reference</span></code>, <code class="docutils literal notranslate"><span class="pre">get_snps</span></code>). Some workarounds might be added in the future to bypass those rules.
+In the meantime the tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few hours. The test dataset has been created from that <a class="reference external" href="https://github.com/microbial-pangenomes-lab/microGWAS/blob/main">used in a mouse model of bloodstream infection</a></p>
+<p>To run the tests, prepare a symbolic link to the eggnog-mapper databases (as explained above), then do the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">test</span>
+<span class="n">bash</span> <span class="n">run_tests</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>The script will prepare the input files, run the bootstrapping script, then run snakemake twice,
+first in “dry” mode, and then “for real”. Please note that the only rule that is not tested
+is the one estimating lineages (<code class="docutils literal notranslate"><span class="pre">lineage_st</span></code>), as the test dataset is a
+reduced part of the <em>E. coli</em> genome,
+and therefore it would report each isolate with an unknown ST.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="inputs.html" class="btn btn-neutral float-left" title="Inputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="outputs.html" class="btn btn-neutral float-right" title="Outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Microbial Pangenomes Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+ 
+<!-- 100% privacy-first analytics -->
+<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

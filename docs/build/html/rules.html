@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rules &mdash; microGWAS 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Underlying tools" href="tools.html" />
+    <link rel="prev" title="Outputs" href="outputs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            microGWAS
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inputs.html">Inputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Underlying tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">microGWAS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Rules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rules">
+<h1>Rules<a class="headerlink" href="#rules" title="Permalink to this heading"></a></h1>
+<p>The pipeline contains the following endpoint rules:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pangenome</span>
+<span class="go">lineage_st</span>
+<span class="go">find_amr_vag</span>
+<span class="go">tree</span>
+<span class="go">unitigs</span>
+<span class="go">panfeed</span>
+<span class="go">combine_heritability</span>
+<span class="go">pyseer</span>
+<span class="go">pyseer_rare</span>
+<span class="go">wg</span>
+<span class="go">map_back</span>
+<span class="go">qq_plots</span>
+<span class="go">manhattan_plots</span>
+<span class="go">enrichment</span>
+<span class="go">enrichment_plots</span>
+<span class="go">annotate_summary</span>
+</pre></div>
+</div>
+<p>Which accomplish the following functions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unitigs</span></code>: will generate a variant set from the input samples based on a “global” de Brujin graph.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lineage_st</span></code>: will generate a tab-separated file with the predicted sequence types (STs).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">find_amr_vag</span></code>: will generate a summary file with the predicted antimicrobial resistance genes identified into functionally relevant groups, and a summary file with the predicted virulence associated genes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pangenome</span></code>: will find the orthologous gene clusters across all samples and the chosen references</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tree</span></code>: will generate a phylogenetic tree from the core genome alignment output from panaroo.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">combine_heritability</span></code>: will generate a file with the comined heritabilities: built from the lineages of each strain and by using a kinship matrix built from the unitigs presence and absence matrix.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyseer</span></code>: will test for associations of each unitig and the phenotype, as well as gene presence/absence patterns and lineage effects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyseer_rare</span></code>: will test for rare variants based on the predicted deleterious protein coding variants.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">panfeed</span></code>: will test gene-cluster specific k-mers for their association with the phenotype(s), and produce output plots.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wg</span></code>: will train two machine learning models (lasso and a ridge elastic nets) based on the presence/absence patterns of all unitigs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">qq_plots</span></code>: will createa Q-Q plot to check that p-values are not inflated (large ‘shelves’ are symptomatic of poorly controlled confounding population structure)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">map_back</span></code>: will map back the associated genetic variants to the provided reference genomes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manhattan_plots</span></code>: will generate a Manhattan plot of the unitigs that map to the chosen reference genome.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">annotate_summary</span></code>: will generate an annotated summary table for all associations, including: the identity of the gene the variants map to, the number of strains, the average association pvalue, the gene ID across the selected reference genomes, and automatic annotations provided by <code class="docutils literal notranslate"><span class="pre">eggnog-mapper</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enrichment</span></code>: will generate a file with the functional enrichment of the associated variants for GO terms, COG categories and KEGG pathways.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enrichment_plots</span></code>: will generate visualizations from the results of the <code class="docutils literal notranslate"><span class="pre">enrichment</span></code> rule.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Please note that some of the above rules will depend on each other.</p>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="outputs.html" class="btn btn-neutral float-left" title="Outputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="Underlying tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Microbial Pangenomes Lab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+ 
+<!-- 100% privacy-first analytics -->
+<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
