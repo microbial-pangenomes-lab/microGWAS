@@ -568,7 +568,7 @@ rule qq_plots:
   input:
     expand('out/associations/{target}/qq_{variant}.png',
            target=config["targets"],
-           variant=["unitigs", "gpa", "rare"]),
+           variant=["unitigs", "gpa", "rare", "panfeed"]),
 
 rule run_qq_plot:
   input: "out/associations/{target}/{variant}.tsv"
