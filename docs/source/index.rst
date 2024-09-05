@@ -34,4 +34,5 @@ Contents
    outputs
    rules
    tools
+   tutorials
 

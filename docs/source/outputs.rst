@@ -98,7 +98,6 @@ with one column per antimicrobial "class".
     | | |____gpa_filtered.tsv
     | | |____manhattan.png
     | | |____qq_gpa.png
-    | | |____qq_panfeed.png
     | | |____qq_rare.png
     | | |____qq_unitigs.png
     | | |____COG.png

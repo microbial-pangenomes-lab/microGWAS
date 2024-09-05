@@ -55,18 +55,27 @@ Then run::
 Create a symbolic link to the ``eggnog-mapper`` database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can create a symbolic link for the eggnong-mapper database to be placed in the ``data/eggnog-mapper`` by using the following::
+You can setup the eggnog-mapper dabase using one of the following approaches:
 
-   ln -s /storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
+1. If you have already downloaded the eggnog-db: create a symbolic link for the directory where the eggnog-mapper databases are located.
+
+.. code-block:: console
+
+   ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
+
+2. If you have not downloaded the eggnog-db: 
+
+Activate the microGWAS environment and run the following command.
+
+.. code-block:: console
+   
+   snakemake -p data/eggnog-mapper/eggnog.db --cores 8 --use-conda --conda-frontend mamba
+
+This will download the eggnog-db, and you can now create a symbolic link as stated in 1 above. 
 
 .. note::
-    The above path would likely be different in your system.
+    The above path would likely be different in your system. Adjust it according to your specific installation location.
 
-If you do not have installed eggnog-mapper in your system, you can install it using conda::
-
-   conda install -c bioconda -c conda-forge eggnog-mapper
-
-Then use the ``download_eggnog_data.py`` command. You can find more information on how to download the eggnog database on the `eggnog-mapper documentation <https://github.com/eggnogdb/eggnog-mapper/wiki/eggNOG-mapper-v2.1.5-to-v2.1.12#user-content-Conda_bioconda_channel_version>`__
 
 Configure the pipeline run
 --------------------------
@@ -158,7 +167,16 @@ You are now ready to run the full pipeline! The following example runs all the a
 
    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
 
+Running specific rules
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The pipeline also allows for executing specific rules.
+To run the pipeline up to the pangenome analysis::
+
+   snakemake -p pangenome --cores 24 --use-conda --cores 24 --verbose --use-conda
+
 The following example instead uses "vanilla" ``conda`` and skips the generation of the phylogenetic tree::
+   
 
    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda
 
