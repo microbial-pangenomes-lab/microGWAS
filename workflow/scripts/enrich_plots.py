@@ -34,18 +34,23 @@ def plot_enrichment(data, plot_file, category_label, count_col,
     enrichment_data_sorted = enrichment_data.sort_values(by=count_col, ascending=True)
     enrichment_data_sorted['-log10(padj)'] = -np.log10(enrichment_data_sorted[qval_col])
 
+    cmap = plt.cm.viridis.copy()
+    cmap.set_under('grey')
+    cmap = plt.cm.ScalarMappable(cmap=cmap,
+                                 norm=plt.Normalize(vmin=-np.log10(0.01),
+                                                    vmax=-np.log10(1E-10)))
+    cmap.set_array([])
+
     height = max([8, enrichment_data_sorted.shape[0] / 6])
     plt.figure(figsize=(6, height))
     bars = plt.barh([' - '.join(x).rstrip() for x in enrichment_data_sorted[name_cols].values],
                     enrichment_data_sorted[count_col],
-                    color=plt.cm.viridis(enrichment_data_sorted['-log10(padj)'] / max(enrichment_data_sorted['-log10(padj)'])))
+                    color=cmap.to_rgba(enrichment_data_sorted['-log10(padj)']))
 
     plt.xlabel('Gene Count')
     plt.ylabel(category_label)
     plt.grid(axis='x', linestyle='--', alpha=0.5)
-    cbar = plt.colorbar(plt.cm.ScalarMappable(cmap='viridis',
-                               norm=plt.Normalize(vmin=enrichment_data_sorted['-log10(padj)'].min(),
-                               vmax=enrichment_data_sorted['-log10(padj)'].max())),
+    cbar = plt.colorbar(cmap,
                         pad=0.05, shrink=0.5,
                         ax=plt.gca()
                         )
