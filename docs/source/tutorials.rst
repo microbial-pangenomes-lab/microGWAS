@@ -15,40 +15,217 @@ Prerequisites
 
 Before you begin
 ----------------
-1. **Prepare Your Data**:
 
-   a. Download the `phenotype data <https://raw.githubusercontent.com/mgalardini/2018_ecoli_pathogenicity/master/data/phenotypes/phenotypes.tsv>`_  and save it as specified in :doc:`inputs`.
+1. Install Conda (if NOT already installed):
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   If you don't have Conda installed, you can install it via Miniconda. Miniconda is a minimal installer for Conda.
+
+   a. Download the Miniconda installer:
+
+      For Linux:
+
+      .. code-block:: console
+
+         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+
+      For macOS:
+
+      .. code-block:: console
+
+         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
+
+   b. Install Miniconda:
+
+      .. code-block:: console
+
+         bash miniconda.sh -b -p $HOME/miniconda
+
+   c. Initialize Conda:
+
+      .. code-block:: console
+
+         eval "$($HOME/miniconda/bin/conda shell.bash hook)"
+
+   d. Verify the installation:
+
+      .. code-block:: console
+
+         conda --version
+
+   You should see the Conda version printed to the console.
+
+2. Clone the repository using ``git``:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   .. code-block:: console
+
+      git clone --recursive https://github.com/microbial-pangenomes-lab/microGWAS.git microGWAS
+      cd microGWAS
+
+   Note: The ``--recursive`` flag is used to clone any submodules that the repository might have.
+
+3. Set up the conda environment:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   First, add the necessary channels:
+
+   .. code-block:: console
+
+      conda config --add channels defaults
+      conda config --add channels bioconda
+      conda config --add channels conda-forge  
+
+   Now, create and activate the microGWAS conda environment:
+
+   .. code-block:: console
+
+      conda env create -f environment.yml
+      conda activate microGWAS
+
+4. Prepare your input data:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+a. Create a directory structure for your input files:
+
+   .. code-block:: console
+
+      mkdir -p data/gffs data/fastas
+
+b. Download sample genomes in ``GFF`` format:
+
+   .. code-block:: console
    
-   b. Download sample genomes in the required formats:
-      
-      - `.gff files <https://figshare.com/articles/dataset/Escherichia_coli_pathogenicity_GWAS_input_genome_sequences_annotations/19536163?file=34723351>`_
-      - `.fasta files <https://figshare.com/articles/dataset/Escherichia_coli_pathogenicity_GWAS_input_genome_sequences_updated_/11879340?file=21781689>`_
+      wget -O data/gff.tar.gz https://figshare.com/ndownloader/files/34723351
    
-   c. Ensure that the downloaded genomes meet the requirements stipulated in :doc:`inputs`
+   Extract GFF files:
 
-.. tip::
-      Double-check that your sample names are not just numbers, as this can cause issues in the analysis.
+   .. code-block:: console
 
-2. **Set up the environment and configure the pipeline**:
+      tar -xzvf data/gff.tar.gz -C data/gffs/
 
-   a. Install and setup the microGWAS conda environment and the eggnog database. See :doc:`usage` for detailed instructions.
+c. Download sample genomes in ``FASTA`` format:
 
-   b. Configure the pipeline by editing the ``config/config.yaml`` as stipulated in the ``Edit the pipeline configuration file`` in the :doc:`usage` section of this documentation. 
+   .. code-block:: console
+   
+      wget -O data/genomes.tgz https://figshare.com/ndownloader/files/21781689
+   
+   Extract genome FASTA files:
 
-Running the microGWAS pipeline
-------------------------------
+   .. code-block:: console
 
-Activate the ``microGWAS`` conda environment.
+      tar -xzvf data/genomes.tgz -C data/fastas/
+
+
+d. Verify your directory structure:
+   
+   After extraction, you should have a directory structure that looks like this:
+
+   .. code-block:: none
+
+      data/
+      ├── fastas/
+      │   ├── genome1.fasta
+      │   ├── genome2.fasta
+      │   └── ...
+      ├── gffs/
+      │   ├── genome1.gff
+      │   ├── genome2.gff
+      │   └── ...
+      ├── data.tsv
+      ├── gff.tar.gz
+      └── genomes.tgz
+
+e. Clean up:
+   
+   Remove the compressed files if you don't need them anymore:
+
+   .. code-block:: console
+
+      rm data/gff.tar.gz data/genomes.tgz
+
+f. Download and modify the phenotype data:
+
+      .. code-block:: console
+
+         wget https://raw.githubusercontent.com/mgalardini/2018_ecoli_pathogenicity/master/data/phenotypes/phenotypes.tsv -O data/data.tsv
+   
+We need to add columns for the FASTA and GFF file paths and reorder them. Run the following commands:
 
 .. code-block:: console
 
-    conda activate microGWAS
+   We need a code to enable the user to modify their phentoype file to match the printed output. Perhaps some few bash commands?
+Verify the updated phenotype file:
+
+.. code-block:: console
+
+   head -n 5 data/updated_data.tsv
+
+You should see output similar to this:
+
+.. code-block:: none
+
+   strain  fasta   gff     killed  phenotype
+   ECOR-01 data/fastas/ECOR-01.fasta       data/gffs/ECOR-01.gff   0       0
+   ECOR-02 data/fastas/ECOR-02.fasta       data/gffs/ECOR-02.gff   10      1
+   ECOR-03 data/fastas/ECOR-03.fasta       data/gffs/ECOR-03.gff   0       0
+   ECOR-04 data/fastas/ECOR-04.fasta       data/gffs/ECOR-04.gff   0       0   
+
+5. Set up the environment and configure the pipeline:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+a. Set up the eggnog-mapper database:
+
+   If you have already downloaded the ``eggnog-db``:
+   
+   Create a symbolic link for the directory where the eggnog-mapper databases are located:
+
+   .. code-block:: console
+
+      ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
+
+   If you have not downloaded the ``eggnog-db``:
+   
+   Run the following command to download the eggnog-db:
+
+   .. code-block:: console
+
+      snakemake -p data/eggnog-mapper/eggnog.db --cores 8 --use-conda --conda-frontend mamba
+
+   After the download is complete, create the symbolic link as shown above.
+
+b. Configure the pipeline:
+
+   Edit the ``config/config.yaml`` file. In the ``##### params #####`` section, uncomment and adjust the following parameters:
+
+   .. code-block:: yaml
+
+      targets: [
+         "phenotype",
+         #"phenotype2",
+      ]
+      
+      # MLST scheme
+      mlst_scheme: ecoli
+
+      # references for association summaries and annotation
+      summary_references: "--reference 536 --reference CFT073 --reference ED1a --reference IAI1 --reference IAI39 --reference K-12_substr._MG1655 --reference UMN026 --reference UTI89"
+      annotation_references: "--focus-strain 536 --focus-strain CFT073 --focus-strain ED1a --focus-strain IAI1 --focus-strain IAI39 --focus-strain K-12_substr._MG1655 --focus-strain UMN026 --focus-strain UTI89"
+      enrichment_reference: "IAI39"
+      
+      # species to be used for AMR and virulence predictions
+      species_amr: "Escherichia"
+
+   Note: These parameters are initially commented out in the file. You need to uncomment them (remove the '#' at the start of each line) and adjust as necessary for your analysis.
+
+Running the microGWAS pipeline
+------------------------------
 
 Run the bootsrapping script.
 
 .. code-block:: console
 
-    bash bootstrap.sh 536.fasta,CFT073.fasta,ED1a.fasta,IAI1.fasta,IAI39.fasta,K-12_substr._MG1655.fasta,UMN026.fasta,UTI89.fasta
+    bash bootstrap.sh Escherichia coli IAI39 
 
 This script populates the input files used for the analysis and downloads the relevant reference genomes necessary for annotating the hits for *Escherichia coli* and analyse the variants
 
