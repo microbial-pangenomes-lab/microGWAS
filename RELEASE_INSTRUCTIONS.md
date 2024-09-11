@@ -16,7 +16,8 @@ edit the `VERSION` file to indicate the target release version (e.g. `X.X.X`).
 Also edit the `docs/source/conf.py` file so that the `release` and `version`
 variables are up to date.
 
-Then do `git add VERSION docs/source/conf.py` followed by `git commit -m "Version bump"`.
+Then do `git add VERSION docs/source/conf.py` followed by `git commit -m "Version bump"`,
+followed by `git push`.
 
 ## 3) Make a github release
 
