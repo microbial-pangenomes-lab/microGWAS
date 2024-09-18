@@ -101,9 +101,7 @@ If you already have the eggnog-db downloaded, create a symbolic link to the dire
 > the above path would likely be different in your system. The best way to get these files is to install
 `eggnog-mapper` using a `conda` environment and then use the `download_eggnog_data.py` command.
 
-If you do not have the eggnog-db downloaded, activate the `microGWAS` envioronment and run the following command:
-
-    snakemake -p data/eggnog-mapper/eggnog.db --cores 8 --use-conda --conda-frontend mamba
+If you do not have the eggnog-db downloaded, it will be automatically downloaded within the pipeline.
 
 ### **6. Run the bootstrapping script**
 
@@ -154,8 +152,7 @@ tests can be run on a decent laptop with 8 cores and at least ~10Gb RAM in a few
 
 The test dataset has been created from that [used in a mouse model of bloodstream infection]().
 
-To run the tests, prepare the eggnog-mapper
-databases (as explained above), then do the following:
+To run the tests, do the following:
 
     cd test
     bash run_tests.sh
