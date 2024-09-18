@@ -24,12 +24,17 @@ then by `git push`.
 Apply a tag to identify the release in the git history by doing: `git tag X.X.X`
 (where `X.X.X` is the target version), followed by `git push --tags`.
 
-Download (better if in an empty folder) a clean tarball of the new version:
+Prepare (in an empty folder) a clean tarball of the new version:
 
-    wget -O tmp.tar.gz https://github.com/microbial-pangenomes-lab/microGWAS/archive/refs/tags/X.X.X.tar.gz
-    tar -xvf tmp.tar.gz
-    mv microGWAS-X.X.X/ microGWAS
-    tar -cvzf microGWAS.tar.gz microGWAS
+    git clone --recursive --branch X.X.X git@github.com:microbial-pangenomes-lab/microGWAS.git
+    cd microGWAS
+    mkdir ../temp_archive
+    git archive --format=tar --prefix=microGWAS/ X.X.X | tar -xf - -C ../temp_archive
+    git submodule foreach --recursive 'git archive --prefix=$path/ HEAD | tar -xf - -C ../../temp_archive'
+    tar -czf ../microGWAS.tar.gz -C ../temp_archive .
+    rm -rf ../temp_archive
+    cd ..
+    rm -rf microGWAS
 
 Go to [microGWAS's release page](https://github.com/microbial-pangenomes-lab/microGWAS/releases)
 , then click on "tags", click on the tag you just pushed, and finally click on
