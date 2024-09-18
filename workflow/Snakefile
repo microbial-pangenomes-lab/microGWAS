@@ -27,13 +27,16 @@ if username is None:
 ##### rules #####
 
 rule download_eggnog:
-  output: "data/eggnog-mapper/eggnog.db"
+  output: config["emapper_db"]
   conda: "envs/eggnog-mapper.yaml"
-  params: config["eggnogdb"]
+  log: "out/logs/download_eggnog.log"
+  params:
+    db=config["eggnogdb"],
+    folder=config["emapper"]
   shell:
     """
-    mkdir -p data/eggnog-mapper
-    download_eggnog_data.py --data_dir data/eggnog-mapper -y -P -M -H -d {params} -F
+    mkdir -p {params.folder}
+    download_eggnog_data.py --data_dir {params.folder} -y -H -d {params.db} 2> {log}
     """
 
 rule unitigs:
@@ -842,7 +845,8 @@ rule run_annotate_summary:
   input:
     summary="out/associations/{target}/summary.tsv",
     pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"]
+    genes=config["pangenome_genes"],
+    emapper=config["emapper_db"]
   output:
     "out/associations/{target}/annotated_summary.tsv"
   params:
@@ -875,7 +879,8 @@ rule run_annotate_rare_summary:
   input:
     summary="out/associations/{target}/rare_summary.tsv",
     pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"]
+    genes=config["pangenome_genes"],
+    emapper=config["emapper_db"]
   output:
     "out/associations/{target}/annotated_rare_summary.tsv"
   params:
@@ -908,7 +913,8 @@ rule run_annotate_gpa_summary:
   input:
     summary="out/associations/{target}/gpa_summary.tsv",
     pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"]
+    genes=config["pangenome_genes"],
+    emapper=config["emapper_db"]
   output:
     "out/associations/{target}/annotated_gpa_summary.tsv"
   params:
@@ -941,7 +947,8 @@ rule run_annotate_panfeed_summary:
   input:
     summary="out/associations/{target}/summary_panfeed.tsv",
     pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"]
+    genes=config["pangenome_genes"],
+    emapper=config["emapper_db"]
   output:
     "out/associations/{target}/annotated_panfeed_summary.tsv"
   params:
@@ -974,7 +981,8 @@ rule run_annotate_summary_wg:
   input:
     summary="out/wg/{target}/summary_{model}.tsv",
     pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"]
+    genes=config["pangenome_genes"],
+    emapper=config["emapper_db"]
   output:
     "out/wg/{target}/annotated_summary_{model}.tsv"
   params:
@@ -1006,7 +1014,8 @@ rule run_annotate_summary_wg:
 rule annotate_reference:
   input:
     pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"]
+    genes=config["pangenome_genes"],
+    emapper=config["emapper_db"]
   output: config["annotated_reference"]
   params:
     emapper_data=config["emapper"],

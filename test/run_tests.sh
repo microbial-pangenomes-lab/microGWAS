@@ -30,6 +30,9 @@ cp data.tsv ../data/
 cp lineages.txt ../data/
 sed -i 's$lineages_file: \"out/lineages_mlst.txt\"$lineages_file: \"data/lineages.txt\"$g' ../config/config.yaml 
 
+# download a smaller eggnog databse (gamma-proteobacteria)
+sed -i 's$eggnogdb: \"2\"$eggnogdb: \"1236\"$g' ../config/config.yaml 
+
 # ready to go
 cd ..
 bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1

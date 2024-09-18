@@ -60,6 +60,7 @@ inputs: "out/inputs.tsv"
 # emmaper: path to eggnog-mapper data directory
 # note: can also be a symbolic link
 emapper: "data/eggnog-mapper"
+emapper_db: "data/eggnog-mapper/eggnog.db"
 
 # snpeff
 references_dir: "data/references"
