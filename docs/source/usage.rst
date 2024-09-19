@@ -90,11 +90,32 @@ Edit the pipeline configuration file
 
 Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file (at the top). These include:
 
-* targets (phenotypes) for the associations
-* covariates for the associations (if any)
-* scheme to be used to compute the lineages (sequence types, STs), or a user-provided list of lineage definitions
-* references for association summaries and annotation
-* species to be used for AMR and virulence predictions
+* ``targets``: Name of the columns in the phenotypes file to be used in the associations. In the example below the target `phenotype` will be the one considered to test for the associations. `phenotype2` is commented (# in front) and will simply be ignored.
+
+.. code-block:: console
+
+   targets: [
+            "phenotype"
+            #"phenotype2",
+            ]
+
+* ``covariates``: Covariates to be used for the associations for each phenotype. THe numbers refer to the columns in the phenotype file that should be used as covariates. The suffix "q" is added when they are quantitative and not binary. The column numering is 1-based. `See also <https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates>`__ for more information. In the example below, the columns 6 and 7 are used for the target `phenotype`. The column 6 contains a quantitative covariate. The `phenotype2` is commented and will simply be ignored.
+
+.. code-block:: console
+
+   covariates:
+           phenotype: "--use-covariates 6q 7"
+   #       phenotype2: "--use-covariates 7",
+
+* ``MLST scheme``: Change the mlst scheme to be used to compute lineages. Find more information on the `available schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__
+* ``references for association summaries and annotation``: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented.
+* ``species_amr``: species to be used for AMR and virulence predictions
+* ``lineages_file``: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
+* ``eggnogdb``: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found `here <http://eggnog5.embl.de/#/app/downloads>`__
+* Filters to remove spurious hits: change them to be more or less stringent (default: 0)
+    * ``length``:  Minimum unitig length (ignored if ``--panfeed`` is used)
+    * ``min_hits``: Minimum number of strains
+    * ``max_genes``: Maximum number of genes to which a unitig/kmer can map
 
 .. note::
     For convenience the params for *E. coli* are placed as defaults, and those for *P. aeruginosa* are commented.
