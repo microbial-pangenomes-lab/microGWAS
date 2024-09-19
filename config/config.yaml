@@ -47,6 +47,20 @@ lineages_file: "out/lineages_mlst.txt"
 # Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
 eggnogdb: "2"
 
+# filters to remove spurious hits
+# defaults are set to 0
+# change them to be more/less stringent
+# length: Minimum unitig length (ignored if `--panfeed` is used)
+length: 0
+# min_hits: Minimum number of strains
+min_hits: 0
+# max_genes: Maximum number of genes to which a unitig/kmer can map
+max_genes: 0
+# example values
+#length: 30
+#min_hits: 9
+#max_genes: 10
+
 ##### inputs (there already) #####
 
 # samples file
