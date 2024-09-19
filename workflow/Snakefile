@@ -746,7 +746,10 @@ rule run_map_summary:
     summary="out/associations/{target}/summary.tsv"
   params:
     d=config["references_gffs"],
-    r=config["summary_references"]
+    r=config["summary_references"],
+    l=config["length"],
+    mh=config["min_hits"],
+    mg=config["max_genes"]
   log: "out/logs/map_summary_{target}.log"
   shell:
     """
@@ -754,7 +757,7 @@ rule run_map_summary:
            {input.phenotypes} {wildcards.target} {input.filtered} \
            --pangenome {input.pangenome} \
            --pangenome-genes {input.pangenome2} \
-           --length 30 --minimum-hits 9 --maximum-genes 10 \
+           --length {params.l} --minimum-hits {params.mh} --maximum-genes {params.mg} \
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-lrt-pvalue \
@@ -771,7 +774,9 @@ rule run_map_summary_panfeed:
     summary="out/associations/{target}/summary_panfeed.tsv"
   params:
     d=config["references_gffs"],
-    r=config["summary_references"]
+    r=config["summary_references"],
+    mh=config["min_hits"],
+    mg=config["max_genes"]
   log: "out/logs/map_summary_panfeed_{target}.log"
   shell:
     """
@@ -779,7 +784,7 @@ rule run_map_summary_panfeed:
            {input.phenotypes} {wildcards.target} /dev/null \
            --pangenome {input.pangenome} \
            --pangenome-genes {input.pangenome2} \
-           --minimum-hits 9 --maximum-genes 10 \
+           --minimum-hits {params.mh} --maximum-genes {params.mg} \
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-lrt-pvalue \
@@ -798,7 +803,10 @@ rule run_map_summary_wg:
     summary="out/wg/{target}/summary_{model}.tsv"
   params:
     d=config["references_gffs"],
-    r=config["summary_references"]
+    r=config["summary_references"],
+    l=config["length"],
+    mh=config["min_hits"],
+    mg=config["max_genes"]
   log: "out/logs/map_summary_{model}_{target}.log"
   shell:
     """
@@ -806,7 +814,7 @@ rule run_map_summary_wg:
            {input.phenotypes} {wildcards.target} {input.filtered} \
            --pangenome {input.pangenome} \
            --pangenome-genes {input.pangenome2} \
-           --length 30 --minimum-hits 9 --maximum-genes 10 \
+           --length {params.l} --minimum-hits {params.mh} --maximum-genes {params.mg} \
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-beta \

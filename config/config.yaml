@@ -40,12 +40,22 @@ species_amr: "Escherichia"
 # use "out/lineages_mlst.txt" to use mlst
 # or "out/lineages_poppunk.tsv" for poppunk
 # or an existing file for a custom lineages list
-lineages_file: "out/lineages_mlst.txt"
+lineages_file: "data/lineages.txt"
 
 # eggnogdb: Tax ID of eggNOG HMM database to download
 # default: "2" for Bacteria; else can be "taxid"
 # Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
-eggnogdb: "2"
+eggnogdb: "1236"
+
+# filters to remove spurious hits
+# defaults are set to 0
+# twist them to be more/less stringent
+length: 0
+min_hits: 0
+max_genes: 0
+#len: 30
+#minhits: 9
+#maxgenes: 10
 
 ##### inputs (there already) #####
 
