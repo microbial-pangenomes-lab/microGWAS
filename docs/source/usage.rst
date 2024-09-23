@@ -52,30 +52,22 @@ Then run::
     conda env create -f environment.yml
     conda activate microGWAS
 
-Create a symbolic link to the ``eggnog-mapper`` database
+Setup the ``eggnog-mapper`` database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can setup the eggnog-mapper dabase using one of the following approaches:
-
-1. If you have already downloaded the eggnog-db: create a symbolic link for the directory where the eggnog-mapper databases are located.
+The ``microGWAS`` pipeline requires the eggnog database for functional annotation. 
+If you have an existing eggnog database and want to use it, create a symbolic link to your actual eggnog data directory. 
 
 .. code-block:: console
 
    ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
 
-2. If you have not downloaded the eggnog-db: 
-
-Activate the microGWAS environment and run the following command.
-
-.. code-block:: console
-   
-   snakemake -p data/eggnog-mapper/eggnog.db --cores 8 --use-conda --conda-frontend mamba
-
-This will download the eggnog-db, and you can now create a symbolic link as stated in 1 above. 
-
 .. note::
-    The above path would likely be different in your system. Adjust it according to your specific installation location.
 
+    You will need to replace ``/fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/`` with the actuall path to the eggnog-mapper on your system.
+
+If you do not have the eggnog database, proceed to run the ``microGWAS`` pipeline. The pipeline will automatically download and setup the required eggnog database during its execution.
+You will not need to create a symbolic link in this case.
 
 Configure the pipeline run
 --------------------------
