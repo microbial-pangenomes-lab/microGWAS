@@ -52,30 +52,22 @@ Then run::
     conda env create -f environment.yml
     conda activate microGWAS
 
-Create a symbolic link to the ``eggnog-mapper`` database
+Setup the ``eggnog-mapper`` database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can setup the eggnog-mapper dabase using one of the following approaches:
-
-1. If you have already downloaded the eggnog-db: create a symbolic link for the directory where the eggnog-mapper databases are located.
+The ``microGWAS`` pipeline requires the eggnog database for functional annotation. 
+If you have an existing eggnog database and want to use it, create a symbolic link to your actual eggnog data directory. 
 
 .. code-block:: console
 
    ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
 
-2. If you have not downloaded the eggnog-db: 
-
-Activate the microGWAS environment and run the following command.
-
-.. code-block:: console
-   
-   snakemake -p data/eggnog-mapper/eggnog.db --cores 8 --use-conda --conda-frontend mamba
-
-This will download the eggnog-db, and you can now create a symbolic link as stated in 1 above. 
-
 .. note::
-    The above path would likely be different in your system. Adjust it according to your specific installation location.
 
+    You will need to replace ``/fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/`` with the actuall path to the eggnog-mapper on your system.
+
+If you do not have the eggnog database, proceed to run the ``microGWAS`` pipeline. The pipeline will automatically download and setup the required eggnog database during its execution.
+You will not need to create a symbolic link in this case.
 
 Configure the pipeline run
 --------------------------
@@ -90,32 +82,11 @@ Edit the pipeline configuration file
 
 Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file (at the top). These include:
 
-* ``targets``: Name of the columns in the phenotypes file to be used in the associations. In the example below the target `phenotype` will be the one considered to test for the associations. `phenotype2` is commented (# in front) and will simply be ignored.
-
-.. code-block:: console
-
-   targets: [
-            "phenotype"
-            #"phenotype2",
-            ]
-
-* ``covariates``: Covariates to be used for the associations for each phenotype. THe numbers refer to the columns in the phenotype file that should be used as covariates. The suffix "q" is added when they are quantitative and not binary. The column numering is 1-based. `See also <https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates>`__ for more information. In the example below, the columns 6 and 7 are used for the target `phenotype`. The column 6 contains a quantitative covariate. The `phenotype2` is commented and will simply be ignored.
-
-.. code-block:: console
-
-   covariates:
-           phenotype: "--use-covariates 6q 7"
-   #       phenotype2: "--use-covariates 7",
-
-* ``MLST scheme``: Change the mlst scheme to be used to compute lineages. Find more information on the `available schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__
-* ``references for association summaries and annotation``: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented.
-* ``species_amr``: species to be used for AMR and virulence predictions
-* ``lineages_file``: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
-* ``eggnogdb``: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found `here <http://eggnog5.embl.de/#/app/downloads>`__
-* Filters to remove spurious hits: change them to be more or less stringent (default: 0)
-    * ``length``:  Minimum unitig length (ignored if ``--panfeed`` is used)
-    * ``min_hits``: Minimum number of strains
-    * ``max_genes``: Maximum number of genes to which a unitig/kmer can map
+* targets (phenotypes) for the associations
+* covariates for the associations (if any)
+* scheme to be used to compute the lineages (sequence types, STs), or a user-provided list of lineage definitions
+* references for association summaries and annotation
+* species to be used for AMR and virulence predictions
 
 .. note::
     For convenience the params for *E. coli* are placed as defaults, and those for *P. aeruginosa* are commented.
