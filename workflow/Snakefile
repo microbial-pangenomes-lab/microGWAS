@@ -684,20 +684,22 @@ rule run_map_back_all:
 
 rule manhattan_plots:
   input:
-    expand("out/associations/{target}/manhattan.png",
-           target=config["targets"])
+    expand("out/associations/{target}/manhattan.{format}",
+           target=config["targets"],
+           format=['png', 'svg']),
 
 rule run_manhattan_plot:
   input:
     mapped="out/associations/{target}/mapped_all.tsv",
     patterns="out/associations/{target}/unitigs_patterns.txt"
-  output: "out/associations/{target}/manhattan.png"
+  output: "out/associations/{target}/manhattan.{format}"
   params: config["enrichment_reference"]
   conda: "envs/pyseer.yaml"
-  log: "out/logs/manhattan_plot_{target}.log"
+  log: "out/logs/manhattan_plot_{target}_{format}.log"
   shell:
     """
-    python workflow/scripts/manhattan_plot.py {input} {params} {output}
+    python workflow/scripts/manhattan_plot.py {input.mapped} {params} {output} \
+           -t $(python3 workflow/scripts/count_patterns.py {input.patterns} --threshold)
     """
 
 rule run_map_back_wg:
@@ -1135,24 +1137,39 @@ rule run_enrich_wg:
 
 rule enrichment_plots:
   input:
-    expand("out/associations/{target}/COG.png", target=config["targets"]),
-    expand("out/associations/{target}/GO.png", target=config["targets"]),
-    expand("out/associations/{target}/KEGG.png", target=config["targets"]),
-    expand('out/associations/{target}/COG_{kind}.png',
+    expand("out/associations/{target}/COG.{format}",
            target=config["targets"],
-           kind=['gpa', 'rare', 'panfeed']),
-    expand('out/associations/{target}/GO_{kind}.png',
+           format=['png', 'svg']),
+    expand("out/associations/{target}/GO.{format}",
            target=config["targets"],
-           kind=['gpa', 'rare', 'panfeed']),
-    expand('out/associations/{target}/KEGG_{kind}.png',
+           format=['png', 'svg']),
+    expand("out/associations/{target}/KEGG.{format}",
            target=config["targets"],
-           kind=['gpa', 'rare', 'panfeed']),
-    expand("out/wg/{target}/COG_{model}.png", target=config["targets"],
-                                              model=["ridge", "lasso"]),
-    expand("out/wg/{target}/GO_{model}.png", target=config["targets"],
-                                              model=["ridge", "lasso"]),
-    expand("out/wg/{target}/KEGG_{model}.png", target=config["targets"],
-                                              model=["ridge", "lasso"]),
+           format=['png', 'svg']),
+    expand('out/associations/{target}/COG_{kind}.{format}',
+           target=config["targets"],
+           kind=['gpa', 'rare', 'panfeed'],
+           format=['png', 'svg']),
+    expand('out/associations/{target}/GO_{kind}.{format}',
+           target=config["targets"],
+           kind=['gpa', 'rare', 'panfeed'],
+           format=['png', 'svg']),
+    expand('out/associations/{target}/KEGG_{kind}.{format}',
+           target=config["targets"],
+           kind=['gpa', 'rare', 'panfeed'],
+           format=['png', 'svg']),
+    expand("out/wg/{target}/COG_{model}.{format}",
+           target=config["targets"],
+           model=["ridge", "lasso"],
+           format=['png', 'svg']),
+    expand("out/wg/{target}/GO_{model}.{format}",
+           target=config["targets"],
+           model=["ridge", "lasso"],
+           format=['png', 'svg']),
+    expand("out/wg/{target}/KEGG_{model}.{format}",
+           target=config["targets"],
+           model=["ridge", "lasso"],
+           format=['png', 'svg']),
 
 rule run_enrichment_plots:
   input:
@@ -1160,11 +1177,11 @@ rule run_enrichment_plots:
     go="out/associations/{target}/GO.tsv",
     kegg="out/associations/{target}/KEGG.tsv"
   output:
-    cog_plot="out/associations/{target}/COG.png",
-    go_plot="out/associations/{target}/GO.png",
-    kegg_plot="out/associations/{target}/KEGG.png"
+    cog_plot="out/associations/{target}/COG.{format}",
+    go_plot="out/associations/{target}/GO.{format}",
+    kegg_plot="out/associations/{target}/KEGG.{format}"
   conda: "envs/pyseer.yaml"
-  log: "out/logs/enrich_plots_{target}.log"
+  log: "out/logs/enrich_plots_{target}_{format}.log"
   shell:
     """
     python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
@@ -1177,11 +1194,11 @@ rule run_enrichment_plots_alt:
     go="out/associations/{target}/GO_{kind}.tsv",
     kegg="out/associations/{target}/KEGG_{kind}.tsv"
   output:
-    cog_plot="out/associations/{target}/COG_{kind}.png",
-    go_plot="out/associations/{target}/GO_{kind}.png",
-    kegg_plot="out/associations/{target}/KEGG_{kind}.png"
+    cog_plot="out/associations/{target}/COG_{kind}.{format}",
+    go_plot="out/associations/{target}/GO_{kind}.{format}",
+    kegg_plot="out/associations/{target}/KEGG_{kind}.{format}"
   conda: "envs/pyseer.yaml"
-  log: "out/logs/enrich_plots_{target}_{kind}.log"
+  log: "out/logs/enrich_plots_{target}_{kind}_{format}.log"
   shell:
     """
     python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
@@ -1194,11 +1211,11 @@ rule run_enrichment_plots_wg:
     go="out/wg/{target}/GO_{model}.tsv",
     kegg="out/wg/{target}/KEGG_{model}.tsv"
   output:
-    cog_plot="out/wg/{target}/COG_{model}.png",
-    go_plot="out/wg/{target}/GO_{model}.png",
-    kegg_plot="out/wg/{target}/KEGG_{model}.png"
+    cog_plot="out/wg/{target}/COG_{model}.{format}",
+    go_plot="out/wg/{target}/GO_{model}.{format}",
+    kegg_plot="out/wg/{target}/KEGG_{model}.{format}"
   conda: "envs/pyseer.yaml"
-  log: "out/logs/enrich_plots_{target}_{model}.log"
+  log: "out/logs/enrich_plots_{target}_{model}_{format}.log"
   shell:
     """
     python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
