@@ -165,7 +165,14 @@ d. Download and modify the phenotype data:
 
       wget https://raw.githubusercontent.com/mgalardini/2018_ecoli_pathogenicity/master/data/phenotypes/phenotypes.tsv -O data/data.tsv
 
-   This command will update your ``data/data.tsv`` file, adding the paths for fasta and gff files.
+   The phenotype file contains two reference strains, "ED1a" and "IAI39". These strains should not be included in the phenotype file as they will cause conflicts within the pipeline.
+   To remove these strains from you phenotype file, do the following:
+
+   .. code-block:: console 
+
+      sed -i '' '/^ED1a	/d; /^IAI39	/d' data/data.tsv
+
+   The following command will update your ``data/data.tsv`` file, adding the paths for fasta and gff files.
 
    .. code-block:: console
 
