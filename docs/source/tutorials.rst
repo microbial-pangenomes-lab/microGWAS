@@ -23,27 +23,27 @@ i. Install Conda (if NOT already installed):
 
    a. Download the Miniconda installer:
 
-      .. code-block:: console
+   .. code-block:: console
 
-         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 
    b. Install Miniconda:
 
-      .. code-block:: console
+   .. code-block:: console
 
-         bash miniconda.sh -b -p $HOME/miniconda
+      bash miniconda.sh -b -p $HOME/miniconda
 
    c. Initialize Conda:
 
-      .. code-block:: console
+   .. code-block:: console
 
-         eval "$($HOME/miniconda/bin/conda shell.bash hook)"
+      eval "$($HOME/miniconda/bin/conda shell.bash hook)"
 
    d. Verify the installation:
 
-      .. code-block:: console
+   .. code-block:: console
 
-         conda --version
+      conda --version
 
    You should see the Conda version printed to the console.
 
@@ -55,15 +55,15 @@ Mamba is the recommended way of using Snakemake's conda integration.
 
    a. Install mamba in your base conda environment
 
-      .. code-block:: console
+   .. code-block:: console
 
-         conda install -n base -c conda-forge mamba
+      conda install -n base -c conda-forge mamba
 
    b. Verify the mamba installation 
 
-      .. code-block:: console
+   .. code-block:: console
 
-         mamba --version
+      mamba --version
    
    You should see the mamba version printed to the console.
 
@@ -85,10 +85,10 @@ You can obtain the ``microGWAS`` repository by performing one of the following :
 
    * Use ``Git`` to clone the repository and its submodules.
 
-      .. code-block:: console
+   .. code-block:: console
 
-         git clone --recursive https://github.com/microbial-pangenomes-lab/microGWAS.git microGWAS
-         cd microGWAS
+      git clone --recursive https://github.com/microbial-pangenomes-lab/microGWAS.git microGWAS
+      cd microGWAS
 
    Note: The ``--recursive`` flag is used to clone any submodules that the repository might have.
 
@@ -101,10 +101,10 @@ You can obtain the ``microGWAS`` repository by performing one of the following :
 
    * Once your new repository is created, clone it locally:
 
-      .. code-block:: console
-         
-         git clone --recursive https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME.git 
-         cd YOUR-REPOSITORY-NAME
+   .. code-block:: console
+      
+      git clone --recursive https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME.git 
+      cd YOUR-REPOSITORY-NAME
 
    * Replace ``YOUR-USERNAME`` and ``YOUR-REPOSITORY-NAME`` with your GitHub username and the given name for your new repository, respectively. 
 
@@ -161,47 +161,54 @@ c. Download sample genomes in ``FASTA`` format:
 
 d. Download and modify the phenotype data:
 
-      .. code-block:: console
+   .. code-block:: console
 
-         wget https://raw.githubusercontent.com/mgalardini/2018_ecoli_pathogenicity/master/data/phenotypes/phenotypes.tsv -O data/data.tsv
-   
-   This command will update your ``data/data.tsv`` file, adding the paths for fasta and gff files.
+      wget https://raw.githubusercontent.com/mgalardini/2018_ecoli_pathogenicity/master/data/phenotypes/phenotypes.tsv -O data/data.tsv
 
-      .. code-block:: console
+   The phenotype file contains two reference strains, "ED1a" and "IAI39". These strains should not be included in the phenotype file as they will cause conflicts within the pipeline.
+   To remove these strains from you phenotype file, do the following:
 
-         awk 'BEGIN {OFS="\t"}
-         
-         NR==1 {print "strain", "fasta", "gff", "phenotype"}
-         
-         NR>1 {print $1, "data/fastas/" $1 ".fasta", "data/gffs/" $1 ".gff", $3}' data/data.tsv > temp_file &&
-         
-         mv temp_file data/data.tsv
+   .. code-block:: console 
+
+      sed -i '' '/^ED1a	/d; /^IAI39	/d' data/data.tsv
+
+   The following command will update your ``data/data.tsv`` file, adding the paths for fasta and gff files.
+
+   .. code-block:: console
+
+      awk 'BEGIN {OFS="\t"}
+      
+      NR==1 {print "strain", "fasta", "gff", "phenotype"}
+      
+      NR>1 {print $1, "data/fastas/" $1 ".fasta", "data/gffs/" $1 ".gff", $3}' data/data.tsv > temp_file &&
+      
+      mv temp_file data/data.tsv
       
 e. Verify the updated phenotype file:
 
-      .. code-block:: console
+   .. code-block:: console
 
-         head -n 5 data/data.tsv
+      head -n 5 data/data.tsv
 
-      You should see an output similar to the example below. The first column lists the samples, the next two columns are the relative paths
-      to the assembles in the fasta and gff formats, respectively. The last column represents the phenotype: where 1 indicates the strain is virulent, 
-      while 0 indicates the strain is avirulent.
+   You should see an output similar to the example below. The first column lists the samples, the next two columns are the relative paths
+   to the assembles in the fasta and gff formats, respectively. The last column represents the phenotype: where 1 indicates the strain is virulent, 
+   while 0 indicates the strain is avirulent.
 
-      .. code-block:: none
+   .. code-block:: none
 
-         strain  fasta   gff     phenotype
-         ECOR-01 data/fastas/ECOR-01.fasta       data/gffs/ECOR-01.gff   0
-         ECOR-02 data/fastas/ECOR-02.fasta       data/gffs/ECOR-02.gff   1
-         ECOR-03 data/fastas/ECOR-03.fasta       data/gffs/ECOR-03.gff   0
-         ECOR-04 data/fastas/ECOR-04.fasta       data/gffs/ECOR-04.gff   0
+      strain  fasta   gff     phenotype
+      ECOR-01 data/fastas/ECOR-01.fasta       data/gffs/ECOR-01.gff   0
+      ECOR-02 data/fastas/ECOR-02.fasta       data/gffs/ECOR-02.gff   1
+      ECOR-03 data/fastas/ECOR-03.fasta       data/gffs/ECOR-03.gff   0
+      ECOR-04 data/fastas/ECOR-04.fasta       data/gffs/ECOR-04.gff   0
 
 f. Clean up:
    
    Remove the compressed files, you do not need them anymore:
 
-      .. code-block:: console
+   .. code-block:: console
 
-         rm data/gff.tar.gz data/genomes.tgz
+      rm data/gff.tar.gz data/genomes.tgz
 
 g. Verify your directory structure:
    
@@ -236,9 +243,9 @@ The ``microGWAS`` pipeline requires the eggnog database for functional annotatio
 i. If you have an existing eggnog database:
 Create a symbolic link to your actual eggnog data directory. 
 
-.. code-block:: console
+   .. code-block:: console
 
-   ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
+      ln -s /fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/ data/eggnog-mapper
 
 Remember  to replace ``/fast-storage/miniconda3/envs/eggnog-mapper/lib/python3.9/site-packages/data/`` with the actual path on your system.
 
@@ -277,17 +284,17 @@ b. Configure the pipeline:
 
 Run the bootsrapping script.
 
-.. code-block:: console
+   .. code-block:: console
 
-    bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1 
+      bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1 
 
 This script populates the input files used for the analysis and downloads the relevant reference genomes necessary for annotating the hits for *Escherichia coli* and analyse the variants
 
 To run the full analysis, use the following command.
 
-.. code-block:: console
+   .. code-block:: console
 
-    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
+      snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
 
 This will:
 
@@ -304,9 +311,9 @@ Customizing your analysis
 
 You can specify which :doc:`rules` you want the pipeline to run. For example, to run the pipeline without generating a phylogenetic tree:
 
-.. code-block:: console
+   .. code-block:: console
 
-    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots  --cores 24 --verbose --use-conda --conda-frontend mamba
+      snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots  --cores 24 --verbose --use-conda --conda-frontend mamba
 
 This command runs all the same analyses as before, except for generating a phylogenetic tree. 
 
@@ -331,9 +338,9 @@ For a closer look at specific genomic regions of interest related to virulence f
 The focus will be on three key areas: the high pathogencity island (HPI), the aerobactin siderophore system, and the *sitABCD* iron transport operon. 
 To created these detailed plots, run the following command:
 
-.. code-block:: console
-   
-   python3 workflow/scripts/manhattan_plots_zoomin.py -i out/associations/phenotype/mapped_all.tsv -o out/ -r "IAI39" -p out/associations/phenotype/unitigs_patterns.txt -z "HPI" 1.05 1.25 30 -z "sitABCD" 1.95 2.05 15 -z "Aerobactin" 3.2 3.8 15 -f png
+   .. code-block:: console
+      
+      python3 workflow/scripts/manhattan_plots_zoomin.py -i out/associations/phenotype/mapped_all.tsv -o out/ -r "IAI39" -p out/associations/phenotype/unitigs_patterns.txt -z "HPI" 1.05 1.25 30 -z "sitABCD" 1.95 2.05 15 -z "Aerobactin" 3.2 3.8 15 -f png
 
 .. image:: ../images/zoom.png
    :alt:  A zoom-in on the associated areas of the Manhattan plot for the HPI, aerobacting and *sitABCD* operon regions.
@@ -344,9 +351,9 @@ The plot was generated for the "IAI39" reference genome, and the zoomed-in views
 You can also generate volcano plots to visualise the statiscal significance and magnitute of the effect for the tested genetic variants.
 The following code will generate a volcano plots using the ``annotate_summary.tsv``.
 
-.. code-block:: console
+   .. code-block:: console
 
-   python python3 workflow/scripts/volcanoplots.py annotated_summary.tsv out/volcano_unitigs --genes "fyuA" "sitA" "iucC" -p unitigs_patterns.txt --format png
+      python python3 workflow/scripts/volcanoplots.py annotated_summary.tsv out/volcano_unitigs --genes "fyuA" "sitA" "iucC" -p unitigs_patterns.txt --format png
 
 This plot represents associations using unitigs as the genetic markers.
 
@@ -380,9 +387,7 @@ c. Functional Enrichment analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 This analysis identified overrepresented functional categories among genes with associated variants. 
 
-*will have to update this figure to reflect the new color scheme*
-
-.. image:: ../images/enrichment.png
+.. image:: ../images/enrich_cog.png
    :alt:  Enrichment analysis of the associated unitigs for different COG categories.
    :align: center
 
