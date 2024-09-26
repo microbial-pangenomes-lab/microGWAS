@@ -31,8 +31,8 @@ Contents
 
    inputs
    usage
+   tutorial
    outputs
    rules
    tools
-   tutorials
 
