@@ -48,14 +48,14 @@ lineages_file: "out/lineages_mlst.txt"
 eggnogdb: "2"
 
 # filters to remove spurious hits
-# defaults are set to 0
+# defaults are set as 'loose thresholds'
 # change them to be more/less stringent
 # length: Minimum unitig length (ignored if `--panfeed` is used)
-length: 0
+length: 10
 # min_hits: Minimum number of strains
-min_hits: 0
+min_hits: 1
 # max_genes: Maximum number of genes to which a unitig/kmer can map
-max_genes: 0
+max_genes: 25
 # example values
 #length: 30
 #min_hits: 9

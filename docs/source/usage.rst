@@ -104,7 +104,7 @@ Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file
 * ``species_amr``: species to be used for AMR and virulence predictions
 * ``lineages_file``: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
 * ``eggnogdb``: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found `here <http://eggnog5.embl.de/#/app/downloads>`__
-* Filters to remove spurious hits: change them to be more or less stringent (default: 0)
+* Filters to remove spurious hits: change them to be more or less stringent
     * ``length``:  Minimum unitig length (ignored if ``--panfeed`` is used)
     * ``min_hits``: Minimum number of strains
     * ``max_genes``: Maximum number of genes to which a unitig/kmer can map
