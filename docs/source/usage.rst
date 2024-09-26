@@ -84,20 +84,27 @@ Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file
 
 * ``targets``: Name of the columns in the phenotypes file to be used in the associations. In the example below the target `phenotype` will be the one considered to test for the associations. `phenotype2` is commented (# in front) and will simply be ignored.
 
-.. code-block:: console
+.. code-block::
 
    targets: [
             "phenotype"
             #"phenotype2",
             ]
 
+.. note::
+    Here, phenotype2 is commented (#) and will be ignored.
+
+..  tip::
+
+    If you have many phenotypes (>5), consider applying a more stringent cutoff post-analysis.
+
 * ``covariates``: Covariates to be used for the associations for each phenotype. THe numbers refer to the columns in the phenotype file that should be used as covariates. The suffix "q" is added when they are quantitative and not binary. The column numering is 1-based. `See also <https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates>`__ for more information. In the example below, the columns 6 and 7 are used for the target `phenotype`. The column 6 contains a quantitative covariate. The `phenotype2` is commented and will simply be ignored.
 
-.. code-block:: console
+.. code-block::
 
-   covariates:
+    covariates:
            phenotype: "--use-covariates 6q 7"
-   #       phenotype2: "--use-covariates 7",
+           # phenotype2: "--use-covariates 7",
 
 * ``MLST scheme``: Change the mlst scheme to be used to compute lineages. Find more information on the `available schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__
 * ``references for association summaries and annotation``: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented.
@@ -111,35 +118,6 @@ Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file
 
 .. note::
     For convenience the params for *E. coli* are placed as defaults, and those for *P. aeruginosa* are commented.
-
-Targets and covariates for associations
-"""""""""""""""""""""""""""""""""""""""
-
-For the targets, specify the name of the columns on the phenotype file ``data/data.tsv`` that are the phenotypes to be used for the associations::
-
-   targets: [
-         "phenotype",
-         #"phenotype2",
-         ]
-
-.. note::
-    Here, phenotype2 is commented (#) and will be ignored.
-
-..  tip::
-
-    If you have many phenotypes (>5), consider applying a more stringent cutoff post-analysis.
-
-For the covariates, specify the position of the columns on the phenotype file ``data/data.tsv`` that should be used for the associations::
-
-   covariates:
-           phenotype: "--use-covariates 6q 7"
-   #        phenotype2: "--use-covariates 7"
-
-The numbers refer to the columns in the phenotype file that should be used as covariates.
-The column numering is 1-based. The suffix ``q`` should be added to the columns when
-they are quantitative and not binary.
-Take into account that each target phenotype has its own set of covariates.
-For more information on the `phenotypes and covariates look here <https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates>`__.
 
 Which lineage file to use?
 """"""""""""""""""""""""""
