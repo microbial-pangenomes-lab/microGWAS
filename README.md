@@ -90,7 +90,7 @@ covariates:
 * `species_amr`: species to be used for AMR and virulence predictions
 * `lineages_file`: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
 * `eggnogdb`: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
-* **filters to remove spurious hits**: all defaults are set to 0. Change them to be more/less stringent
+* **filters to remove spurious hits**: all defaults are set. Change them to be more/less stringent
     * `length`:  Minimum unitig length (ignored if `--panfeed` is used)
     * `min_hits`: Minimum number of strains
     * `max_genes`: Maximum number of genes to which a unitig/kmer can map
