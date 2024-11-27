@@ -32,8 +32,17 @@ def get_options():
 
 
 def manhattan_plot(data, threshold, reference, output, zoom):
-    df = pd.read_csv(data, sep='\t', usecols=['strain', 'start', 'end',
-                                              'lrt-pvalue', 'gene'])
+    try:
+        df = pd.read_csv(data, sep='\t', usecols=['strain', 'start', 'end',
+                                                  'lrt-pvalue', 'gene'])
+    except pd.errors.EmptyDataError:
+        sys.stderr.write('Found an empty file so making an empty plot\n')
+        open(output, 'w').close()
+        sys.exit(0)
+    except pd.errors.ParserError:
+        sys.stderr.write('Could not parse input so making an empty plot\n')
+        open(output, 'w').close()
+        sys.exit(0)
     df['pos'] = (df['start'] + df['end']) / (2 * 1_000_000)
     df['-logpvalue'] = -np.log10(df['lrt-pvalue'])
     reference_strains = df['strain'].unique()

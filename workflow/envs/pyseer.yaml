@@ -1,13 +1,13 @@
 channels:
  - conda-forge
  - bioconda
- - defaults
 dependencies:
  - python >= 3.7
  - pybedtools
  - biopython
  - seaborn
  - matplotlib
+ - numpy < 1.23.0
  - scipy=1.7.0
  - statsmodels >=0.10
  - conda-forge::glmnet_py !=1.0.1,!=1.0.2

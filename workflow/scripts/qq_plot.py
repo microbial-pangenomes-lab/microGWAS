@@ -29,9 +29,14 @@ def main():
     import statsmodels.api as sm
     import matplotlib.pyplot as plt
 
-    m = pd.read_csv(options.table,
-                    usecols=['lrt-pvalue'],
-                    sep='\t')['lrt-pvalue']
+    try:
+        m = pd.read_csv(options.table,
+                        usecols=['lrt-pvalue'],
+                        sep='\t')['lrt-pvalue']
+    except pd.errors.EmptyDataError:
+        sys.stderr.write('Found an empty input so making an empty plot\n')
+        open(options.output, 'w').close()
+        sys.exit(0)
 
     plt.figure(figsize=(4, 3.75))
     ax = plt.subplot(111)
