@@ -30,7 +30,7 @@ Prepare (in an empty folder) a clean tarball of the new version:
     cd microGWAS
     mkdir ../temp_archive
     git archive --format=tar --prefix=microGWAS/ X.X.X | tar -xf - -C ../temp_archive
-    git submodule foreach --recursive 'git archive --prefix=$path/ HEAD | tar -xf - -C ../../temp_archive'
+    git submodule foreach --recursive 'git archive --prefix=microGWAS/$path/ HEAD | tar -xf - -C ../../temp_archive'
     tar -czf ../microGWAS.tar.gz -C ../temp_archive .
     rm -rf ../temp_archive
     cd ..
