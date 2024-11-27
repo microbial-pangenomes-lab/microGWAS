@@ -95,7 +95,7 @@ def main():
 
     eof = 0
     # no copy of first variant_mat made. Reserve memory
-    G = np.empty((len(p), block_size))
+    G = np.zeros((len(p), block_size))
     sys.stderr.write("Reading in variants\n")
     v_iter = load_var_block(var_type, p, None, None, infile,
                             all_strains, sample_order,
