@@ -345,12 +345,14 @@ rule sequence_unet:
     touch {output}
     """
 
-rule prepare_rare_variants:
+rule prepare_vcf_variants:
   input:
     vcf=config["bcftools_input"],
     unet="out/snps/unet/unet.done",
     snps="out/snps/snps.done"
-  output: config["rare_snps"]
+  output:
+    rare=config["rare_snps"],
+    common=config["common_snps"]
   params: config["unet"]
   threads: 36
   conda: "envs/bcftools.yaml"
@@ -360,8 +362,10 @@ rule prepare_rare_variants:
     bcftools merge -l {input.vcf} -0 -O z --threads {threads} > out/snps/merged.vcf.gz 2> {log}
     bcftools norm -m - -O z --threads {threads} out/snps/merged.vcf.gz > out/snps/norm.vcf.gz 2>> {log}
     bcftools view -Q 0.05 out/snps/norm.vcf.gz -O z --threads {threads} > out/snps/filtered.vcf.gz 2>> {log}
-    python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz --unet {params} | bgzip > {output} 2>> {log}
-    bcftools index {output} 2>> {log}
+    bcftools view -q 0.01 out/snps/norm.vcf.gz -O z --threads {threads} > {output.common} 2>> {log}
+    python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz --unet {params} | bgzip > {output.rare} 2>> {log}
+    bcftools index {output.rare} 2>> {log}
+    bcftools index {output.common} 2>> {log}
     rm out/snps/merged.vcf.gz out/snps/norm.vcf.gz out/snps/filtered.vcf.gz
     """
 
@@ -410,9 +414,11 @@ rule pyseer:
     expand('out/associations/{target}/gpa_summary.tsv',
            target=config["targets"])
 
-rule pyseer_rare:
+rule pyseer_vcf:
   input:
     expand('out/associations/{target}/rare_summary.tsv',
+           target=config["targets"]),
+    expand('out/associations/{target}/vcf_annotated.tsv',
            target=config["targets"])
 
 rule wg:
@@ -514,9 +520,10 @@ rule run_gpa_summary:
            > {output.summary} 2> {log} || true
     """
 
-rule run_pyseer_rare:
+rule run_pyseer_vcf:
   input:
     snps=config["rare_snps"],
+    common=config["common_snps"],
     regions=config["regions"],
     phenotypes=os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
     similarity=os.path.join(config["association_inputs"], "{target}/similarity.tsv"),
@@ -525,6 +532,9 @@ rule run_pyseer_rare:
   output:
     rare="out/associations/{target}/rare.tsv",
     rare_f="out/associations/{target}/rare_filtered.tsv",
+    common="out/associations/{target}/vcf.tsv",
+    common_f="out/associations/{target}/vcf_filtered.tsv",
+    common_a="out/associations/{target}/vcf_annotated.tsv",
   params:
     covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   conda: "envs/pyseer.yaml"
@@ -542,6 +552,17 @@ rule run_pyseer_rare:
            {params.covariates} \
            > {output.rare} 2> {log} && \
     cat <(head -1 {output.rare}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.rare}) > {output.rare_f}
+    pyseer --phenotypes {input.phenotypes} \
+           --phenotype-column {wildcards.target} \
+           --vcf {input.common} \
+           --similarity {input.similarity} \
+           --lmm \
+           --output-patterns out/associations/{wildcards.target}/vcf_patterns.txt \
+           --cpu 1 \
+           {params.covariates} \
+           > {output.common} 2> {log} && \
+    cat <(head -1 {output.common}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.common}) > {output.common_f} && \
+    python workflow/scripts/vcf_subset.py {output.common_f} {input.common} > {output.common_a}
     """
 
 rule run_rare_summary:
@@ -842,6 +863,8 @@ rule annotate_summary:
     expand("out/associations/{target}/annotated_summary.tsv",
            target=config["targets"]),
     expand("out/associations/{target}/annotated_rare_summary.tsv",
+           target=config["targets"]),
+    expand("out/associations/{target}/vcf_annotated.tsv",
            target=config["targets"]),
     expand("out/associations/{target}/annotated_gpa_summary.tsv",
            target=config["targets"]),

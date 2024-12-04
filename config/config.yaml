@@ -145,12 +145,13 @@ distances: "out/distances.tsv"
 ### similarity
 similarities: "out/similarity.tsv"
 
-### rare variants
+### rare and common variants
 # generated outside the workflow
 bcftools_input: "out/bcftools_input.txt"
 #
 snippy_dir_tmp: "out/snps/tmp"
 rare_snps: "out/snps/rare.vcf.gz"
+common_snps: "out/snps/common.vcf.gz"
 regions: "out/snps/regions.tsv"
 sequence_unet: "data/models"
 unet: "out/snps/unet"
