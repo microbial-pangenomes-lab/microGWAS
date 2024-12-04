@@ -418,7 +418,7 @@ rule pyseer_vcf:
   input:
     expand('out/associations/{target}/rare_summary.tsv',
            target=config["targets"]),
-    expand('out/associations/{target}/vcf_annotated.tsv',
+    expand('out/associations/{target}/annotated_vcf.tsv',
            target=config["targets"])
 
 rule wg:
@@ -534,7 +534,7 @@ rule run_pyseer_vcf:
     rare_f="out/associations/{target}/rare_filtered.tsv",
     common="out/associations/{target}/vcf.tsv",
     common_f="out/associations/{target}/vcf_filtered.tsv",
-    common_a="out/associations/{target}/vcf_annotated.tsv",
+    common_a="out/associations/{target}/annotated_vcf.tsv",
   params:
     covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   conda: "envs/pyseer.yaml"
@@ -592,7 +592,7 @@ rule qq_plots:
   input:
     expand('out/associations/{target}/qq_{variant}.png',
            target=config["targets"],
-           variant=["unitigs", "gpa", "rare", "panfeed"]),
+           variant=["unitigs", "gpa", "rare", "vcf", "panfeed"]),
 
 rule run_qq_plot:
   input: "out/associations/{target}/{variant}.tsv"
@@ -864,7 +864,7 @@ rule annotate_summary:
            target=config["targets"]),
     expand("out/associations/{target}/annotated_rare_summary.tsv",
            target=config["targets"]),
-    expand("out/associations/{target}/vcf_annotated.tsv",
+    expand("out/associations/{target}/annotated_vcf.tsv",
            target=config["targets"]),
     expand("out/associations/{target}/annotated_gpa_summary.tsv",
            target=config["targets"]),
