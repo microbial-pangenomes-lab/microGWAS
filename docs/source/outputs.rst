@@ -81,6 +81,7 @@ with one column per antimicrobial "class".
     | | |____annotated_gpa_summary.tsv
     | | |____annotated_panfeed_summary.tsv
     | | |____annotated_rare_summary.tsv
+    | | |____annotated_vcf.tsv
     | | |____heritability_all.tsv
     | | |____unitigs_lineage.txt
     | | |____mapped.tsv
@@ -94,6 +95,9 @@ with one column per antimicrobial "class".
     | | |____unitigs.tsv
     | | |____unitigs_filtered.tsv
     | | |____unitigs_patterns.txt
+    | | |____vcf.tsv
+    | | |____vcf_filtered.tsv
+    | | |____vcf_patterns.txt
     | | |____gpa.tsv
     | | |____gpa_filtered.tsv
     | | |____manhattan.png
@@ -132,13 +136,13 @@ with one column per antimicrobial "class".
     | | | |____sequence_legend.png
 
 * ``inputs`` folder: the ``distances.tsv``, ``linages.tsv``, ``lineages_covariance.tsv``, ``phenotypes.tsv``, and ``similarity.tsv`` files contain the association inputs for each target phenotype, so that they only contain the samples for which the phenotypic data is available 
-* ``annotated_*.tsv``: contains the annotations of genes to which variants passing the association threshold map to; each row contains a gene, followed by the average associations' summary statistics, the frequency of the gene in the pangenome, the locus tag and gene name of the gene if it's encoded in the chosen reference(s), and finally the annotations given by ``eggnog-maper``, including COGs, GO terms and KEGG annotations
+* ``annotated_*.tsv``: contains the annotations of genes to which variants passing the association threshold map to; each row contains a gene, followed by the average associations' summary statistics, the frequency of the gene in the pangenome, the locus tag and gene name of the gene if it's encoded in the chosen reference(s), and finally the annotations given by ``eggnog-maper``, including COGs, GO terms and KEGG annotations. ``annotated_vcf.tsv`` has a different format, since it reports individual short variants against the chosen reference along with their predicted effect
 * ``heritability_all.tsv``: contains information about what proportion of the phenotypic variation can be explained by either the lineage membership or the genetic variants. The `genetics` column indicates the likelihood model used for the heritability estimation, `lik` the likelihood model used for the heritability estimation, `h2`, the proportion of phenotypic variance explained by the genetic effects. 
 * ``unitigs_lineage.txt``: lineage associations output; for each lineage the association p-value is reported; the name is misleading, as the unitigs presence/absence patterns have not been used for this association tests
 * ``mapped.tsv``: mapping information on the unitigs passing the association threshold, across all samples and reference(s)
 * ``mapped_all.tsv``: mapping information for all tested unitigs to the reference genome(s)
-* ``panfeed.tsv``, ``rare.tsv``, ``struct.tsv``, ``unitigs.tsv``, and ``gpa.tsv``: contain the raw association results as given by ``pyseer``, with one file per variant set
-* * ``panfeed_filtered.tsv``, ``rare_filtered.tsv``, ``struct_filtered.tsv``, ``unitigs_filtered.tsv``, and ``gpa_filtered.tsv``: contain the variants passing the association threshold
+* ``panfeed.tsv``, ``rare.tsv``, ``vcf.tsv``, ``struct.tsv``, ``unitigs.tsv``, and ``gpa.tsv``: contain the raw association results as given by ``pyseer``, with one file per variant set
+* * ``panfeed_filtered.tsv``, ``rare_filtered.tsv``, ``vcf_filtered.tsv``, ``struct_filtered.tsv``, ``unitigs_filtered.tsv``, and ``gpa_filtered.tsv``: contain the variants passing the association threshold
 * ``manhattan.png``: manhattan plot for all unitigs mapping to the main reference genome
 * ``qq_*.png``: QQ plot to assess the distribution of observed p-values with the expected distribution under the null hypothesis of the test statistics
 * ``COG_*.tsv``, ``GO_*.tsv``, and ``KEGG_*.tsv``: functional enrichment tests results for each variant set
@@ -172,12 +176,14 @@ with one column per antimicrobial "class".
 
     out
     |____snps
+    | |____common.vcf.gz
     | |____rare.vcf.gz
     | |____unet
     | | |____PROTEIN_ID_1.tsv.gz
     | | |____PROTEIN_ID_2.tsv.gz
     | | |____[...]
     
+* ``common.vcf.gz``: all common short variants with respect to the chosen reference genome identified across all samples merged into a single VCF file. 
 * ``rare.vcf.gz``: all rare deleterious variants identified across all samples merged into a single VCF file. 
 * ``unet``: this directory contains, for each protein sequence encoded in the reference genome, the estimated impact of every possible non-synonymous variants. The ``pred`` column indicates the probability that a variant is deleterious; the pipeline uses a threshold of 0.5.  
 
