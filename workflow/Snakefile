@@ -896,6 +896,11 @@ rule run_annotate_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -s {params.sample} ]; then \
+      echo "No OGs, skipping emapper.py" >> {log}; \
+      touch {output} ; \
+      exit 0; \
+    fi && \
     if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
       echo "eggnog-mapper database missing" >> {log}; \
       exit 1;
@@ -903,7 +908,7 @@ rule run_annotate_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+               --data_dir {params.emapper_data} 2>> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -930,6 +935,11 @@ rule run_annotate_rare_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -s {params.sample} ]; then \
+      echo "No OGs, skipping emapper.py" >> {log}; \
+      touch {output} ; \
+      exit 0; \
+    fi && \
     if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
       echo "eggnog-mapper database missing" >> {log}; \
       exit 1;
@@ -937,7 +947,7 @@ rule run_annotate_rare_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+               --data_dir {params.emapper_data} 2>> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -964,6 +974,11 @@ rule run_annotate_gpa_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -s {params.sample} ]; then \
+      echo "No OGs, skipping emapper.py" >> {log}; \
+      touch {output} ; \
+      exit 0; \
+    fi && \
     if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
       echo "eggnog-mapper database missing" >> {log}; \
       exit 1;
@@ -971,7 +986,7 @@ rule run_annotate_gpa_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+               --data_dir {params.emapper_data} 2>> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -998,6 +1013,11 @@ rule run_annotate_panfeed_summary:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -s {params.sample} ]; then \
+      echo "No OGs, skipping emapper.py" >> {log}; \
+      touch {output} ; \
+      exit 0; \
+    fi && \
     if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
       echo "eggnog-mapper database missing" >> {log}; \
       exit 1;
@@ -1005,7 +1025,7 @@ rule run_annotate_panfeed_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+               --data_dir {params.emapper_data} 2>> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1032,6 +1052,11 @@ rule run_annotate_summary_wg:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                {params.r} \
                --groups {input.summary} > {params.sample} 2> {log} && \
+    if [ ! -s {params.sample} ]; then \
+      echo "No OGs, skipping emapper.py" >> {log}; \
+      touch {output} ; \
+      exit 0; \
+    fi && \
     if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
       echo "eggnog-mapper database missing" >> {log}; \
       exit 1;
@@ -1039,7 +1064,7 @@ rule run_annotate_summary_wg:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+               --data_dir {params.emapper_data} 2>> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1064,6 +1089,11 @@ rule annotate_reference:
     python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
                --focus-strain {params.r} --only-focus \
                > {params.sample} 2> {log} && \
+    if [ ! -s {params.sample} ]; then \
+      echo "No OGs, skipping emapper.py" >> {log}; \
+      touch {output} ; \
+      exit 0; \
+    fi && \
     if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
       echo "eggnog-mapper database missing" >> {log}; \
       exit 1;
@@ -1071,7 +1101,7 @@ rule annotate_reference:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} || touch {output} && \
+               --data_dir {params.emapper_data} 2>> {log} && \
     python workflow/scripts/enhance_summary.py /dev/null {params.annotations} --no-summary \
     > {output} 2>> {log}
     """
