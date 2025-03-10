@@ -26,10 +26,10 @@ if __name__ == "__main__":
     m = pd.read_csv(options.mapped, sep='\t')
     u = pd.read_csv(options.pyseer, sep='\t')
 
-    if u.shape[0]:
+    if u.shape[0] == 0:
         sys.stderr.write('Empty pyseer output, exiting\n')
         sys.exit(0)
-    elif m.shape[0]:
+    elif m.shape[0] == 0:
         sys.stderr.write('Empty mapped output, exiting\n')
         sys.exit(0)
 
