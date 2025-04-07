@@ -35,11 +35,16 @@ sed -i 's$eggnogdb: \"2\"$eggnogdb: \"1236\"$g' ../config/config.yaml
 
 # ready to go
 cd ..
-bash bootstrap.sh Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+# Also test the local assemblies functionality
+zcat test/local_assemblies/536/genome.fasta.gz > test/local_assemblies/536/genome.fasta
+zcat test/local_assemblies/536/genome.gff.gz > test/local_assemblies/536/genome.gff
+zcat test/local_assemblies/536/genome.gbk.gz > test/local_assemblies/536/genome.gbk
+#
+bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
 # reduce the size of the reference proteome
 # to speed up its annotation and rare variants analysis
 cp test/reference.faa data/
 # first dry run
-snakemake -np annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda --conda-frontend mamba
+snakemake -np annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
 # actual run (brace yourself)
-snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda --conda-frontend mamba
+snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda

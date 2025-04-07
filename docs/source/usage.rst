@@ -151,12 +151,30 @@ The following example works for *P. aeruginosa* and matches the references liste
 
    bash bootstrap.sh Pseudomonas aeruginosa UCBPP-PA14 GCF_000006765.1,GCF_000014625.1 
 
+It is also possible to provide a number of local "private" assemblies, to be used instead of those downloaded from NCBI, or alongside them.
+Each local reference should have its own directory, each containing the following files:
+
+* ``genome.fasta``: the assembly nucleotide sequence(s) in fasta format
+* ``genome.gff``: the annotated assembly in gff format
+* ``genome.gbk``: the annotated assembly in genbank format
+* ``genome.faa``: the assembly protein sequences in fasta format (this file is optional)
+
+To include these local assemblies alongside the ones to be downloaded from NCBI, you can use the following command::
+
+   bash bootstrap.sh --local-dirs local/ref1,local/ref2 Escherichia coli IAI39 GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+
+in which ``local/ref1`` and ``local/ref2`` are the directories containing the local assemblies. The ID of the local assemblies will be the name of the directory, so in this case ``ref1`` and ``ref2``.
+
+In case you want to use the local assemblies only, you can omit the final positional argument::
+
+   bash bootstrap.sh --local-dirs local/ref1,local/ref2 Escherichia coli ref1
+
 Run the actual snakemake pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores and ``mamba`` as the conda backend to install each environment::
+You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores::
 
-   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
+   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda
 
 Running specific rules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
