@@ -302,7 +302,7 @@ rule run_heritability:
           --prefix $tempfile 2>> {log} && \
     grep normal {output.h_lineages} | awk '{{print $3}}' > $tempfile".estimates.txt" && \
     grep normal {output.h_lineages} | awk '{{print $3}}' >> $tempfile".estimates.txt" && \
-    python albi/albi.py -k /tmp/{wildcards.target}_values.txt \
+    python albi/albi.py -k $tempfile"_values.txt" \
           -f $tempfile".estimates.txt" 2>> {log} \
     | grep -v "Estimat" | grep -v '#' >> {output.h_ci} || true
     """
@@ -517,7 +517,7 @@ rule run_gpa_summary:
            {params.r} \
            --gff-dir {params.d} \
            --sort lrt-pvalue \
-           > {output.summary} 2> {log} || true
+           > {output.summary} 2> {log}
     """
 
 rule run_pyseer_vcf:
@@ -585,7 +585,7 @@ rule run_rare_summary:
            {params.r} \
            --gff-dir {params.d} \
            --sort lrt-pvalue \
-           > {output.summary} 2> {log} || true
+           > {output.summary} 2> {log}
     """
 
 rule qq_plots:
@@ -784,7 +784,7 @@ rule run_map_summary:
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-lrt-pvalue \
-           > {output.summary} 2> {log} || true
+           > {output.summary} 2> {log}
     """
 
 rule run_map_summary_panfeed:
@@ -812,7 +812,7 @@ rule run_map_summary_panfeed:
            --gff-dir {params.d} \
            --unique --sort avg-lrt-pvalue \
            --panfeed \
-           > {output.summary} 2> {log} || true
+           > {output.summary} 2> {log}
     """
 
 rule run_map_summary_wg:
@@ -841,7 +841,7 @@ rule run_map_summary_wg:
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-beta \
-           > {output.summary} || true
+           > {output.summary}
     """
 
 rule run_map_summary_fig:

@@ -30,6 +30,7 @@ if __name__ == "__main__":
     ci = pd.read_csv(options.ci, sep='\t')
     cis = {}
     for h2, cil, cih in ci.values:
+        h2 = round(h2, 5)
         cis[h2] = cil, cih
 
     res = []
