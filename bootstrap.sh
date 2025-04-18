@@ -109,24 +109,32 @@ if [ -n "$LOCAL_DIRS_ARG" ]; then
         exit 1
     fi
 
-    # Copy/Link files to structured directories
-    cp "$local_fasta" "data/references/fastas/$ref.fasta"
-    cp "$local_gff" "data/references/gffs/$ref.gff"
-    cp "$local_gbk" "data/references/gbks/$ref.gbk"
+    mkdir -p "data/references/human_readable/refseq/"
+    mkdir -p "data/references/human_readable/refseq/bacteria/"
+    mkdir -p "data/references/human_readable/refseq/bacteria/$GENUS/"
+    mkdir -p "data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/"
+    mkdir -p "data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/"
 
+    # Copy/Link files to structured directories
+    gzip "$local_fasta" -c > "data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/${ref}_genomic.fna.gz"
+    gzip "$local_gff" -c > "data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/${ref}_genomic.gff.gz"
+    gzip "$local_gbk" -c > "data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/${ref}_genomic.gbff.gz"
+    
     # Handle protein FASTA
     if [ -f "$local_faa" ]; then
-       cp "$local_faa" "data/references/faas/$ref.faa"
+       gzip "$local_faa" -c > "data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/${ref}_protein.faa.gz"
        echo "  Using provided protein FASTA."
     else
        echo "  Generating protein FASTA from GenBank..."
-       python3 workflow/scripts/gbk2faa.py "$local_gbk" > "data/references/faas/$ref.faa"
+       python3 workflow/scripts/gbk2faa.py "$local_gbk" > "$local_faa"
+       gzip "$local_faa" -c > "data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/${ref}_protein.faa.gz"
     fi
 
   done
 fi
 
 if [ -n "$ASSEMBLIES" ]; then
+    echo "Processing remote assemblies from NCBI's RefSeq..."
     ncbi-genome-download -H -F gff,fasta,genbank,protein-fasta -A $ASSEMBLIES -p 1 -o data/references bacteria
 fi
 
