@@ -7,7 +7,7 @@ copyright = '2024, Microbial Pangenomes Lab'
 author = 'Microbial Pangenomes Lab'
 
 release = '0.5'
-version = '0.5.0'
+version = '0.5.1'
 
 # -- General configuration
 
