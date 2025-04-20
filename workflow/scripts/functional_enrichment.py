@@ -152,11 +152,11 @@ if __name__ == "__main__":
         f = open(options.go, 'w')
         f.close()
 
-    m = m.assign(KEGG_Pathway=m['KEGG_Pathway'].str.split(',')).explode('KEGG_Pathway').reset_index(drop=True)
     m['KEGG_Pathway'] = m['KEGG_Pathway'].fillna('-')
+    m = m.assign(KEGG_Pathway=m['KEGG_Pathway'].str.split(',')).explode('KEGG_Pathway').reset_index(drop=True)
 
-    n = n.assign(KEGG_Pathway=n['KEGG_Pathway'].str.split(',')).explode('KEGG_Pathway').reset_index(drop=True)
     n['KEGG_Pathway'] = n['KEGG_Pathway'].fillna('-')
+    n = n.assign(KEGG_Pathway=n['KEGG_Pathway'].str.split(',')).explode('KEGG_Pathway').reset_index(drop=True)
 
     res = []
     kegg_categories = m['KEGG_Pathway'].unique()
