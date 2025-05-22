@@ -161,6 +161,11 @@ if __name__ == "__main__":
                           'beta': 'avg-beta'})
 
     a = n.join(v).join(c).sort_values('avg-lrt-pvalue')
+    for col in['strains', 'unitigs', 'avg-af',
+               'avg-lrt-pvalue', 'avg-beta',
+               'variant_h2']:
+        if col not in a.columns:
+            sys.exit(0)
     a = a[['strains', 'unitigs',
            'avg-af', 'avg-lrt-pvalue',
            'avg-beta', 'variant_h2']]
