@@ -59,7 +59,8 @@ if __name__ == "__main__":
                        for y in x.split('-')}
             else:
                 ogs = set(ogs)
-        except:
+        except Exception as e:
+            sys.stderr.write(f'Could not parse OGs ("{str(e)}")\n')
             ogs = set()
         if len(ogs) == 0:
             sys.stderr.write(f'No OGs found\n')
@@ -81,7 +82,7 @@ if __name__ == "__main__":
                     gene = genes.loc[strain]
                     break
             if gene is None:
-                if options.only_focus:
+                if options.only_focus or genes.shape[0] == 0:
                     continue
                 strain = genes.index[0]
                 gene = genes.values[0]
