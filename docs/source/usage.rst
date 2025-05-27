@@ -174,7 +174,7 @@ Run the actual snakemake pipeline
 
 You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores::
 
-   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda
+   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree wg_metrics --cores 24 --verbose --use-conda
 
 Running specific rules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

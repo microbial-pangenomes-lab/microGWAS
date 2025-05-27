@@ -136,15 +136,15 @@ And the following works for P. aeruginosa (and matches the references commented 
 The following example runs **all the analyses** using 24 cores and `mamba` as the conda backend
 to install each environment:
 
-    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda --conda-frontend mamba
+    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree wg_metrics --cores 24 --verbose --use-conda --conda-frontend mamba
     
 If you want to run **only the GWAS**, without generating a phylogenetic tree and predicting antimicrobial resistance and virulence associated genes, you can use the following example instead, which uses "vanilla" `conda`:
 
-    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda
+    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots wg_metrics --cores 24 --verbose --use-conda
 
 or using `mamba` as the conda backend:
 
-    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda --conda-frontend mamba
+    snakemake -p annotate_summary map_back manhattan_plots heritability enrichment_plots qq_plots wg_metrics --cores 24 --verbose --use-conda --conda-frontend mamba
 
 ## Testing
 
