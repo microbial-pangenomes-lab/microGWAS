@@ -174,7 +174,7 @@ Run the actual snakemake pipeline
 
 You are now ready to run the full pipeline! The following example runs all the analyses using 24 cores::
 
-   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --verbose --use-conda
+   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree wg_metrics --cores 24 --use-conda
 
 Running specific rules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,12 +182,12 @@ Running specific rules
 The pipeline also allows for executing specific rules.
 To run the pipeline up to the pangenome analysis::
 
-   snakemake -p pangenome --cores 24 --use-conda --cores 24 --verbose --use-conda
+   snakemake -p pangenome --cores 24 --use-conda
 
 The following example instead uses "vanilla" ``conda`` and skips the generation of the phylogenetic tree::
    
 
-   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --verbose --use-conda
+   snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots --cores 24 --use-conda
 
 See :doc:`rules` for more information on what each rule does.
 
