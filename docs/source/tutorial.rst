@@ -269,7 +269,7 @@ To run the full analysis, use the following command.
 
    .. code-block:: console
 
-      snakemake -p annotate_summary find_amr_vag manhattan_plots heritability enrichment_plots qq_plots tree --cores 24 --use-conda --conda-frontend mamba
+      snakemake -p annotate_summary find_amr_vag manhattan_plots heritability enrichment_plots qq_plots tree wg_metrics --cores 24 --use-conda --conda-frontend mamba
 
 This will:
 
@@ -296,7 +296,7 @@ You can specify which :doc:`rules` you want the pipeline to run. For example, to
 
    .. code-block:: console
 
-      snakemake -p annotate_summary manhattan_plots heritability enrichment_plots qq_plots --cores 24 --use-conda --conda-frontend mamba
+      snakemake -p annotate_summary manhattan_plots heritability enrichment_plots qq_plots wg_metrics --cores 24 --use-conda --conda-frontend mamba
 
 This command runs all the same analyses as before, except for generating the phylogenetic tree and
 identifying AMR and virulence associated genes.

@@ -612,8 +612,10 @@ rule run_wg:
     lineages=os.path.join(config["wg_inputs"], "{target}/lineages.tsv")
   output:
     ridge="out/wg/{target}/ridge.tsv",
+    ridge_o="out/wg/{target}/ridge_predictions.tsv",
     ridge_m="out/wg/{target}/ridge.pkl",
     lasso="out/wg/{target}/lasso.tsv",
+    lasso_o="out/wg/{target}/lasso_predictions.tsv",
     lasso_m="out/wg/{target}/lasso.pkl",
   params:
     variants = os.path.join(config["wg_inputs"], "{target}/variants"),
@@ -622,7 +624,8 @@ rule run_wg:
     covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 4
   conda: "envs/pyseer.yaml"
-  log: "out/logs/run_wg_{target}.log"
+  log: "out/logs/pyseer_wg_{target}.log"
+
   shell:
     """
     pyseer --phenotypes {input.phenotypes} \
@@ -636,9 +639,10 @@ rule run_wg:
            --sequence-reweighting \
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
+           --save-predictions {output.ridge_o} \
            {params.covariates} 2> {log} \
            | grep -v 'cv.glmnet' \
-           > {output.ridge} 
+           > {output.ridge}
     pyseer --phenotypes {input.phenotypes} \
            --phenotype-column {wildcards.target} \
            --kmers {input.unitigs} \
@@ -650,9 +654,29 @@ rule run_wg:
            --sequence-reweighting \
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
+           --save-predictions {output.lasso_o} \
            {params.covariates} 2>> {log} \
            | grep -v 'cv.glmnet' \
-           > {output.lasso} 
+           > {output.lasso}
+    """
+
+rule wg_metrics:
+  input:
+    expand("out/wg/{target}/metrics_{model}.tsv",
+           target=config["targets"],
+           model=["ridge", "lasso"]),
+
+rule run_wg_metrics:
+  input:
+    "out/wg/{target}/{model}_predictions.tsv"
+  output:
+    "out/wg/{target}/metrics_{model}.tsv"
+  params:
+  conda: "envs/pyseer.yaml"
+  log: "out/logs/wg_metrics_{target}_{model}.log"
+  shell:
+    """
+    python workflow/scripts/prediction_metrics.py {input} > {output} 2> {log}
     """
 
 rule map_back:

@@ -15,6 +15,7 @@ The pipeline contains the following endpoint rules:
     pyseer
     pyseer_rare
     wg
+    wg_metrics
     map_back
     qq_plots
     manhattan_plots
@@ -34,6 +35,7 @@ Which accomplish the following functions:
 * ``pyseer_rare``: will test for rare variants based on the predicted deleterious protein coding variants.
 * ``panfeed``: will test gene-cluster specific k-mers for their association with the phenotype(s), and produce output plots.
 * ``wg``: will train two machine learning models (lasso and a ridge elastic nets) based on the presence/absence patterns of all unitigs.
+* ``wg_metrics``: will calculate prediction performance metrics for the machine learning models trained by the ``wg`` rule, providing quantitative assessment of model accuracy.
 * ``qq_plots``: will createa Q-Q plot to check that p-values are not inflated (large ‘shelves’ are symptomatic of poorly controlled confounding population structure)
 * ``map_back``: will map back the associated genetic variants to the provided reference genomes.
 * ``manhattan_plots``: will generate a Manhattan plot of the unitigs that map to the chosen reference genome.

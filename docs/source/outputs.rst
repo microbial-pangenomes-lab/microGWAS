@@ -216,20 +216,21 @@ with one column per antimicrobial "class".
     | | |____KEGG_ridge.tsv
     | | |____lasso.pkl
     | | |____lasso.tsv
-    | | |____lasso.txt
+    | | |____lasso_predictions.tsv
+    | | |____metrics_lasso.tsv
     | | |____mapped_lasso.tsv
     | | |____mapped_ridge.tsv
     | | |____ridge.pkl
     | | |____ridge.tsv
-    | | |____ridge.txt    
+    | | |____ridge_predictions.tsv    
+    | | |____metrics_ridge.tsv
     
 The contents of the ``wg`` are very similar to the equivalent files in the ``associations`` folder. The differences are:
 
 * in the ``inputs`` subfolder: ``variants.*`` are the ``pyseer`` checkpoint files to avoid loading the full set of unitigsmultiple times 
-* ``lasso.tsv``: association output between each unitig and the phenotype; based on the lasso model 
-* ``lasso.txt``: the table shows the prediction perfomance of the lasso model; the size represents the number of samples, R2 the model performance and the True and False predictions for each lineage
-* ``ridge.tsv``: association output between each unitig and the phenotype; based on the ridge model
-* ``ridge.txt``: the table shows the prediction perfomance of the ridge model; the size represents the number of samples, R2 the model performance and the True and False predictions
+* ``lasso.tsv`` and ``ridge.tsv``: association output between each unitig and the phenotype
+* ``lasso_predictions.tsv`` and ``ridge_predictions.tsv``: table showing the true and predicted values for each sample
+* ``metrics_lasso.tsv`` and ``metrics_ridge.tsv``: model prediction performance metrics on the training set. The actual metrics depend on whether the phenotype is binary or continuous
 * ``lasso.pkl`` and ``ridge.pkl``: ``pyseer`` checkpoint file containing the trained machine learning model, which can be used to predict the phenotype in new samples
 
 ..  code-block:: console
