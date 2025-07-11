@@ -42,8 +42,8 @@ rule download_eggnog:
 rule unitigs:
   input: config["unitigs_input"]
   output:
-    config["unitigs"],
-    config["unitigs_rtab"]
+    o1=config["unitigs"],
+    o2=config["unitigs_rtab"]
   params: config["unitigs_dir"]
   threads: 16
   conda: "envs/unitig-counter.yaml"
@@ -52,7 +52,8 @@ rule unitigs:
     """
     rm -rf {params} && \
     unitig-counter -strains {input} -output {params} \
-    -gzip -nb-cores {threads} 2> {log}
+    -gzip -nb-cores {threads} 2> {log} && \
+    gzip -t {output.o1} 2>> {log}
     """
 
 rule lineage_st:
@@ -624,6 +625,7 @@ rule run_wg:
   threads: 4
   conda: "envs/pyseer.yaml"
   log: "out/logs/pyseer_wg_{target}.log"
+
   shell:
     """
     pyseer --phenotypes {input.phenotypes} \
@@ -638,8 +640,9 @@ rule run_wg:
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
            --save-predictions {output.ridge_o} \
-           {params.covariates} \
-           > {output.ridge} 2> {log}
+           {params.covariates} 2> {log} \
+           | grep -v 'cv.glmnet' \
+           > {output.ridge}
     pyseer --phenotypes {input.phenotypes} \
            --phenotype-column {wildcards.target} \
            --kmers {input.unitigs} \
@@ -652,8 +655,9 @@ rule run_wg:
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
            --save-predictions {output.lasso_o} \
-           {params.covariates} \
-           > {output.lasso} 2>> {log}
+           {params.covariates} 2>> {log} \
+           | grep -v 'cv.glmnet' \
+           > {output.lasso}
     """
 
 rule wg_metrics:
@@ -863,7 +867,7 @@ rule run_map_summary_wg:
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-beta \
-           > {output.summary}
+           > {output.summary} 2> {log}
     """
 
 rule run_map_summary_fig:
@@ -1380,7 +1384,8 @@ rule run_annotate_panfeed_small:
            {input.associations} {input.kmers} \
            {input.hashes} \
            --threshold $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
-           | gzip > {output} 2> {log}
+           | gzip > {output} 2> {log} && \
+    gzip -t {output} 2>> {log}
     """
 
 rule panfeed:
@@ -1439,6 +1444,7 @@ rule panfeed_downstream:
         -p {params.k2h} \
         -k {params.k} 2>> {log} \
         | gzip > {output.kmers} && \
+    gzip -t {output.kmers} && \
     rm -rf {params.outdir} && \
     mkdir -p {params.plotsdir} && \
     panfeed-plot -k $(realpath {output.kmers}) \
