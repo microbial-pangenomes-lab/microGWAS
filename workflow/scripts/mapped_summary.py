@@ -105,13 +105,21 @@ if __name__ == "__main__":
 
     # index is the strain
     if not options.panfeed:
-        m = pd.read_csv(options.mapped, sep='\t', index_col=0)
+        try:
+            m = pd.read_csv(options.mapped, sep='\t', index_col=0)
+        except pd.errors.EmptyDataError:
+            sys.stdout.write('empty mapped file, exiting gracefully\n')
+            sys.exit(0)
     else:
-        m = pd.read_csv(options.mapped, sep='\t', index_col=9)
-        # rename a column to avoid much refactoring
-        m = m.rename(columns={'hashed_pattern': 'unitig',
-                              'k-mer': 'start',
-                              'cluster': 'gene'})
+        try:
+            m = pd.read_csv(options.mapped, sep='\t', index_col=10)
+            # rename a column to avoid much refactoring
+            m = m.rename(columns={'hashed_pattern': 'unitig',
+                                  'k-mer': 'start',
+                                  'cluster': 'gene'})
+        except pd.errors.EmptyDataError:
+            sys.stdout.write('empty mapped file, exiting gracefully\n')
+            sys.exit(0)
     # check empty
     if m.shape[0] == 0:
         sys.exit(0)
@@ -161,6 +169,11 @@ if __name__ == "__main__":
                           'beta': 'avg-beta'})
 
     a = n.join(v).join(c).sort_values('avg-lrt-pvalue')
+    for col in['strains', 'unitigs', 'avg-af',
+               'avg-lrt-pvalue', 'avg-beta',
+               'variant_h2']:
+        if col not in a.columns:
+            sys.exit(0)
     a = a[['strains', 'unitigs',
            'avg-af', 'avg-lrt-pvalue',
            'avg-beta', 'variant_h2']]
