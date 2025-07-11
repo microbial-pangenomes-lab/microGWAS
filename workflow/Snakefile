@@ -42,8 +42,8 @@ rule download_eggnog:
 rule unitigs:
   input: config["unitigs_input"]
   output:
-    config["unitigs"],
-    config["unitigs_rtab"]
+    o1=config["unitigs"],
+    o2=config["unitigs_rtab"]
   params: config["unitigs_dir"]
   threads: 16
   conda: "envs/unitig-counter.yaml"
@@ -52,7 +52,8 @@ rule unitigs:
     """
     rm -rf {params} && \
     unitig-counter -strains {input} -output {params} \
-    -gzip -nb-cores {threads} 2> {log}
+    -gzip -nb-cores {threads} 2> {log} && \
+    gzip -t {output.o1} 2>> {log}
     """
 
 rule lineage_st:
@@ -1359,7 +1360,8 @@ rule run_annotate_panfeed_small:
            {input.associations} {input.kmers} \
            {input.hashes} \
            --threshold $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
-           | gzip > {output} 2> {log}
+           | gzip > {output} 2> {log} && \
+    gzip -t {output} 2>> {log}
     """
 
 rule panfeed:
@@ -1418,6 +1420,7 @@ rule panfeed_downstream:
         -p {params.k2h} \
         -k {params.k} 2>> {log} \
         | gzip > {output.kmers} && \
+    gzip -t {output.kmers} && \
     rm -rf {params.outdir} && \
     mkdir -p {params.plotsdir} && \
     panfeed-plot -k $(realpath {output.kmers}) \
