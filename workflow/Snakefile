@@ -611,10 +611,8 @@ rule run_wg:
     lineages=os.path.join(config["wg_inputs"], "{target}/lineages.tsv")
   output:
     ridge="out/wg/{target}/ridge.tsv",
-    ridge_o="out/wg/{target}/ridge.txt",
     ridge_m="out/wg/{target}/ridge.pkl",
     lasso="out/wg/{target}/lasso.tsv",
-    lasso_o="out/wg/{target}/lasso.txt",
     lasso_m="out/wg/{target}/lasso.pkl",
   params:
     variants = os.path.join(config["wg_inputs"], "{target}/variants"),
@@ -623,6 +621,7 @@ rule run_wg:
     covariates=lambda wildcards: config.get("covariates", {wildcards.target: ''})[wildcards.target]
   threads: 4
   conda: "envs/pyseer.yaml"
+  log: "out/logs/run_wg_{target}.log"
   shell:
     """
     pyseer --phenotypes {input.phenotypes} \
@@ -636,8 +635,9 @@ rule run_wg:
            --sequence-reweighting \
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
-           {params.covariates} \
-           > {output.ridge} 2> {output.ridge_o}
+           {params.covariates} 2> {log} \
+           | grep -v 'cv.glmnet' \
+           > {output.ridge} 
     pyseer --phenotypes {input.phenotypes} \
            --phenotype-column {wildcards.target} \
            --kmers {input.unitigs} \
@@ -649,8 +649,9 @@ rule run_wg:
            --sequence-reweighting \
            --lineage-clusters {input.lineages} \
            --cor-filter 0.0 \
-           {params.covariates} \
-           > {output.lasso} 2> {output.lasso_o}
+           {params.covariates} 2>> {log} \
+           | grep -v 'cv.glmnet' \
+           > {output.lasso} 
     """
 
 rule map_back:
@@ -841,7 +842,7 @@ rule run_map_summary_wg:
            {params.r} \
            --gff-dir {params.d} \
            --unique --sort avg-beta \
-           > {output.summary}
+           > {output.summary} 2> {log}
     """
 
 rule run_map_summary_fig:
