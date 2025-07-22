@@ -3,8 +3,10 @@ channels:
   - bioconda
 dependencies:
 - python=3.9
+- numpy<2
 - keras<3
 - tensorflow==2.13.1
 - pip
 - pip:
     - git+https://github.com/allydunham/sequence_unet@v1.0.6
+    - numpy<2
