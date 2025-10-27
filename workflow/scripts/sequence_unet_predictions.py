@@ -23,7 +23,13 @@ def main():
     tf.config.threading.set_intra_op_parallelism_threads(args.cores)
     tf.config.threading.set_inter_op_parallelism_threads(args.cores)
 
-    model = load_trained_model(args.model, args.model_dir, download=args.download)
+    try:
+        model = load_trained_model(args.model, args.model_dir, download=args.download)
+    except ValueError as e:
+        if "tf.saved_model.save" in str(e):
+            model = tf.saved_model.load(os.path.join(args.model_dir, args.model))
+        else:
+            raise
 
     if args.proteinnet:
         data = ProteinNetDataset(path=args.proteinnet, preload=False)
