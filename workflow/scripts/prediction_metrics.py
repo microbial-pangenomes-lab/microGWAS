@@ -29,8 +29,13 @@ if __name__ == "__main__":
     y = p['true_value'].values
     y_hat = p['predicted_value'].values
 
+    # make sure we don't have NaNs
+    y_both = pd.DataFrame({'y': y, 'y_hat': y_hat}).dropna()
+    y = y_both['y'].values
+    y_hat = y_both['y_hat'].values
+
     # identify if phenotype is continuous or binary
-    if y[(y != 0) & (y != 1)].size > 0:
+    if y[(y != 0) & (y != 1)].size > 0 or y_hat[(y_hat != 0) & (y_hat != 1)].size > 0:
         sys.stderr.write("Detected continuous phenotype\n")
         binary = False
     else:

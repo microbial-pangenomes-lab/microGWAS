@@ -156,6 +156,41 @@ rule pangenome:
     rm -rf {params.tmp}
     """
 
+rule sample_whole_pangenome:
+  input:
+    pangenome=config["pangenome_csv"],
+    genes=config["pangenome_genes"],
+  output: config['pangenome_faa']
+  params: config["annotation_references"]
+  log: "out/logs/sample_pangenome.log"
+  shell:
+    """
+    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
+               {params} \
+               > {output} 2> {log}
+    """
+
+rule annotate_pangenome:
+  input: config["pangenome_faa"]
+  output: "out/panaroo/pangenome.emapper.annotations",
+  params:
+    emapper_data=config["emapper"],
+    emapper_base="out/panaroo/pangenome",
+  threads: 40
+  conda: "envs/eggnog-mapper.yaml"
+  log: "out/logs/annotate_pangenome.log"
+  shell:
+    """
+    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
+      echo "eggnog-mapper database missing" >> {log}; \
+      exit 1;
+    fi
+    emapper.py -i {input} -o {params.emapper_base} \
+               --cpu {threads} --target_orthologs one2one --go_evidence all \
+               --tax_scope Bacteria --pfam_realign none --override \
+               --data_dir {params.emapper_data} 2>> {log}
+    """
+
 rule variant_sites:
   input: config["core_genome_aln"]
   output: config["core_genome_aln_variant"]

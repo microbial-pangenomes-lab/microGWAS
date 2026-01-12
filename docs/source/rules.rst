@@ -6,6 +6,7 @@ The pipeline contains the following endpoint rules:
 ..  code-block:: console
 
     pangenome
+    annotate_pangenome
     lineage_st
     find_amr_vag
     tree
@@ -29,6 +30,7 @@ Which accomplish the following functions:
 * ``lineage_st``: will generate a tab-separated file with the predicted sequence types (STs).
 * ``find_amr_vag``: will generate a summary file with the predicted antimicrobial resistance genes identified into functionally relevant groups, and a summary file with the predicted virulence associated genes.
 * ``pangenome``: will find the orthologous gene clusters across all samples and the chosen references
+* ``annotate_pangenome``: will generate functional annotations for the pangenome using eggnog-mapper, including COG categories, GO terms, and KEGG pathway mappings.
 * ``tree``: will generate a phylogenetic tree from the core genome alignment output from panaroo.
 * ``combine_heritability``: will generate a file with the comined heritabilities: built from the lineages of each strain and by using a kinship matrix built from the unitigs presence and absence matrix.
 * ``pyseer``: will test for associations of each unitig and the phenotype, as well as gene presence/absence patterns and lineage effects.
