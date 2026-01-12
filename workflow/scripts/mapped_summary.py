@@ -152,7 +152,10 @@ if __name__ == "__main__":
     n = n.rename(columns={'strain': 'strains'})
 
     if not options.panfeed:
-        f = pd.read_csv(options.filtered, sep='\t', index_col=0)
+        try:
+            f = pd.read_csv(options.filtered, sep='\t', index_col=0)
+        except pd.errors.ParserError:
+            f = pd.read_csv(options.filtered, sep='\t', index_col=0, skiprows=1)
         # ugly hack
         #if 'lineage' not in f.columns:
         #    f.columns = ['af', 'filter-pvalue', 'lrt-pvalue', 'beta', 'lineage', 'notes']
