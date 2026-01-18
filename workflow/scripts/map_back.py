@@ -120,10 +120,11 @@ if __name__ == "__main__":
     if os.path.isfile(options.genome):
         genomes = [x.rstrip() for x in open(options.genome)]
     else:
-        genomes = os.listdir(options.genome)
+        genomes = [x for x in os.listdir(options.genome)
+                   if x.endswith('.fasta')
+                   or x.endswith('.fa')
+                   or x.endswith('.fna')]
     for fgenome in genomes:
-        if not fgenome.endswith('.fasta'):
-            continue
         strain_id = '.'.join(os.path.split(fgenome)[-1].split('.')[:-1])
         genome = strain_id
 
