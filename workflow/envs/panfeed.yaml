@@ -2,7 +2,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-- python>=3.6
+- python>=3.6,<3.14
 - pandas
 - numpy
 - pyfaidx
