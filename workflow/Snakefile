@@ -36,7 +36,7 @@ rule download_eggnog:
   shell:
     """
     mkdir -p {params.folder}
-    download_eggnog_data.py --data_dir {params.folder} -y -H -d {params.db} 2> {log}
+    download_eggnog_data.py --data_dir {params.folder} -y -H -d {params.db} > {log} 2>&1
     """
 
 rule unitigs:
@@ -52,8 +52,8 @@ rule unitigs:
     """
     rm -rf {params} && \
     unitig-counter -strains {input} -output {params} \
-    -gzip -nb-cores {threads} 2> {log} && \
-    gzip -t {output.o1} 2>> {log}
+      -gzip -nb-cores {threads} > {log} 2>&1 && \
+    gzip -t {output.o1} >> {log} 2>&1
     """
 
 rule lineage_st:
@@ -67,12 +67,12 @@ rule lineage_st:
   log: "out/logs/mlst.log"
   shell:
     """
-    mkdir -p {params.tmp} 2> {log}
+    mkdir -p {params.tmp} > {log} 2>&1
     for i in $(cat {input}); do echo "mlst --scheme {params.scheme} --threads 1 "$i" | cut -f1,3 > {params.tmp}/"$(basename $i)".mlst"; done > {params.tmp}/mlst_jobs.txt 2>> {log}
-    parallel -j {threads} --progress < {params.tmp}/mlst_jobs.txt 2>> {log}
-    cat {params.tmp}/*.mlst > {params.tmp}/all_mlst.txt 2>> {log}
-    python workflow/scripts/sanitize_mlst.py {params.tmp}/all_mlst.txt > {output} 2>> {log}
-    rm -rf {params.tmp} 2>> {log}
+    parallel -j {threads} --progress < {params.tmp}/mlst_jobs.txt >> {log} 2>&1
+    cat {params.tmp}/*.mlst > {params.tmp}/all_mlst.txt >> {log} 2>&1
+    python workflow/scripts/sanitize_mlst.py {params.tmp}/all_mlst.txt > {output} >> {log} 2>&1
+    rm -rf {params.tmp} >> {log} 2>&1
     """
 
 rule lineage_poppunk:
@@ -88,10 +88,10 @@ rule lineage_poppunk:
      """
      poppunk_assign --db {params.indir} \
              --query {input} --output {params.outdir} \
-             --threads {threads} 2> {log} && \
+             --threads {threads} > {log} 2>&1 && \
      tail -n+2 {params.outdir}/poppunk_clusters.csv | \
      sed 's/data\/fastas\///g' | sed 's/.fasta//g' | \
-     awk -F',' '{{print $1"\\t"$2}}' > {output}
+     awk -F',' '{{print $1"\\t"$2}}' > {output} 2>> {log}
      """
 
 rule find_amr_vag:
@@ -106,9 +106,9 @@ rule find_amr_vag:
   shell:
     """
     mkdir -p out/abritamr && \
-    tail -n+2 {input} | awk -v OFS='\t' '{{ cmd="realpath " $2; cmd | getline $2; close(cmd); print }}' > out/abritamr/abritamr_input.tsv 2> {log} && \
+    tail -n+2 {input} | awk -v OFS='\t' '{{ cmd="realpath " $2; cmd | getline $2; close(cmd); print }}' > out/abritamr/abritamr_input.tsv && \
     cd out/abritamr && \
-    abritamr run --contigs abritamr_input.tsv --species {params.species} --jobs {threads} 2>> ../../{log}
+    abritamr run --contigs abritamr_input.tsv --species {params.species} --jobs {threads} > ../../{log} 2>&1
     """
 
 rule mash_sketch:
@@ -119,7 +119,7 @@ rule mash_sketch:
   conda: "envs/mash.yaml"
   log: "out/logs/mash_sketch.log"
   shell:
-    "mash sketch -p {threads} -s 10000 -o {params} -l {input} 2> {log}"
+    "mash sketch -p {threads} -s 10000 -o {params} -l {input} > {log} 2>&1"
 
 rule distance:
   input: config["sketches"]
@@ -146,7 +146,7 @@ rule pangenome:
   log: "out/logs/pangenome.log"
   shell:
     """
-    panaroo -t {threads} -i {input} -o {params.tmp} --clean-mode strict -a core 2> {log}
+    panaroo -t {threads} -i {input} -o {params.tmp} --clean-mode strict -a core > {log} 2>&1
     mkdir -p {params.final}
     mv {params.tmp}/gene_presence_absence.Rtab {params.final}
     mv {params.tmp}/gene_presence_absence.csv {params.final}
@@ -182,13 +182,13 @@ rule annotate_pangenome:
   shell:
     """
     if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
-      echo "eggnog-mapper database missing" >> {log}; \
+      echo "eggnog-mapper database missing" > {log}; \
       exit 1;
     fi
     emapper.py -i {input} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log}
+               --data_dir {params.emapper_data} >> {log} 2>&1
     """
 
 rule variant_sites:
@@ -197,7 +197,7 @@ rule variant_sites:
   conda: "envs/snp-sites.yaml"
   log: "out/logs/variant_sites.log"
   shell:
-    "snp-sites -o {output} {input} 2> {log}"
+    "snp-sites -o {output} {input} > {log} 2>&1"
 
 rule aln2vcf:
   input: config["core_genome_aln"]
@@ -207,9 +207,9 @@ rule aln2vcf:
   log: "out/logs/snp-sites.log"
   shell:
     """
-    snp-sites -o core.vcf -v {input}
-    bcftools norm -m - -O z --threads {threads} core.vcf > {output} 2> {log}
-    bcftools index {output}
+    snp-sites -o core.vcf -v {input} > {log} 2>&1
+    bcftools norm -m - -O z --threads {threads} core.vcf > {output} 2>> {log}
+    bcftools index {output} >> {log} 2>&1
     rm core.vcf
     """
 
@@ -222,11 +222,11 @@ rule similarity:
   log: "out/logs/similarity.log"
   shell:
     """
-    grep '>' {input.aln} | cut -c 2- > similarity_samples.txt
+    grep '>' {input.aln} | cut -c 2- > similarity_samples.txt 2> {log}
     python workflow/scripts/similarity.py similarity_samples.txt \
            --vcf {input.vcf} \
-           > {output} 2> {log}
-    rm similarity_samples.txt
+           > {output} 2>> {log}
+    rm similarity_samples.txt >> {log} 2>&1
     """
 
 rule tree:
@@ -252,7 +252,7 @@ rule prepare_pyseer:
   params: os.path.join(config["association_inputs"], "{phenotype}")
   log: "out/logs/prepare_pyseer_{phenotype}.log"
   shell:
-    "python workflow/scripts/prepare_pyseer.py {input} {params} {wildcards.phenotype} 2> {log}"
+    "python workflow/scripts/prepare_pyseer.py {input} {params} {wildcards.phenotype} > {log} 2>&1"
 
 rule prepare_wg:
   input:
@@ -280,13 +280,13 @@ rule prepare_wg:
      python workflow/scripts/prepare_pyseer.py {input.variants} {input.phenotypes} \
                                                 {input.similarity} {input.distances} \
                                                 {input.lineage} {params.directory} \
-                                                {wildcards.phenotype} 2> {log} && \
+                                                {wildcards.phenotype} > {log} 2>&1 && \
      pyseer --phenotypes {output.phenotypes} --phenotype-column {wildcards.phenotype} \
             --kmers {input.unitigs} \
             --wg enet --save-vars {params.variants} \
             --cor-filter 0.0 \
             {params.covariates} \
-            --cpu {threads} > /dev/null 2>> {log}
+            --cpu {threads} >> {log} 2>&1
     """
 
 rule heritability:
@@ -322,7 +322,7 @@ rule run_heritability:
     tempfile=$(mktemp) && \
     python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.similarity} \
           -p {wildcards.target} \
-          --prefix $tempfile 2>> {log} && \
+          --prefix $tempfile >> {log} 2>&1 && \
     grep normal {output.h} | awk '{{print $3}}' > $tempfile".estimates.txt" && \
     grep normal {output.h} | awk '{{print $3}}' >> $tempfile".estimates.txt" && \
     python albi/albi.py -k $tempfile"_values.txt" \
@@ -335,7 +335,7 @@ rule run_heritability:
     tempfile=$(mktemp) && \
     python workflow/scripts/prepare_fiesta.py {input.phenotypes} {input.lineages} \
           -p {wildcards.target} \
-          --prefix $tempfile 2>> {log} && \
+          --prefix $tempfile >> {log} 2>&1 && \
     grep normal {output.h_lineages} | awk '{{print $3}}' > $tempfile".estimates.txt" && \
     grep normal {output.h_lineages} | awk '{{print $3}}' >> $tempfile".estimates.txt" && \
     python albi/albi.py -k $tempfile"_values.txt" \
@@ -360,7 +360,7 @@ rule download_sequence_unet:
   conda: "envs/sequence_unet.yaml"
   log: "out/logs/download_sequence_unet.log"
   shell:
-    "python workflow/scripts/download_sequence_unet_model.py {params} 2> {log}"
+    "python workflow/scripts/download_sequence_unet_model.py {params} > {log} 2>&1"
 
 rule sequence_unet:
   input:
@@ -377,8 +377,8 @@ rule sequence_unet:
     """
     python workflow/scripts/sequence_unet_predictions.py --fasta {input.reference} \
            --model_dir {params.model} --output {params.outdir} --cores {threads} \
-           freq_classifier 2> {log} && \
-    touch {output}
+           freq_classifier > {log} 2>&1 && \
+    touch {output} >> {log} 2>&1
     """
 
 rule prepare_vcf_variants:
@@ -400,8 +400,8 @@ rule prepare_vcf_variants:
     bcftools view -Q 0.05 out/snps/norm.vcf.gz -O z --threads {threads} > out/snps/filtered.vcf.gz 2>> {log}
     bcftools view -q 0.01 out/snps/norm.vcf.gz -O z --threads {threads} > {output.common} 2>> {log}
     python workflow/scripts/vcf2deleterious.py out/snps/filtered.vcf.gz --unet {params} | bgzip > {output.rare} 2>> {log}
-    bcftools index {output.rare} 2>> {log}
-    bcftools index {output.common} 2>> {log}
+    bcftools index {output.rare} >> {log} 2>&1
+    bcftools index {output.common} >> {log} 2>&1
     rm out/snps/merged.vcf.gz out/snps/norm.vcf.gz out/snps/filtered.vcf.gz
     """
 
@@ -425,7 +425,7 @@ rule get_snps:
   log: "out/logs/snippy_{sample}.log"
   shell:
     """
-    snippy --force --outdir {params.tmp} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 2> {log}
+    snippy --force --outdir {params.tmp} --ref {input.ref} --ctgs {input.ctgs} --cpus 1 --ram 8 > {log} 2>&1
     mkdir -p {params.final}
     mv {params.tmp}/snps.vcf.gz {params.final}/
     mv {params.tmp}/snps.vcf.gz.csi {params.final}/
@@ -498,7 +498,7 @@ rule run_pyseer:
            --lineage-file out/associations/{wildcards.target}/unitigs_lineage.txt \
            --distances {input.distances} \
            {params.covariates} \
-           > /dev/null 2> {log}
+           > {log} 2>&1
     pyseer --phenotypes {input.phenotypes} \
            --phenotype-column {wildcards.target} \
            --kmers {input.unitigs} \
@@ -596,9 +596,9 @@ rule run_pyseer_vcf:
            --output-patterns out/associations/{wildcards.target}/vcf_patterns.txt \
            --cpu 1 \
            {params.covariates} \
-           > {output.common} 2> {log} && \
+           > {output.common} 2>> {log} && \
     cat <(head -1 {output.common}) <(LC_ALL=C awk -v pval=$(python workflow/scripts/count_patterns.py --threshold {input.patterns}) '$4<pval {{print $0}}' {output.common}) > {output.common_f} && \
-    python workflow/scripts/vcf_subset.py {output.common_f} {input.common} > {output.common_a}
+    python workflow/scripts/vcf_subset.py {output.common_f} {input.common} > {output.common_a} 2>> {log}
     """
 
 rule run_rare_summary:
@@ -635,7 +635,7 @@ rule run_qq_plot:
   output: "out/associations/{target}/qq_{variant}.png"
   conda: "envs/pyseer.yaml"
   log: "out/logs/qq_{variant}_{target}.log"
-  shell: "python workflow/scripts/qq_plot.py {input} --output {output} 2> {log}"
+  shell: "python workflow/scripts/qq_plot.py {input} --output {output} > {log} 2>&1"
 
 rule run_wg:
   input:
@@ -740,7 +740,7 @@ rule run_map_back:
     """
     rm -rf {params} || true
     mkdir -p {params}
-    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
+    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output} 2> {log}
     python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
     """
 
@@ -759,8 +759,8 @@ rule run_map_back_all:
     """
     rm -rf {params} || true
     mkdir -p {params}
-    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {params}/mapped.tsv
-    python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details >> {params}/mapped.tsv 2> {log}
+    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {params}/mapped.tsv 2> {log}
+    python workflow/scripts/map_back.py {input.unitigs} {input.reffastadir} --tmp-prefix {params} --gff {input.refgffdir} --print-details >> {params}/mapped.tsv 2>> {log}
     python workflow/scripts/make_skyline.py {input.unitigs} {params}/mapped.tsv > {output} 2>> {log}
     """
 
@@ -781,7 +781,7 @@ rule run_manhattan_plot:
   shell:
     """
     python workflow/scripts/manhattan_plot.py {input.mapped} {params} {output} \
-           -t $(python3 workflow/scripts/count_patterns.py {input.patterns} --threshold)
+           -t $(python3 workflow/scripts/count_patterns.py {input.patterns} --threshold) > {log} 2>&1
     """
 
 rule run_map_back_wg:
@@ -800,7 +800,7 @@ rule run_map_back_wg:
     """
     rm -rf {params} || true
     mkdir -p {params}
-    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output}
+    echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output} 2> {log}
     python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
     """
 
@@ -916,7 +916,7 @@ rule run_map_summary_fig:
   conda: "../envs/pyseer.yaml"
   shell:
     """
-    python workflow/scripts/unitigs2fig.py {input} {output}
+    python workflow/scripts/unitigs2fig.py {input} {output} > {log} 2>&1
     """
 
 rule annotate_summary:
@@ -969,7 +969,7 @@ rule run_annotate_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} && \
+               --data_dir {params.emapper_data} >> {log} 2>&1 && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1008,7 +1008,7 @@ rule run_annotate_rare_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} && \
+               --data_dir {params.emapper_data} >> {log} 2>&1 && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1047,7 +1047,7 @@ rule run_annotate_gpa_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} && \
+               --data_dir {params.emapper_data} >> {log} 2>&1 && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1086,7 +1086,7 @@ rule run_annotate_panfeed_summary:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} && \
+               --data_dir {params.emapper_data} >> {log} 2>&1 && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1125,7 +1125,7 @@ rule run_annotate_summary_wg:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} && \
+               --data_dir {params.emapper_data} >> {log} 2>&1 && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1162,7 +1162,7 @@ rule annotate_reference:
     emapper.py -i {params.sample} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} 2>> {log} && \
+               --data_dir {params.emapper_data} >> {log} 2>&1 && \
     python workflow/scripts/enhance_summary.py /dev/null {params.annotations} --no-summary \
     > {output} 2>> {log}
     """
@@ -1212,7 +1212,7 @@ rule run_enrich:
   shell:
     """
     python workflow/scripts/functional_enrichment.py {input.sample} \
-            {input.reference} {input.obo} {output} 2> {log}
+            {input.reference} {input.obo} {output} > {log} 2>&1
     """
 
 rule run_enrich_alt:
@@ -1229,7 +1229,7 @@ rule run_enrich_alt:
   shell:
     """
     python workflow/scripts/functional_enrichment.py {input.sample} \
-            {input.reference} {input.obo} {output} 2> {log}
+            {input.reference} {input.obo} {output} > {log} 2>&1
     """
 
 rule run_enrich_wg:
@@ -1246,7 +1246,7 @@ rule run_enrich_wg:
   shell:
     """
     python workflow/scripts/functional_enrichment.py {input.sample} \
-            {input.reference} {input.obo} {output} 2> {log}
+            {input.reference} {input.obo} {output} > {log} 2>&1
     """
 
 rule enrichment_plots:
@@ -1299,7 +1299,7 @@ rule run_enrichment_plots:
   shell:
     """
     python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
-           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
+           {output.go_plot} {input.kegg} {output.kegg_plot} > {log} 2>&1
     """
 
 rule run_enrichment_plots_alt:
@@ -1316,7 +1316,7 @@ rule run_enrichment_plots_alt:
   shell:
     """
     python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
-           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
+           {output.go_plot} {input.kegg} {output.kegg_plot} > {log} 2>&1
     """
 
 rule run_enrichment_plots_wg:
@@ -1333,7 +1333,7 @@ rule run_enrichment_plots_wg:
   shell:
     """
     python3 workflow/scripts/enrich_plots.py {input.cog} {output.cog_plot} {input.go} \
-           {output.go_plot} {input.kegg} {output.kegg_plot} 2> {log}
+           {output.go_plot} {input.kegg} {output.kegg_plot} > {log} 2>&1
     """
 
 rule panfeed_kmers:
@@ -1361,7 +1361,7 @@ rule panfeed_kmers:
         --upstream 250 --downstream 100 \
         --no-filter \
         -v \
-        --cores {threads} 2> {log}
+        --cores {threads} > {log} 2>&1
     """
 
 rule panfeed_first_pass:
@@ -1461,8 +1461,8 @@ rule panfeed_downstream:
         -p {input.panfeed_conversion} \
         -t $(python workflow/scripts/count_patterns.py --threshold {input.patterns}) \
         > {params.clusters} 2> {log} && \
-    rm -rf {params.outdir} 2>> {log} || true && \
-    tail -n+2 {input.samples} | awk '{{print $1}}' | sort | uniq > {params.targets} && \
+    rm -rf {params.outdir} >> {log} 2>&1 || true && \
+    tail -n+2 {input.samples} | awk '{{print $1}}' | sort | uniq > {params.targets} 2>> {log} && \
     panfeed \
         --gff {input.gff} \
         --fasta {input.fasta} \
@@ -1473,21 +1473,21 @@ rule panfeed_downstream:
         -v \
         --genes {params.clusters} \
         --targets {params.targets} \
-        --cores {threads} 2>> {log} && \
+        --cores {threads} >> {log} 2>&1 && \
     panfeed-get-kmers \
         -a {input.panfeed} \
         -p {params.k2h} \
         -k {params.k} 2>> {log} \
-        | gzip > {output.kmers} && \
-    gzip -t {output.kmers} && \
-    rm -rf {params.outdir} && \
-    mkdir -p {params.plotsdir} && \
+        | gzip > {output.kmers} 2>> {log} && \
+    gzip -t {output.kmers} >> {log} 2>&1 && \
+    rm -rf {params.outdir} >> {log} 2>&1 && \
+    mkdir -p {params.plotsdir} >> {log} 2>&1 && \
     panfeed-plot -k $(realpath {output.kmers}) \
         -p $(realpath {input.phenotypes}) \
         --phenotype-column {wildcards.target} \
         -t $(python workflow/scripts/count_patterns.py \
         --threshold {input.patterns}) \
-        --output-directory {params.plotsdir} 2>> {log} && \
-    touch {output.plots} 2>> {log}
+        --output-directory {params.plotsdir} >> {log} 2>&1 && \
+    touch {output.plots} >> {log} 2>&1
     """
 
