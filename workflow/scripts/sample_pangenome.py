@@ -7,7 +7,7 @@ def get_options():
     parser = argparse.ArgumentParser(description=description)
 
     parser.add_argument('pangenome',
-                        help='Panaroo\'s output (i.e. gene_presence_absence_roary.csv)')
+                        help='Panaroo\'s output (i.e. gene_presence_absence.csv)')
     parser.add_argument('genes',
                         help='Panaroo\'s gene_data.csv file')
     
@@ -46,7 +46,7 @@ if __name__ == "__main__":
                         low_memory=False,
                         index_col=0)
     # Drop the other info columns
-    roary.drop(list(roary.columns[:13]),
+    roary.drop(list(roary.columns[:2]),
                axis=1,
                inplace=True)
 
