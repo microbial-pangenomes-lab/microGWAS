@@ -106,9 +106,9 @@ Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file
            phenotype: "--use-covariates 6q 7"
            # phenotype2: "--use-covariates 7",
 
-* ``MLST scheme``: Change the mlst scheme to be used to compute lineages. Find more information on the `available schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__
+* ``MLST scheme``: Change the MLST scheme to be used to compute lineages. Check the :download:`mlst scheme example file <species_samples/mlst_samples.csv>` for the correct format. See also `avaiable schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__ for more informations.
 * ``references for association summaries and annotation``: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented.
-* ``species_amr``: species to be used for AMR and virulence predictions
+* ``species_amr``: Specify the species for AMR analysis. Check the :download:`species_amr example file <species_samples/amr_samples.csv>` for the correct format.
 * ``lineages_file``: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
 * ``eggnogdb``: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found `here <http://eggnog5.embl.de/#/app/downloads>`__
 * Filters to remove spurious hits: change them to be more or less stringent

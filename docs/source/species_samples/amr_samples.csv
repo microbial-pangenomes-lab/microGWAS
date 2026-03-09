@@ -1,0 +1,32 @@
+﻿Scientific_name,AMR_name,REF_Genome
+Acinetobacter baumannii ,Acinetobacter_baumannii,GCF_009035845.1
+Bordetella pertussis ,Bordetella_pertussis,GCF_004008975.1
+Burkholderia cepacia ,Burkholderia_cepacia,GCF_009586235.1
+Burkholderia mallei ,Burkholderia_mallei,GCF_033956065.1
+Burkholderia pseudomallei ,Burkholderia_pseudomallei,GCF_030297255.1
+Campylobacter ,Campylobacter,GCF_041735015.1
+Citrobacter freundii ,Citrobacter_freundii,GCF_904859905.1
+Clostridioides difficile ,Clostridioides_difficile,GCF_018885085.1
+Corynebacterium diphtheriae ,Corynebacterium_diphtheriae,GCF_001457455.1
+Enterobacter asburiae ,Enterobacter_asburiae,GCF_007035805.1
+Enterobacter cloacae ,Enterobacter_cloacae,GCF_905331265.2
+Enterococcus faecalis ,Enterococcus_faecalis,GCF_000393015.1
+Enterococcus faecium ,Enterococcus_faecium,GCF_009734005.1
+Escherichia ,Escherichia,GCF_029962465.1
+Haemophilus influenzae ,Haemophilus_influenzae,GCF_020736045.1
+Helicobacter pylori ,Helicobacter_pylori,GCF_025998455.1
+Klebsiella oxytoca ,Klebsiella_oxytoca,GCF_900636985.1
+Klebsiella pneumoniae ,Klebsiella_pneumoniae,GCF_000240185.1
+Neisseria gonorrhoeae ,Neisseria_gonorrhoeae,GCF_013030075.1
+Neisseria meningitidis ,Neisseria_meningitidis,GCF_022869645.1
+Pseudomonas aeruginosa ,Pseudomonas_aeruginosa,GCF_000006765.1
+Salmonella ,Salmonella,GCF_000006945.2
+Serratia marcescens ,Serratia_marcescens,GCF_030291735.1
+Staphylococcus aureus ,Staphylococcus_aureus,GCF_000013425.1
+Staphylococcus pseudintermedius ,Staphylococcus_pseudintermedius,GCF_034042775.1
+Streptococcus agalactiae ,Streptococcus_agalactiae,GCF_001552035.1
+Streptococcus pneumoniae ,Streptococcus_pneumoniae,GCF_001457635.1
+Streptococcus pyogenes ,Streptococcus_pyogenes,GCF_900475035.1
+Vibrio cholerae ,Vibrio_cholerae,GCF_008369605.1
+Vibrio parahaemolyticus ,Vibrio_parahaemolyticus,GCF_000196095.1
+Vibrio vulnificus ,Vibrio_vulnificus,GCF_002224265.1
