@@ -1,0 +1,166 @@
+##### params #####
+
+# targets for associations
+# i.e. the name of the columns in the phenotypes file
+targets: [
+         "phenotype",
+         #"phenotype2",
+         ]
+
+# covariates for associations (if any)
+# the numbers refer to the columns in the
+# phenotype file that should be used as covariates
+# with the suffix "q" when they are quantitative and not binary
+# the column numbering is 1-based
+# each target phenotype can have its own set of covariates
+# see also: https://pyseer.readthedocs.io/en/master/usage.html#phenotype-and-covariates
+#covariates:
+#        phenotype: "--use-covariates 6q 7"
+#        phenotype2: "--use-covariates 7"
+
+# MLST scheme
+mlst_scheme: ecoli
+#mlst_scheme: "ecoli_achtman_4"
+#mlst_scheme: "paeruginosa"
+
+# references for association summaries and annotation
+summary_references: "--reference 536 --reference CFT073 --reference ED1a --reference IAI1 --reference IAI39 --reference K-12_substr._MG1655 --reference UMN026 --reference UTI89"
+annotation_references: "--focus-strain 536 --focus-strain CFT073 --focus-strain ED1a --focus-strain IAI1 --focus-strain IAI39 --focus-strain K-12_substr._MG1655 --focus-strain UMN026 --focus-strain UTI89"
+enrichment_reference: "IAI39"
+#summary_references: "--reference PAO1 --reference UCBPP-PA14"
+#annotation_references: "--focus-strain PAO1 --focus-strain UCBPP-PA14"
+#enrichment_reference: "UCBPP-PA14"
+
+# species to be used for AMR and virulence predictions
+species_amr: "Escherichia"
+# species_amr: "Pseudomonas_aeruginosa"
+# species_amr: "Klebsiella"
+
+# which lineage file to use?
+# use "out/lineages_mlst.txt" to use mlst
+# or "out/lineages_poppunk.tsv" for poppunk
+# or an existing file for a custom lineages list
+lineages_file: "out/lineages_mlst.txt"
+
+# eggnogdb: Tax ID of eggNOG HMM database to download
+# default: "2" for Bacteria; else can be "taxid"
+# Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
+eggnogdb: "2"
+
+# filters to remove spurious hits
+# defaults are set as 'loose thresholds'
+# change them to be more/less stringent
+# length: Minimum unitig length (ignored if `--panfeed` is used)
+length: 10
+# min_hits: Minimum number of strains
+min_hits: 1
+# max_genes: Maximum number of genes to which a unitig/kmer can map
+max_genes: 25
+# example values
+#length: 30
+#min_hits: 9
+#max_genes: 10
+
+##### inputs (there already) #####
+
+# samples file
+# (includes phenotypes)
+samples: "data/data.tsv"
+
+# all genomes, excluding reference
+inputs: "out/inputs.tsv"
+
+# eggnog-mapper
+# emmaper: path to eggnog-mapper data directory
+# note: can also be a symbolic link
+emapper: "data/eggnog-mapper"
+emapper_db: "data/eggnog-mapper/eggnog.db"
+
+# snpeff
+references_dir: "data/references"
+references_fastas: "data/references/fastas"
+references_gffs: "data/references/gffs"
+
+# rare variants
+snps_reference_faa: "data/reference.faa"
+snps_reference_gff: "data/reference.gff"
+snps_reference: "data/reference.gbk"
+
+# lineages
+poppunk_db: "data/poppunk"
+
+##### outputs #####
+
+### lineages
+# generated outside the workflow
+poppunk_input: "out/poppunk_input.txt"
+#
+poppunk_dir: "out/poppunk"
+baps: "out/baps.txt"
+lineage_poppunk: "out/lineages_poppunk.tsv"
+lineage_mlst: "out/lineages_mlst.txt"
+
+### unitigs
+# generated outside the workflow
+unitigs_input: "out/unitigs_input.tsv"
+# 
+unitigs_dir: "out/unitigs"
+unitigs: "out/unitigs/unitigs.txt.gz"
+unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
+
+### pangenome (panaroo)
+# generated outside the workflow
+panaroo_input: "out/panaroo_input.txt"
+#
+panaroo_dir: "out/panaroo"
+panaroo_dir_tmp: "out/panaroo_tmp"
+pangenome: "out/panaroo/gene_presence_absence.Rtab"
+pangenome_csv: "out/panaroo/gene_presence_absence.csv"
+pangenome_genes: "out/panaroo/gene_data.csv"
+pangenome_faa: "out/panaroo/pangenome_sample.faa"
+structural: "out/panaroo/struct_presence_absence.Rtab"
+core_genome_aln: "out/panaroo/core_gene_alignment.aln"
+core_genome_vcf: "out/panaroo/core_gene_alignment.vcf.gz"
+core_genome_aln_variant: "out/panaroo/core_gene_alignment_variable.aln"
+
+### k-mers (panfeed)
+panfeed_input_dir: "out/panfeed_gffs"
+panfeed_input_fasta_dir: "out/panfeed_fastas"
+panfeed_dir: "out/panfeed"
+panfeed_patterns: "out/panfeed/hashes_to_patterns.tsv"
+panfeed_conversion: "out/panfeed/kmers_to_hashes.tsv"
+# gene clusters to extract k-mers from
+panfeed_genes: "out/panfeed_genes.txt"
+
+### phylogenetic tree
+tree: "out/panaroo/core_gene_alignment.aln.treefile"
+
+### distance (mash)
+# generated outside the workflow
+mash_input: "out/mash_input.txt"
+#
+sketches_base: "out/sketches"
+sketches: "out/sketches.msh"
+distances: "out/distances.tsv"
+
+### similarity
+similarities: "out/similarity.tsv"
+
+### rare and common variants
+# generated outside the workflow
+bcftools_input: "out/bcftools_input.txt"
+#
+snippy_dir_tmp: "out/snps/tmp"
+rare_snps: "out/snps/rare.vcf.gz"
+common_snps: "out/snps/common.vcf.gz"
+regions: "out/snps/regions.tsv"
+sequence_unet: "data/models"
+unet: "out/snps/unet"
+
+### associations
+association_inputs: "out/associations/inputs"
+wg_inputs: "out/wg/inputs"
+
+### enrichments
+annotated_reference: "out/annotated_reference.tsv"
+go_obo: "out/go-basic.obo"

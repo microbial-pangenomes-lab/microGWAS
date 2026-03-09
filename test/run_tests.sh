@@ -10,6 +10,46 @@ if [ -d "../out" ]; then
   exit 1
 fi
 
+# Define absolute paths for configuration and data files
+CONFIG_BACKUP="$PWD/../config/config_backup.yaml"
+CONFIG_TEMP="$PWD/../config/config.yaml"
+DATA_BACKUP="$PWD/../data/data_backup.tsv"
+DATA_TEMP="$PWD/../data/data.tsv"
+SMALL_GENOMES="$PWD/"
+
+# Define the cleanup function to restore state and remove temporary files
+cleanup() {
+    echo "Running cleanup..."
+    
+    # Restore configuration and data backups if they exist
+    [ -f "$CONFIG_BACKUP" ] && mv "$CONFIG_BACKUP" "$CONFIG_TEMP"
+    [ -f "$DATA_BACKUP" ] && mv "$DATA_BACKUP" "$DATA_TEMP"
+    
+    # Remove extracted directories
+    rm -rf "${SMALL_GENOMES}small_fastas" \
+           "${SMALL_GENOMES}small_gffs" \
+           "${SMALL_GENOMES}stripped_small_gffs"
+}
+
+# Set trap to execute cleanup on script exit or interruption
+trap cleanup EXIT SIGINT SIGTERM
+
+# Backup data files
+if [ -f "../data/data.tsv" ]; then
+    cp ../data/data.tsv ../data/data_backup.tsv
+fi
+
+# Deploy the test phenotype file
+cp test_data.tsv ../data/data.tsv
+
+# Backup configuration file
+if [ -f "../config/config.yaml" ]; then
+    cp ../config/config.yaml ../config/config_backup.yaml
+fi
+
+# Deploy the test configuration file
+cp test_config.yaml ../config/config.yaml
+
 # unpack the test dataset
 tar -xvf small_fastas.tgz 
 tar -xvf stripped_small_gffs.tgz 
@@ -21,9 +61,6 @@ do
   echo "##FASTA" >> small_gffs/$(basename $i .fasta).gff;
   cat small_fastas/$i >> small_gffs/$(basename $i .fasta).gff;
 done
-
-# move phenotypic data
-cp data.tsv ../data/
 
 # skip lineages estimation
 # these genomes are too small for it to work
