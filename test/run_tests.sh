@@ -47,9 +47,6 @@ if [ -f "../config/config.yaml" ]; then
     cp ../config/config.yaml ../config/config_backup.yaml
 fi
 
-# Deploy the test configuration file
-cp test_config.yaml ../config/config.yaml
-
 # unpack the test dataset
 tar -xvf small_fastas.tgz 
 tar -xvf stripped_small_gffs.tgz 

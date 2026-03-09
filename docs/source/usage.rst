@@ -106,9 +106,9 @@ Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file
            phenotype: "--use-covariates 6q 7"
            # phenotype2: "--use-covariates 7",
 
-* ``MLST scheme``: Change the MLST scheme to be used to compute lineages. Check the :download:`mlst scheme example file <species_samples/mlst_samples.csv>` for the correct format. See also `avaiable schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__ for more informations.
+* ``MLST scheme``: Change the MLST scheme to be used to compute lineages. Check the :download:`mlst scheme example file <species_samples/mlst_samples.csv>` for the correct format. See also `avaiable MLST schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__ for more informations.
 * ``references for association summaries and annotation``: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented.
-* ``species_amr``: Specify the species for AMR analysis. Check the :download:`species_amr example file <species_samples/amr_samples.csv>` for the correct format.
+* ``species_amr``: Specify the species for AMR analysis. Check the :download:`species_amr example file <species_samples/amr_samples.csv>` for the correct format. See also `avaiable AMR schemes <https://github.com/MDU-PHL/abritamr>`__ for more informations.
 * ``lineages_file``: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
 * ``eggnogdb``: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found `here <http://eggnog5.embl.de/#/app/downloads>`__
 * Filters to remove spurious hits: change them to be more or less stringent
@@ -150,6 +150,8 @@ The following example works for *E. coli* (and downloads the references listed b
 The following example works for *P. aeruginosa* and matches the references listed in the ``config/config.yaml`` file::
 
    bash bootstrap.sh Pseudomonas aeruginosa UCBPP-PA14 GCF_000006765.1,GCF_000014625.1 
+
+Here is provided a list of some reference genomes that you can use as reference for a large ammount of species :download:`Ref_IDS <species_samples/ref_genomes.csv>`
 
 It is also possible to provide a number of local "private" assemblies, to be used instead of those downloaded from NCBI, or alongside them.
 Each local reference should have its own directory, each containing the following files:
