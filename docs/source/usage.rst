@@ -151,7 +151,7 @@ The following example works for *P. aeruginosa* and matches the references liste
 
    bash bootstrap.sh Pseudomonas aeruginosa UCBPP-PA14 GCF_000006765.1,GCF_000014625.1 
 
-Here is provided a list of some reference genomes that you can use as reference for a large ammount of species :download:`Ref_IDS <species_samples/ref_genomes.csv>`
+Here is provided a list of some reference genomes that you can use as reference for a large ammount of species :download:`Ref_IDS <species_samples/Ref_Genomes_Samples.csv>` If the organism you are looking for is not listed or you want to use other reference genomes, feel free to use any one from NCBI.
 
 It is also possible to provide a number of local "private" assemblies, to be used instead of those downloaded from NCBI, or alongside them.
 Each local reference should have its own directory, each containing the following files:
