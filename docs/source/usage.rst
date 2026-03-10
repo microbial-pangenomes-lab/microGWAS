@@ -43,7 +43,6 @@ If you do not have ``conda`` you can install it through
 `miniconda <https://conda.io/miniconda.html>`_ and then add the necessary
 channels::
 
-    conda config --add channels defaults
     conda config --add channels bioconda
     conda config --add channels conda-forge
 
@@ -106,9 +105,9 @@ Next, edit the ``##### params #####`` section of the ``config/config.yaml`` file
            phenotype: "--use-covariates 6q 7"
            # phenotype2: "--use-covariates 7",
 
-* ``MLST scheme``: Change the mlst scheme to be used to compute lineages. Find more information on the `available schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__
-* ``references for association summaries and annotation``: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented.
-* ``species_amr``: species to be used for AMR and virulence predictions
+* ``MLST scheme``: Change the MLST scheme to be used to compute lineages. Check the :download:`mlst scheme example file <species_samples/mlst_samples.csv>` for the correct format. See also `avaiable MLST schemes <https://github.com/tseemann/mlst?tab=readme-ov-file#available-schemes>`__ for more informations.
+* ``references for association summaries and annotation``: Provide the name of the references to be used for annotation of hits. Multiple strains can be provided, but only one strain can be specified to be used as a reference for the enrichment analyses. For convenience the defaults for E. coli are placed as defaults, and those for P. aeruginosa are commented. The names to be indicated here should be the same as those in the reference assemblies provided with the bootstrap script (see below).
+* ``species_amr``: Specify the species for AMR analysis. Check the :download:`species_amr example file <species_samples/amr_samples.csv>` for the correct format. See also `avaiable AMR schemes <https://github.com/MDU-PHL/abritamr>`__ for more informations.
 * ``lineages_file``: lineage file to use. By default the mlst lineages are used, but you can specify your custom lineages list.
 * ``eggnogdb``: Tax ID of eggnog database to download. By default, there is the Bacteria (2). Available tax IDs can be found `here <http://eggnog5.embl.de/#/app/downloads>`__
 * Filters to remove spurious hits: change them to be more or less stringent
@@ -140,7 +139,7 @@ The bootstrap.sh script takes multiple arguments:
 
 * ``Genus``: Genus of the species under study (e.g. Escherichia)
 * ``Species``: Species of the species under study (e.g. coli)
-* ``Reference``: Strain name for the reference to be used for rare variants (e.g. IAI39, name should be the one NCBI uses)
+* ``Reference``: Strain name for the reference to be used for rare variants (e.g. IAI39, name should be the one NCBI uses, see below)
 * ``Assemblies``: Comma separated list of NCBI assembly IDs to be downloaded as references (e.g. GCF_000013305.1,GCF_000007445.1,GCF_000026305.1,GCF_000026265.1)
 
 The following example works for *E. coli* (and downloads the references listed by default in ``config/config.yaml``)::
@@ -150,6 +149,15 @@ The following example works for *E. coli* (and downloads the references listed b
 The following example works for *P. aeruginosa* and matches the references listed in the ``config/config.yaml`` file::
 
    bash bootstrap.sh Pseudomonas aeruginosa UCBPP-PA14 GCF_000006765.1,GCF_000014625.1 
+
+We provide a list of RefSeq accessions and the corresponding names that can be used as reference for a large number of
+species :download:`Ref_IDS <species_samples/Ref_Genomes_Samples.csv>`.
+
+.. tip::
+    If the organism you are looking for is not listed or you want to use other RefSeq entries as reference genomes,
+    you need to know the strain name assocaited to your accession of choice.
+    You can find it by searching for the assembly accession on the NCBI website, and looking for the "Strain" field in assembly page.
+    For example, for the accession ``GCF_000013305.1``, the corresponding strain name is ``536`` (see `here <https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000013305.1/>`__).
 
 It is also possible to provide a number of local "private" assemblies, to be used instead of those downloaded from NCBI, or alongside them.
 Each local reference should have its own directory, each containing the following files:

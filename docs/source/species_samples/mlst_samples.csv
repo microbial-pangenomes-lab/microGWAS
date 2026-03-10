@@ -1,0 +1,168 @@
+﻿Scientific_name,MLST_Name
+Aggregatibacter actinomycetemcomitans ,aactinomycetemcomitans
+Acinetobacter baumannii (Semafor/Oxford) ,abaumannii
+Acinetobacter baumannii (Pasteur) ,abaumannii_2
+Achromobacter spp. ,achromobacter
+Actinobacillus pleuropneumoniae ,actinobacillus
+Aeromonas spp. ,aeromonas
+Avibacterium paragallinarum ,aparagallinarum
+Anaplasma phagocytophilum ,aphagocytophilum
+Arcobacter spp. ,arcobacter
+Bartonella bacilliformis ,bbacilliformis
+Burkholderia cepacia complex ,bcc
+Bacillus cereus ,bcereus
+Bacteroides fragilis ,bfragilis
+Bartonella henselae ,bhenselae
+Bacillus licheniformis ,blicheniformis_14
+Bordetella spp. ,bordetella_3
+Borrelia burgdorferi sensu lato ,borrelia
+Burkholderia pseudomallei ,bpseudomallei
+Brachyspira pilosicoli ,brachyspira
+Brachyspira hyodysenteriae ,brachyspira_2
+Brachyspira intermedia ,brachyspira_3
+Brachyspira pilosicoli ,brachyspira_4
+Brachyspira hampsonii ,brachyspira_5
+Brucella spp. ,brucella
+Bacillus subtilis ,bsubtilis
+Bartonella washoensis ,bwashoensis
+Campylobacter jejuni / C. coli ,campylobacter
+Campylobacter helveticus ,campylobacter_nonjejuni
+Campylobacter insulaenigrae ,campylobacter_nonjejuni_2
+Campylobacter lari ,campylobacter_nonjejuni_3
+Campylobacter upsaliensis ,campylobacter_nonjejuni_4
+Campylobacter coli ,campylobacter_nonjejuni_5
+Campylobacter hyointestinalis ,campylobacter_nonjejuni_6
+Campylobacter lanienae ,campylobacter_nonjejuni_7
+Campylobacter sputorum ,campylobacter_nonjejuni_8
+Campylobacter fetus ,campylobacter_nonjejuni_9
+Clostridium botulinum ,cbotulinum
+Clostridioides difficile ,cdifficile
+Corynebacterium diphtheriae ,cdiphtheriae
+Citrobacter freundii ,cfreundii
+Chlamydiales (Order) ,chlamydiales
+Carnobacterium maltaromaticum ,cmaltaromaticum
+Clostridium perfringens ,cperfringens
+Cronobacter spp. ,cronobacter
+Clostridium septicum ,cseptisum
+Dichelobacter nodosus ,dnodosus
+Enterobacter cloacae complex ,ecloacae
+Escherichia coli ,ecoli
+Escherichia coli (Achtman scheme) ,ecoli_achtman_4
+Edwardsiella spp. ,edwardsiella
+Enterococcus faecalis ,efaecalis
+Enterococcus faecium ,efaecium
+Flavobacterium psychrophilum ,fpsychrophilum
+Gallibacterium anatis ,gallibacterium
+Geotrichum candidum ,geotrichum
+Halobacteria (Class) ,halobacteria
+Helicobacter cinaedi ,hcinaedi
+Helicobacter pylori ,helicobacter
+Haemophilus influenzae ,hinfluenzae
+Haemophilus parasuis (Glaesserella) ,hparasuis
+Histophilus somni ,hsomni
+Helicobacter suis ,hsuis
+Klebsiella aerogenes ,kaerogenes
+Kingella kingae ,kingella
+Klebsiella pneumoniae ,kpneumoniae
+Klebsiella oxytoca ,koxytoca
+Leptospira interrogans ,leptospira
+Leptospira spp. (Scheme 2) ,leptospira_2
+Leptospira spp. (Scheme 3) ,leptospira_3
+Lactococcus garvieae ,lgarvieae
+Candidatus Liberibacter ,liberibacter
+Listeria monocytogenes ,listeria_2
+Lactococcus lactis phage ,llactis_phage
+Lactobacillus salivarius ,lsalivarius
+Mycobacterium abscessus ,mabscessus
+Mycoplasma agalactiae ,magalactiae
+Mycoplasma amphoriforme ,mamphoriforme
+Mycoplasma anserisalpingitidis ,manserisalpingitidis
+Mycoplasma bovis ,mbovis
+Mycoplasma bovis (Scheme 2) ,mbovis_2
+Mycoplasma canis ,mcanis
+Macrococcus caseolyticus ,mcaseolyticus
+Moraxella catarrhalis ,mcatarrhalis_achtman_6
+Mycoplasma flocculare ,mflocculare
+Mycoplasma gallisepticum ,mgallisepticum
+Mycoplasma gallisepticum (Scheme 2) ,mgallisepticum_2
+Mycoplasma genitalium ,mgenitalium
+Mannheimia haemolytica ,mhaemolytica
+Mycoplasma hominis ,mhominis
+Mycoplasma hominis (Scheme 3) ,mhominis_3
+Mycoplasma hyopneumoniae ,mhyopneumoniae
+Mycoplasma hyorhinis ,mhyorhinis
+Mycoplasma hyosynoviae ,mhyosynoviae
+Mycoplasma iowae ,miowae
+Morganella morganii ,morganella
+Melissococcus plutonius ,mplutonius
+Mycoplasma pneumoniae ,mpneumoniae
+Mammaliicoccus sciuri (Staphylococcus) ,msciuri
+Mycoplasma synoviae ,msynoviae
+Mycobacterium spp. ,mycobacteria_2
+Neisseria spp. ,neisseria
+Oral Streptococcus spp. ,oralstrep
+Ornithobacterium rhinotracheale ,orhinotracheale
+Orientia tsutsugamushi ,otsutsugamushi
+Cutibacterium acnes (Propionibacterium) ,pacnes_3
+Pseudomonas aeruginosa ,paeruginosa
+Photobacterium damselae ,pdamselae
+Pseudomonas fluorescens ,pfluorescens
+Porphyromonas gingivalis ,pgingivalis
+Paenibacillus larvae ,plarvae
+Pasteurella multocida ,pmultocida
+Pasteurella multocida (RIRDC) ,pmultocida_2
+Pediococcus pentosaceus ,ppentosaceus
+Pseudomonas putida ,pputida
+Proteus mirabilis ,proteus
+Providencia stuartii/rettgeri ,providencia
+Piscirickettsia salmonis ,psalmonis
+Providencia stuartii ,pstuartii
+Riemerella anatipestifer ,ranatipestifer
+Rhodococcus equi ,rhodococcus
+Streptococcus agalactiae (GBS) ,sagalactiae
+Salmonella enterica ,salmonella
+Staphylococcus aureus ,saureus
+Streptococcus bovis / S. equinus ,sbsec
+Streptococcus canis ,scanis
+Staphylococcus capitis ,scapitis
+Staphylococcus chromogenes ,schromogenes
+Streptococcus dysgalactiae ,sdysgalactiae
+Salmonella enterica ,senterica_achtman_2
+Staphylococcus epidermidis ,sepidermidis
+Serratia marcescens ,serratia
+Streptococcus gallolyticus ,sgallolyticus
+Staphylococcus haemolyticus ,shaemolyticus
+Shewanella spp. ,shewanella
+Staphylococcus hominis ,shominis
+Streptococcus iniae ,siniae
+Sinorhizobium meliloti ,sinorhizobium
+Stenotrophomonas maltophilia ,smaltophilia
+Streptococcus mitis ,smitis
+Streptococcus parasuis ,sparasuis
+Streptococcus pneumoniae ,spneumoniae
+Staphylococcus pseudintermedius ,spseudintermedius
+Streptococcus pyogenes (GAS) ,spyogenes
+Streptococcus suis ,ssuis
+Staphylococcus lugdunensis ,staphlugdunensis
+Streptococcus thermophilus ,sthermophilus
+Streptomyces spp. ,streptomyces
+Streptococcus thermophilus ,streptothermophilus
+Streptococcus uberis ,suberis
+Streptococcus equi subsp. zooepidemicus ,szooepidemicus
+Taylorella equigenitalis ,taylorella
+Tenacibaculum maritimum ,tenacibaculum
+Treponema pallidum ,tpallidum
+Trueperella pyogenes ,tpyogenes
+Trichomonas vaginalis ,tvaginalis
+Ureaplasma urealyticum ,ureaplasma
+Vibrio cholerae ,vcholerae
+Vibrio cholerae (Scheme 2) ,vcholerae_2
+Vibrio spp. ,vibrio
+Vibrio parahaemolyticus ,vparahaemolyticus
+Vibrio tapetis ,vtapetis
+Vibrio vulnificus ,vvulnificus
+Wolbachia spp. ,wolbachia
+Xylella fastidiosa ,xfastidiosa
+Yersinia enterocolitica ,yersinia
+Yersinia pseudotuberculosis ,ypseudotuberculosis_achtman_3
+Yersinia ruckeri ,yruckeri
