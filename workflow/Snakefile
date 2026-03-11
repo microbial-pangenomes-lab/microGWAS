@@ -69,9 +69,9 @@ rule lineage_st:
     """
     mkdir -p {params.tmp} > {log} 2>&1
     for i in $(cat {input}); do echo "mlst --scheme {params.scheme} --threads 1 "$i" | cut -f1,3 > {params.tmp}/"$(basename $i)".mlst"; done > {params.tmp}/mlst_jobs.txt 2>> {log}
-    parallel -j {threads} --progress < {params.tmp}/mlst_jobs.txt >> {log} 2>&1
-    cat {params.tmp}/*.mlst > {params.tmp}/all_mlst.txt >> {log} 2>&1
-    python workflow/scripts/sanitize_mlst.py {params.tmp}/all_mlst.txt > {output} >> {log} 2>&1
+    parallel -j {threads} --progress < {params.tmp}/mlst_jobs.txt 2>> {log}
+    cat {params.tmp}/*.mlst > {params.tmp}/all_mlst.txt 2>> {log}
+    python workflow/scripts/sanitize_mlst.py {params.tmp}/all_mlst.txt > {output} 2>> {log}
     rm -rf {params.tmp} >> {log} 2>&1
     """
 
