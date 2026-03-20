@@ -6,3 +6,6 @@ dependencies:
  - pandas
  - diamond >= 2.0.11
  - eggnog-mapper >= 2.1.6
+ - pip
+ - pip:
+    - eggnog-mapper-fixurl
