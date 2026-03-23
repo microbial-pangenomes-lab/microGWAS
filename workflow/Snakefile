@@ -35,6 +35,7 @@ rule download_eggnog:
     folder=config["emapper"]
   shell:
     """
+    eggnog-mapper-fixurl
     mkdir -p {params.folder}
     download_eggnog_data.py --data_dir {params.folder} -y -H -d {params.db} > {log} 2>&1
     """
