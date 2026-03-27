@@ -22,6 +22,7 @@ jobs:
         environment-file: environment.yml
         python-version: 3.10
         auto-activate-base: false
+        conda-remove-defaults: true
     
     - name: Run tests in CI mode
       shell: bash -l {0}
