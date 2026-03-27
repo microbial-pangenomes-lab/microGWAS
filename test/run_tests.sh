@@ -2,6 +2,16 @@
 
 set -e -u -o pipefail -x
 
+# Check if running in CI mode (explicit command line flag)
+CI_MODE=false
+for arg in "$@"; do
+    if [ "$arg" = "--ci" ]; then
+        CI_MODE=true
+        echo "Running in CI mode"
+        break
+    fi
+done
+
 # stop everything if we are risking to override
 # a genuine GWAS run
 if [ -d "../out" ]; then
@@ -74,11 +84,23 @@ zcat test/local_assemblies/536/genome.fasta.gz > test/local_assemblies/536/genom
 zcat test/local_assemblies/536/genome.gff.gz > test/local_assemblies/536/genome.gff
 zcat test/local_assemblies/536/genome.gbk.gz > test/local_assemblies/536/genome.gbk
 #
-bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+if [ "$CI_MODE" = true ]; then
+    # In CI mode, only use local references
+    bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli 536
+    sed -i 's$enrichment_reference: \"IAI39\"$enrichment_reference: "536"$g' config/config.yaml 
+else
+    # In normal mode, use both local and remote references
+    bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+fi
 # reduce the size of the reference proteome
 # to speed up its annotation and rare variants analysis
 cp test/reference.faa data/
 # first dry run
 snakemake -np annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
-# actual run (brace yourself)
-snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
+
+if [ "$CI_MODE" = true ]; then
+    echo "CI mode: skipping actual snakemake run"
+else
+    # actual run (brace yourself)
+    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
+fi

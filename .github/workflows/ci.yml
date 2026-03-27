@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Set up Conda environment
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: microGWAS
+        environment-file: environment.yml
+        auto-activate-base: false
+        conda-remove-defaults: true
+    
+    - name: Run tests in CI mode
+      shell: bash -l {0}
+      run: |
+        conda activate microGWAS
+        cd test
+        chmod +x run_tests.sh
+        ./run_tests.sh --ci
