@@ -20,7 +20,6 @@ jobs:
       with:
         activate-environment: microGWAS
         environment-file: environment.yml
-        python-version: 3.10
         auto-activate-base: false
         conda-remove-defaults: true
     
