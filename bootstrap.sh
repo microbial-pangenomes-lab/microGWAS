@@ -71,6 +71,7 @@ mkdir -p data/references/faas
 mkdir -p data/references/gbks
 
 > out/mash_input.txt
+> out/ggcaller_input.txt
 > out/panaroo_input.txt
 > out/unitigs_input.tsv
 > out/annotate_input.txt

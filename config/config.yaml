@@ -79,7 +79,7 @@ emapper_db: "data/eggnog-mapper/eggnog.db"
 # snpeff
 references_dir: "data/references"
 references_fastas: "data/references/fastas"
-references_gffs: "data/references/fastas/gffs"
+references_gffs: "data/references/gffs"
 
 # rare variants
 snps_reference_faa: "data/reference.faa"
@@ -107,6 +107,16 @@ unitigs_input: "out/unitigs_input.tsv"
 unitigs_dir: "out/unitigs"
 unitigs: "out/unitigs/unitigs.txt.gz"
 unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
+
+### gene-calling (ggcaller)
+# generated outside the workflow
+ggcaller_input: "out/ggcaller_input.txt"
+#
+ggcaller_dir: "out/ggcaller"
+ggcaller_gffs: "out/ggcaller_gffs.txt"
+ggcaller_calls: "out/ggcaller/gene_calls.faa"
+ggcaler_gfa: "out/ggcaller_input.gfa"
+#
 
 ### pangenome (panaroo)
 #

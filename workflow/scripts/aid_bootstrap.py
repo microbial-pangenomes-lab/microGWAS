@@ -28,6 +28,9 @@ if __name__ == "__main__":
     import pandas as pd
 
     m = pd.read_csv(options.data, sep='\t', index_col=0)
+    if 'fasta' not in m.columns:
+        sys.stderr.write('Input data file must contain a "fasta" column\n')
+        sys.exit(1)
     
     found = set()
     missing = set()
@@ -69,6 +72,12 @@ if __name__ == "__main__":
     f.close()
 
     f = open(os.path.join(options.out, 'mash_input.txt'), 'w')
+    for sample, row in m.iterrows():
+        fasta = row['fasta']
+        f.write(f'{fasta}\n')
+    f.close()
+
+    f = open(os.path.join(options.out, 'ggcaller_input.txt'), 'w')
     for sample, row in m.iterrows():
         fasta = row['fasta']
         f.write(f'{fasta}\n')

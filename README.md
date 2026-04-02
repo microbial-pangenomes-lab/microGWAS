@@ -49,7 +49,7 @@ Additional analyses include:
 - [ ] Swap `unitig-counter` for `bifrost` or `cuttlefish` ([enhancement issue](https://github.com/microbial-pangenomes-lab/microGWAS/issues/11))
 - [ ] Heritability estimates using different distributions (i.e. for binary phenotypes the normal distribution is likely not appropriate?)
 - [ ] Add script to check for duplicated contigs during the bootstrap
-- [ ] Swap panaroo for ggCaller, which would also allow for the use of raw reads
+- [x] Swap panaroo for ggCaller, which would also allow for the use of raw reads - ggCaller is now integrated for GFF annotation generation
 
 
 ## Reference

@@ -74,7 +74,7 @@ Configure the pipeline run
 Prepare the input phenotype file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The microGWAS pipeline requires three inputs: the information on the target phenotype(s), and assemblies and annotations for each sample. See :doc:`inputs` for more information on the expected inputs.
+The microGWAS pipeline requires two inputs: the information on the target phenotype(s), and assemblies for each sample. The pipeline now uses ggCaller to generate GFF annotations automatically. See :doc:`inputs` for more information on the expected inputs.
 
 Edit the pipeline configuration file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,9 +163,12 @@ It is also possible to provide a number of local "private" assemblies, to be use
 Each local reference should have its own directory, each containing the following files:
 
 * ``genome.fasta``: the assembly nucleotide sequence(s) in fasta format
-* ``genome.gff``: the annotated assembly in gff format
+* ``genome.gff``: the annotated assembly in gff format (required for reference genomes only)
 * ``genome.gbk``: the annotated assembly in genbank format
 * ``genome.faa``: the assembly protein sequences in fasta format (this file is optional)
+
+.. note::
+    For sample genomes, you only need to provide FASTA files. The pipeline uses ggCaller to generate GFF annotations automatically for all samples.
 
 To include these local assemblies alongside the ones to be downloaded from NCBI, you can use the following command::
 
