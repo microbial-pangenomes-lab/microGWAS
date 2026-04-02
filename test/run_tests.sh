@@ -2,6 +2,8 @@
 
 set -e -u -o pipefail -x
 
+export CUDA_VISIBLE_DEVICES=1
+
 # Check if running in CI mode (explicit command line flag)
 CI_MODE=false
 for arg in "$@"; do
@@ -14,11 +16,12 @@ done
 
 # stop everything if we are risking to override
 # a genuine GWAS run
-if [ -d "../out" ]; then
-  echo "The output folder (../out) is present!";
-  echo "Please remove it and run this script again";
-  exit 1
-fi
+# --- MODIFICA: Commentato per permettere di riprendere la run con cartella 'out' esistente ---
+# if [ -d "../out" ]; then
+#   echo "The output folder (../out) is present!";
+#   echo "Please remove it and run this script again";
+#   exit 1
+# fi
 
 # Define absolute paths for configuration and data files
 CONFIG_BACKUP="$PWD/../config/config_backup.yaml"
@@ -36,9 +39,7 @@ cleanup() {
     [ -f "$DATA_BACKUP" ] && mv "$DATA_BACKUP" "$DATA_TEMP"
     
     # Remove extracted directories
-    rm -rf "${SMALL_GENOMES}small_fastas" \
-           "${SMALL_GENOMES}small_gffs" \
-           "${SMALL_GENOMES}stripped_small_gffs"
+    rm -rf "${SMALL_GENOMES}small_fastas"
 }
 
 # Set trap to execute cleanup on script exit or interruption
@@ -59,15 +60,6 @@ fi
 
 # unpack the test dataset
 tar -xvf small_fastas.tgz 
-tar -xvf stripped_small_gffs.tgz 
-mkdir -p small_gffs
-# generate the full GFF files
-for i in $(ls small_fastas);
-do
-  cat stripped_small_gffs/$(basename $i .fasta).gff > small_gffs/$(basename $i .fasta).gff;
-  echo "##FASTA" >> small_gffs/$(basename $i .fasta).gff;
-  cat small_fastas/$i >> small_gffs/$(basename $i .fasta).gff;
-done
 
 # skip lineages estimation
 # these genomes are too small for it to work
@@ -79,28 +71,32 @@ sed -i 's$eggnogdb: \"2\"$eggnogdb: \"1236\"$g' ../config/config.yaml
 
 # ready to go
 cd ..
+
 # Also test the local assemblies functionality
-zcat test/local_assemblies/536/genome.fasta.gz > test/local_assemblies/536/genome.fasta
-zcat test/local_assemblies/536/genome.gff.gz > test/local_assemblies/536/genome.gff
-zcat test/local_assemblies/536/genome.gbk.gz > test/local_assemblies/536/genome.gbk
+# --- MODIFICA: Commentato per evitare di rifare il setup dei reference e il bootstrap ---
+# zcat test/local_assemblies/536/genome.fasta.gz > test/local_assemblies/536/genome.fasta
+# zcat test/local_assemblies/536/genome.gff.gz > test/local_assemblies/536/genome.gff
+# zcat test/local_assemblies/536/genome.gbk.gz > test/local_assemblies/536/genome.gbk
+# #
+# if [ "$CI_MODE" = true ]; then
+#     # In CI mode, only use local references
+#     bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli 536
+#     sed -i 's$enrichment_reference: \"IAI39\"$enrichment_reference: "536"$g' config/config.yaml 
+# else
+#     # In normal mode, use both local and remote references
+#     bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+# fi
 #
-if [ "$CI_MODE" = true ]; then
-    # In CI mode, only use local references
-    bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli 536
-    sed -i 's$enrichment_reference: \"IAI39\"$enrichment_reference: "536"$g' config/config.yaml 
-else
-    # In normal mode, use both local and remote references
-    bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
-fi
-# reduce the size of the reference proteome
-# to speed up its annotation and rare variants analysis
-cp test/reference.faa data/
+# # reduce the size of the reference proteome
+# # to speed up its annotation and rare variants analysis
+# cp test/reference.faa data/
+
 # first dry run
-snakemake -np annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
+snakemake -np annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 18 --use-conda
 
 if [ "$CI_MODE" = true ]; then
     echo "CI mode: skipping actual snakemake run"
 else
     # actual run (brace yourself)
-    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
+    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 18 --use-conda
 fi

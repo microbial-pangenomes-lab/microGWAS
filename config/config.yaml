@@ -79,7 +79,7 @@ emapper_db: "data/eggnog-mapper/eggnog.db"
 # snpeff
 references_dir: "data/references"
 references_fastas: "data/references/fastas"
-references_gffs: "data/references/gffs"
+references_gffs: "out/ggcaller/GFF/"
 
 # rare variants
 snps_reference_faa: "data/reference.faa"
@@ -109,8 +109,6 @@ unitigs: "out/unitigs/unitigs.txt.gz"
 unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
 
 ### pangenome (panaroo)
-# generated outside the workflow
-panaroo_input: "out/panaroo_input.txt"
 #
 panaroo_dir: "out/panaroo"
 panaroo_dir_tmp: "out/panaroo_tmp"
