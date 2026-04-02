@@ -15,6 +15,7 @@ produced by the pipeline.
 * ``mlst``: `Seemann T, mlst <https://github.com/tseemann/mlst>`__ and `10.12688/wellcomeopenres.14826.1 <https://wellcomeopenresearch.org/articles/3-124/v1>`__
 * ``abritamr``: `10.1038/s41467-022-35713-4 <https://doi.org/10.1038/s41467-022-35713-4>`__
 * ``mash``: `10.1186/s13059-016-0997-x <https://doi.org/10.1186/s13059-016-0997-x>`__
+* ``ggCaller``: `10.1101/gr.277733.123 <https://doi.org/10.1101/gr.277733.123>`__
 * ``panaroo``: `10.1186/s13059-020-02090-4 <https://doi.org/10.1186/s13059-020-02090-4>`__
 * ``fasttree``: `10.1371/journal.pone.0009490 <https://doi.org/10.1371/journal.pone.0009490>`__
 * ``snp-sites``: `10.1099/mgen.0.000056 <https://doi.org/10.1099/mgen.0.000056>`__

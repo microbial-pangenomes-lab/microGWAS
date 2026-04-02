@@ -108,9 +108,17 @@ unitigs_dir: "out/unitigs"
 unitigs: "out/unitigs/unitigs.txt.gz"
 unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
 
-### pangenome (panaroo)
+### gene-calling (ggcaller)
 # generated outside the workflow
-panaroo_input: "out/panaroo_input.txt"
+ggcaller_input: "out/ggcaller_input.txt"
+#
+ggcaller_dir: "out/ggcaller"
+ggcaller_gffs: "out/ggcaller_gffs.txt"
+ggcaller_calls: "out/ggcaller/gene_calls.faa"
+ggcaller_gfa: "out/ggcaller_input.gfa"
+#
+
+### pangenome (panaroo)
 #
 panaroo_dir: "out/panaroo"
 panaroo_dir_tmp: "out/panaroo_tmp"

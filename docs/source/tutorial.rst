@@ -108,21 +108,9 @@ a. Create a directory structure for your input files:
 
    .. code-block:: console
 
-      mkdir -p data/gffs data/fastas
+      mkdir -p data/fastas
 
-b. Download sample genomes in ``GFF`` format:
-
-   .. code-block:: console
-   
-      wget -O data/gff.tar.gz https://figshare.com/ndownloader/files/34723351
-   
-   Extract GFF files:
-
-   .. code-block:: console
-
-      tar -xzvf data/gff.tar.gz --strip-components=1 -C data/gffs/
-
-c. Download sample genomes in ``FASTA`` format:
+b. Download sample genomes in ``FASTA`` format:
 
    .. code-block:: console
    
@@ -134,7 +122,7 @@ c. Download sample genomes in ``FASTA`` format:
 
       tar -xzvf data/genomes.tgz -C data/fastas/
 
-d. Download and modify the phenotype data:
+c. Download and modify the phenotype data:
 
    .. code-block:: console
 
@@ -153,31 +141,31 @@ d. Download and modify the phenotype data:
 
       awk 'BEGIN {OFS="\t"}
       
-      NR==1 {print "strain", "fasta", "gff", "phenotype"}
+      NR==1 {print "strain", "fasta", "phenotype"}
       
-      NR>1 {print $1, "data/fastas/" $1 ".fasta", "data/gffs/" $1 ".gff", $3}' data/data.tsv > temp_file &&
+      NR>1 {print $1, "data/fastas/" $1 ".fasta", $3}' data/data.tsv > temp_file &&
       
       mv temp_file data/data.tsv
       
-e. Verify the updated phenotype file:
+d. Verify the updated phenotype file:
 
    .. code-block:: console
 
       head -n 5 data/data.tsv
 
-   You should see an output similar to the example below. The first column lists the sample IDs, the next two columns are the relative paths
-   to the assemblies in the fasta and gff formats, respectively. The last column represents the phenotype: where 1 indicates that the strain is virulent, 
+   You should see an output similar to the example below. The first column lists the sample IDs, the next column is the relative path
+   to the assemblies in fasta format. The last column represents the phenotype: where 1 indicates that the strain is virulent, 
    while 0 indicates the strain is avirulent.
 
    .. code-block:: none
 
-      strain  fasta   gff     phenotype
-      ECOR-01 data/fastas/ECOR-01.fasta       data/gffs/ECOR-01.gff   0
-      ECOR-02 data/fastas/ECOR-02.fasta       data/gffs/ECOR-02.gff   1
-      ECOR-03 data/fastas/ECOR-03.fasta       data/gffs/ECOR-03.gff   0
-      ECOR-04 data/fastas/ECOR-04.fasta       data/gffs/ECOR-04.gff   0
+      strain  fasta   phenotype
+      ECOR-01 data/fastas/ECOR-01.fasta       0
+      ECOR-02 data/fastas/ECOR-02.fasta       1
+      ECOR-03 data/fastas/ECOR-03.fasta       0
+      ECOR-04 data/fastas/ECOR-04.fasta       0
 
-f. Clean up:
+e. Clean up:
    
    Remove the compressed files, you do not need them anymore:
 
@@ -185,7 +173,7 @@ f. Clean up:
 
       rm data/gff.tar.gz data/genomes.tgz
 
-g. Verify your directory structure:
+f. Verify your directory structure:
    
   After executing the aforementioned steps, your directory structure should look something like this:
 
@@ -196,10 +184,6 @@ g. Verify your directory structure:
       ├──fastas/
       │   ├── genome1.fasta
       │   ├── genome2.fasta
-      │   └── ...
-      ├── gffs/
-      │   ├── genome1.gff
-      │   ├── genome2.gff
       │   └── ...
 
 You can confirm by doing:
