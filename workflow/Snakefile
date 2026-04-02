@@ -41,7 +41,7 @@ rule ggcaller:
   shell:
     """
     ggcaller --refs {input.fasta_list} --out {params.outdir} --threads {threads} --gene-finding-only > {log} 2>&1
-    ls {params.outdir}/GFF/*.gff > {output.ggcaller_gffs} 2>> {log}
+    ls {params.outdir}/GFF/*.gff > {output.gffs} 2>> {log}
     """
     
 rule download_eggnog:

@@ -30,8 +30,8 @@ if __name__ == "__main__":
         ci = pd.read_csv(options.ci, sep='\t')
         
     except pd.errors.EmptyDataError:
-        sys.stderr.write("Warning: One or more heritability files are empty.\n")
-        sys.exit(0)
+        sys.stderr.write("Error: one or more heritability files are empty.\n")
+        sys.exit(1)
     
     cis = {}
     for h2, cil, cih in ci.values:
