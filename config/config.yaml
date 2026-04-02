@@ -79,7 +79,7 @@ emapper_db: "data/eggnog-mapper/eggnog.db"
 # snpeff
 references_dir: "data/references"
 references_fastas: "data/references/fastas"
-references_gffs: "out/ggcaller/GFF/"
+references_gffs: "data/references/fastas/gffs"
 
 # rare variants
 snps_reference_faa: "data/reference.faa"
