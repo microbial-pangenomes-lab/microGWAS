@@ -6,8 +6,8 @@ project = 'microGWAS'
 copyright = '2024, Microbial Pangenomes Lab'
 author = 'Microbial Pangenomes Lab'
 
-release = '0.6'
-version = '0.6.6'
+release = '0.7'
+version = '0.7.0'
 
 # -- General configuration
 
