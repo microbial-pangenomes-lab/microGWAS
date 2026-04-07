@@ -5,6 +5,7 @@ The pipeline contains the following endpoint rules:
 
 ..  code-block:: console
 
+    ggcaller
     pangenome
     annotate_pangenome
     lineage_st
@@ -26,10 +27,11 @@ The pipeline contains the following endpoint rules:
 
 Which accomplish the following functions:
 
+* ``ggcaller``: will generate GFF annotations for all sample genomes using ggCaller, providing gene predictions and functional annotations.
 * ``unitigs``: will generate a variant set from the input samples based on a "global" de Brujin graph.
 * ``lineage_st``: will generate a tab-separated file with the predicted sequence types (STs).
 * ``find_amr_vag``: will generate a summary file with the predicted antimicrobial resistance genes identified into functionally relevant groups, and a summary file with the predicted virulence associated genes.
-* ``pangenome``: will find the orthologous gene clusters across all samples and the chosen references
+* ``pangenome``: will find the orthologous gene clusters across all samples and the chosen references using ggCaller, which also generates GFF annotations for all samples
 * ``annotate_pangenome``: will generate functional annotations for the pangenome using eggnog-mapper, including COG categories, GO terms, and KEGG pathway mappings.
 * ``tree``: will generate a phylogenetic tree from the core genome alignment output from panaroo.
 * ``combine_heritability``: will generate a file with the comined heritabilities: built from the lineages of each strain and by using a kinship matrix built from the unitigs presence and absence matrix.

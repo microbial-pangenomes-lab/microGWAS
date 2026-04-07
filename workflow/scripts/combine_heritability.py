@@ -24,10 +24,15 @@ def get_options():
 if __name__ == "__main__":
     options = get_options()
 
-    hv = pd.read_csv(options.variants, sep='\t')
-    hl = pd.read_csv(options.lineages, sep='\t')
-
-    ci = pd.read_csv(options.ci, sep='\t')
+    try:
+        hv = pd.read_csv(options.variants, sep='\t')
+        hl = pd.read_csv(options.lineages, sep='\t')
+        ci = pd.read_csv(options.ci, sep='\t')
+        
+    except pd.errors.EmptyDataError:
+        sys.stderr.write("Error: one or more heritability files are empty.\n")
+        sys.exit(1)
+    
     cis = {}
     for h2, cil, cih in ci.values:
         h2 = round(h2, 5)

@@ -236,6 +236,22 @@ The contents of the ``wg`` are very similar to the equivalent files in the ``ass
 ..  code-block:: console
 
     out
+    |____ggcaller
+    | |____gene_calls.faa
+    | |____gene_calls.ffn
+    | |____GFF
+    | |____ORF_dir
+    | |____Path_dir
+
+* ``gene_calls.faa``: contains the predicted protein sequences
+* ``gene_calls.ffn``: contains the predicted nucleotide sequences
+* ``GFF``: contains the gene calling results in GFF format
+* ``ORF_dir``: contains the predicted open reading frames
+* ``Path_dir``: contains the predicted pathways
+
+..  code-block:: console
+
+    out
     |____panaroo
     | |____gene_presence_absence.Rtab
     | |____gene_presence_absence.csv

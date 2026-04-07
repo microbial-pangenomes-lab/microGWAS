@@ -9,10 +9,10 @@ def get_options():
 
     parser.add_argument('data', action='store',
                         help='Data input file (first column is sample names, '
-                             'a column named "gff" and one named "fasta" should '
-                             'be present, each indicating the absolute or relative path '
-                             'to the annotations and assemblies. It is assumed '
-                             'that all file names are in the form SAMPLE[.gff,.fasta])')
+                             'a column named "fasta" should '
+                             'be present, indicating the absolute or relative path '
+                             'to the assemblies. It is assumed '
+                             'that all file names are in the form SAMPLE.fasta)')
     parser.add_argument('--out', action='store',
                         default='out',
                         help='Output directory in which to write the output files '
@@ -28,32 +28,26 @@ if __name__ == "__main__":
     import pandas as pd
 
     m = pd.read_csv(options.data, sep='\t', index_col=0)
-    if 'gff' not in m.columns and 'fasta' not in m.columns:
-        sys.stderr.write('Input data file must contain a "gff" and a "fasta" column\n')
+    if 'fasta' not in m.columns:
+        sys.stderr.write('Input data file must contain a "fasta" column\n')
         sys.exit(1)
-
+    
     found = set()
     missing = set()
     name = set()
     for sample, row in m.iterrows():
-        gff = row['gff']
         fasta = row['fasta']
 
         # check that the file names follow the SAMPLE.EXT convention
-        # if not it would break panaroo and panfeed
-        if '.'.join(os.path.split(gff)[-1].split('.')[:-1]) != str(sample):
-            sys.stderr.write(f'GFF file name not matching sample name ({sample}, {gff})')
-            name.add(sample)
         if '.'.join(os.path.split(fasta)[-1].split('.')[:-1]) != str(sample):
             sys.stderr.write(f'FASTA file name not matching sample name ({sample}, {fasta})')
             name.add(sample)
 
-        if not os.path.exists(gff):
-            sys.stderr.write(f'Could not find GFF file for {sample} ({gff})\n')
-            missing.add(sample)
+        # Check only for FASTA existence
         if not os.path.exists(fasta):
             sys.stderr.write(f'Could not find FASTA file for {sample} ({fasta})\n')
             missing.add(sample)
+            
         found.add(sample)
 
     if len(missing) > 0:
@@ -83,17 +77,17 @@ if __name__ == "__main__":
         f.write(f'{fasta}\n')
     f.close()
 
-    f = open(os.path.join(options.out, 'panaroo_input.txt'), 'w')
+    f = open(os.path.join(options.out, 'ggcaller_input.txt'), 'w')
     for sample, row in m.iterrows():
-        gff = row['gff']
-        f.write(f'{gff}\n')
+        fasta = row['fasta']
+        f.write(f'{fasta}\n')
     f.close()
 
     f = open(os.path.join(options.out, 'annotate_input.txt'), 'w')
     for sample, row in m.iterrows():
         fasta = row['fasta']
-        gff = row['gff']
-        f.write(f'{fasta}\t{gff}\tdraft\n')
+        # Point blindly to the future generated GFF from ggCaller
+        f.write(f'{fasta}\tout/ggcaller/GFF/{sample}.gff\tdraft\n')
     f.close()
 
     f = open(os.path.join(options.out, 'bcftools_input.txt'), 'w')
