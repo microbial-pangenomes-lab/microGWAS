@@ -115,7 +115,7 @@ ggcaller_input: "out/ggcaller_input.txt"
 ggcaller_dir: "out/ggcaller"
 ggcaller_gffs: "out/ggcaller_gffs.txt"
 ggcaller_calls: "out/ggcaller/gene_calls.faa"
-ggcaller_gfa: "out/ggcaller_input.gfa"
+ggcaller_gfa: "out/mash_input.gfa"
 #
 
 ### pangenome (panaroo)

@@ -40,7 +40,8 @@ rule ggcaller:
   log: "out/logs/ggcaller.log"
   shell:
     """
-    ggcaller --refs {input.fasta_list} --out {params.outdir} --threads {threads} --gene-finding-only > {log} 2>&1
+    rm -rf {params.outdir} > {log} 2>&1 || true
+    ggcaller --refs {input.fasta_list} --out {params.outdir} --threads {threads} >> {log} 2>&1
     ls {params.outdir}/GFF/*.gff > {output.gffs} 2>> {log}
     """
     
