@@ -14,7 +14,7 @@ Subsequent columns can contain other target phenotypes and/or any covariate. Add
 
     strain	fasta	phenotype	covariate1	covariate2
     ECOR-01	test/small_fastas/ECOR-01.fasta	0	0.20035297602710966	1
-    ECOR-02	test/small_fastas/ECOR-02.fasta	10	0.8798471273587852	1
+    ECOR-02	test/small_fastas/ECOR-02.fasta	1	0.8798471273587852	1
     ECOR-03	test/small_fastas/ECOR-03.fasta	0	0.008404161045130532	0
     ECOR-04	test/small_fastas/ECOR-04.fasta	0	0.04728873355931962	1
 
