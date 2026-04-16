@@ -36,9 +36,12 @@ def plot_enrichment(data, plot_file, category_label, count_col,
 
     cmap = plt.cm.viridis.copy()
     cmap.set_under('grey')
+    
+    real_max = enrichment_data_sorted['-log10(padj)'].max()
+    v_max = max(2.0, real_max)
+    
     cmap = plt.cm.ScalarMappable(cmap=cmap,
-                                 norm=plt.Normalize(vmin=-np.log10(0.01),
-                                                    vmax=-np.log10(1E-10)))
+                                 norm=plt.Normalize(vmin=0.0, vmax=v_max))
     cmap.set_array([])
 
     height = max([8, enrichment_data_sorted.shape[0] / 6])
