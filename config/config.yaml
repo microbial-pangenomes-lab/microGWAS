@@ -40,12 +40,12 @@ species_amr: "Escherichia"
 # use "out/lineages_mlst.txt" to use mlst
 # or "out/lineages_poppunk.tsv" for poppunk
 # or an existing file for a custom lineages list
-lineages_file: "out/lineages_mlst.txt"
+lineages_file: "data/lineages.txt"
 
 # eggnogdb: Tax ID of eggNOG HMM database to download
 # default: "2" for Bacteria; else can be "taxid"
 # Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
-eggnogdb: "2"
+eggnogdb: "1236"
 
 # filters to remove spurious hits
 # defaults are set as 'loose thresholds'
@@ -172,3 +172,28 @@ wg_inputs: "out/wg/inputs"
 ### enrichments
 annotated_reference: "out/annotated_reference.tsv"
 go_obo: "out/go-basic.obo"
+
+# ---------------------------------------------------------
+# GWAS Execution Mode
+# ---------------------------------------------------------
+# Choose between "pyseer" (ENet on the entire variants file) or "bac-nortia" (Machine Learning)
+wg_method: "pyseer"
+
+# ---------------------------------------------------------
+# Bac-Nortia Machine Learning Configuration
+# ---------------------------------------------------------
+bac_nortia:
+  # Model choice: xgboost, catboost, lightgbm, tabnet, tabpfn
+  model: "xgboost"
+  
+  # Optuna hyperparameter tuning
+  tune_hyperparams: true
+  n_optuna_trials: 50
+  
+  # Cross-validation and filtering
+  cv_folds: 5
+  min_af: 0.05
+  correlation_threshold: 0.95
+  
+  # SHAP evaluation handling ("expand" clusters or use "representative")
+  shap_cluster_handling: "expand"

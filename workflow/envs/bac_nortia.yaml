@@ -1,0 +1,11 @@
+name: bac_nortia
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python>=3.9
+  - pip
+  - git
+  - pip:
+      - git+https://github.com/microbial-pangenomes-lab/bac-nortia.git
