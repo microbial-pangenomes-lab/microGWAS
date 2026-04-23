@@ -43,10 +43,6 @@ if username is None:
 
 ##### rules #####
 
-rule run_all_gwas:
-    input:
-        GWAS_PLOT_INPUTS
-
 rule ggcaller:
   input:
     fasta_list=config["mash_input"]
@@ -749,7 +745,7 @@ rule run_wg_nortia:
         min_af = config["bac_nortia"]["min_af"],
         corr_thresh = config["bac_nortia"]["correlation_threshold"],
         shap_handling = config["bac_nortia"]["shap_cluster_handling"],
-        seed = config["bac_nortia"].get("random_seed", 42)
+        seed_arg = lambda w: f"--random-seed {config['bac_nortia']['random_seed']}" if config["bac_nortia"].get("random_seed") else ""
     conda:
         "envs/bac_nortia.yaml"
     log:
@@ -767,7 +763,7 @@ rule run_wg_nortia:
             --min-af {params.min_af} \\
             --correlation-threshold {params.corr_thresh} \\
             --shap-cluster-handling {params.shap_handling} \\
-            --random-seed {params.seed} \\
+            {params.seed_arg} \\
             --n-jobs {threads} \\
             --output-dir {params.outdir}
 
@@ -1244,13 +1240,31 @@ rule download_obo:
   shell: "wget -O {output} 'http://purl.obolibrary.org/obo/go/go-basic.obo'"
 
 rule enrichment:
-  input:
-    expand("out/associations/{target}/COG.tsv", target=config["targets"]),
-    expand("out/associations/{target}/GO.tsv", target=config["targets"]),
-    expand("out/associations/{target}/KEGG.tsv", target=config["targets"]),
-    expand("out/wg/{target}/COG_{model}.tsv", target=config["targets"], model=WG_MODELS_LIST),
-    expand("out/wg/{target}/GO_{model}.tsv", target=config["targets"], model=WG_MODELS_LIST),
-    expand("out/wg/{target}/KEGG_{model}.tsv", target=config["targets"], model=WG_MODELS_LIST)
+    input:
+        expand('out/associations/{target}/COG.tsv',
+               target=config["targets"]),
+        expand('out/associations/{target}/GO.tsv',
+               target=config["targets"]),
+        expand('out/associations/{target}/KEGG.tsv',
+               target=config["targets"]),
+        expand('out/associations/{target}/COG_{kind}.tsv',
+               target=config["targets"],
+               kind=['gpa', 'rare', 'panfeed']),
+        expand('out/associations/{target}/GO_{kind}.tsv',
+               target=config["targets"],
+               kind=['gpa', 'rare', 'panfeed']),
+        expand('out/associations/{target}/KEGG_{kind}.tsv',
+               target=config["targets"],
+               kind=['gpa', 'rare', 'panfeed']),
+        expand("out/wg/{target}/COG_{model}.tsv",
+               target=config["targets"],
+               model=["ridge", "lasso", "bac_nortia"]),
+        expand("out/wg/{target}/GO_{model}.tsv",
+               target=config["targets"],
+               model=["ridge", "lasso", "bac_nortia"]),
+        expand("out/wg/{target}/KEGG_{model}.tsv",
+               target=config["targets"],
+               model=["ridge", "lasso", "bac_nortia"])
 
 rule run_enrich:
   input:
@@ -1305,12 +1319,39 @@ rule run_enrich_wg:
 
 rule enrichment_plots:
   input:
-    expand("out/associations/{target}/COG.{format}", target=config["targets"], format=['png', 'svg']),
-    expand("out/associations/{target}/GO.{format}", target=config["targets"], format=['png', 'svg']),
-    expand("out/associations/{target}/KEGG.{format}", target=config["targets"], format=['png', 'svg']),
-    expand("out/wg/{target}/COG_{model}.{format}", target=config["targets"], model=WG_MODELS_LIST, format=['png', 'svg']),
-    expand("out/wg/{target}/GO_{model}.{format}", target=config["targets"], model=WG_MODELS_LIST, format=['png', 'svg']),
-    expand("out/wg/{target}/KEGG_{model}.{format}", target=config["targets"], model=WG_MODELS_LIST, format=['png', 'svg'])
+    expand("out/associations/{target}/COG.{format}",
+           target=config["targets"],
+           format=['png', 'svg']),
+    expand("out/associations/{target}/GO.{format}",
+           target=config["targets"],
+           format=['png', 'svg']),
+    expand("out/associations/{target}/KEGG.{format}",
+           target=config["targets"],
+           format=['png', 'svg']),
+    expand('out/associations/{target}/COG_{kind}.{format}',
+           target=config["targets"],
+           kind=['gpa', 'rare', 'panfeed'],
+           format=['png', 'svg']),
+    expand('out/associations/{target}/GO_{kind}.{format}',
+           target=config["targets"],
+           kind=['gpa', 'rare', 'panfeed'],
+           format=['png', 'svg']),
+    expand('out/associations/{target}/KEGG_{kind}.{format}',
+           target=config["targets"],
+           kind=['gpa', 'rare', 'panfeed'],
+           format=['png', 'svg']),
+    expand("out/wg/{target}/COG_{model}.{format}",
+           target=config["targets"],
+           model=WG_MODELS_LIST,
+           format=['png', 'svg']),
+    expand("out/wg/{target}/GO_{model}.{format}",
+           target=config["targets"],
+           model=WG_MODELS_LIST,
+           format=['png', 'svg']),
+    expand("out/wg/{target}/KEGG_{model}.{format}",
+           target=config["targets"],
+           model=WG_MODELS_LIST,
+           format=['png', 'svg']),
 
 rule run_enrichment_plots:
   input:

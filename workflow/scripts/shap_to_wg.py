@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -10,9 +11,9 @@ df = pd.read_csv(args.shap, sep="\t")
 out = pd.DataFrame()
 
 out['variant'] = df['feature']
-out['af'] = 0.5
-out['lrt-pvalue'] = 1.0
-out['filter-pvalue'] = 1.0
+out['af'] = np.nan
+out['lrt-pvalue'] = np.nan
+out['filter-pvalue'] = np.nan
 
 if 'mean_abs_shap' in df.columns:
     out['beta'] = df['mean_abs_shap']

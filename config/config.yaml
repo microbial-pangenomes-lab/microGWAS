@@ -40,12 +40,12 @@ species_amr: "Escherichia"
 # use "out/lineages_mlst.txt" to use mlst
 # or "out/lineages_poppunk.tsv" for poppunk
 # or an existing file for a custom lineages list
-lineages_file: "data/lineages.txt"
+lineages_file: "out/lineages_mlst.txt"
 
 # eggnogdb: Tax ID of eggNOG HMM database to download
 # default: "2" for Bacteria; else can be "taxid"
 # Available tax IDs can be found at http://eggnog5.embl.de/#/app/downloads
-eggnogdb: "1236"
+eggnogdb: "2"
 
 # filters to remove spurious hits
 # defaults are set as 'loose thresholds'
@@ -174,10 +174,10 @@ annotated_reference: "out/annotated_reference.tsv"
 go_obo: "out/go-basic.obo"
 
 # ---------------------------------------------------------
-# GWAS Execution Mode
+# Machine learning execution mode
 # ---------------------------------------------------------
 # Choose between "pyseer" (ENet on the entire variants file) or "bac-nortia" (Machine Learning)
-wg_method: "pyseer"
+wg_method: "bac-nortia"
 
 # ---------------------------------------------------------
 # Bac-Nortia Machine Learning Configuration
@@ -197,3 +197,6 @@ bac_nortia:
   
   # SHAP evaluation handling ("expand" clusters or use "representative")
   shap_cluster_handling: "expand"
+  
+  # Uncomment this line and replace "" with the desired value if you want to set a random seed
+  # random_seed: ""
