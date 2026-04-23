@@ -172,3 +172,31 @@ wg_inputs: "out/wg/inputs"
 ### enrichments
 annotated_reference: "out/annotated_reference.tsv"
 go_obo: "out/go-basic.obo"
+
+# ---------------------------------------------------------
+# Machine learning execution mode
+# ---------------------------------------------------------
+# Choose between "pyseer" (ENet on the entire variants file) or "bac-nortia" (Machine Learning)
+wg_method: "bac-nortia"
+
+# ---------------------------------------------------------
+# Bac-Nortia Machine Learning Configuration
+# ---------------------------------------------------------
+bac_nortia:
+  # Model choice: xgboost, catboost, lightgbm, tabnet, tabpfn
+  model: "xgboost"
+  
+  # Optuna hyperparameter tuning
+  tune_hyperparams: true
+  n_optuna_trials: 50
+  
+  # Cross-validation and filtering
+  cv_folds: 5
+  min_af: 0.05
+  correlation_threshold: 0.95
+  
+  # SHAP evaluation handling ("expand" clusters or use "representative")
+  shap_cluster_handling: "expand"
+  
+  # Uncomment this line and replace "" with the desired value if you want to set a random seed
+  # random_seed: ""

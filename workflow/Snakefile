@@ -6,6 +6,23 @@ import string
 ##### load config #####
 
 configfile: "config/config.yaml"
+PHENOTYPES = config.get("targets", [])
+
+WG_METHOD = config.get("wg_method", "enet")
+
+if WG_METHOD == "bac-nortia":
+    WG_MODELS_LIST = ["bac_nortia"]
+else:
+    WG_MODELS_LIST = ["ridge", "lasso"]
+
+GWAS_PLOT_INPUTS = (
+    expand("out/associations/{target}/annotated_summary.tsv", target=PHENOTYPES) +
+    expand("out/associations/{target}/KEGG.png", target=PHENOTYPES) +
+    expand("out/associations/{target}/manhattan.png", target=PHENOTYPES) +
+    
+    expand("out/wg/{target}/annotated_summary_{model}.tsv", target=PHENOTYPES, model=WG_MODELS_LIST) +
+    expand("out/wg/{target}/KEGG_{model}.png", target=PHENOTYPES, model=WG_MODELS_LIST)
+)
 
 ##### functions #####
 
@@ -480,10 +497,7 @@ rule pyseer_vcf:
 
 rule wg:
   input:
-    expand('out/wg/{target}/ridge.tsv',
-           target=config["targets"]),
-    expand('out/wg/{target}/lasso.tsv',
-           target=config["targets"]),
+    expand('out/wg/{target}/{model}.tsv', target=config["targets"], model=WG_MODELS_LIST)
 
 rule run_pyseer:
   input:
@@ -716,11 +730,54 @@ rule run_wg:
            > {output.lasso}
     """
 
+rule run_wg_nortia:
+    input:
+        phenotypes = os.path.join(config["association_inputs"], "{target}/phenotypes.tsv"),
+        rtab = config["pangenome"]
+    output:
+        wg_out = "out/wg/{target}/bac_nortia.tsv",
+        predictions = "out/wg/{target}/bac_nortia_predictions.tsv"
+    params:
+        outdir = "out/wg/{target}/bac_nortia_temp",
+        model = config["bac_nortia"]["model"],
+        trials = lambda w: config["bac_nortia"]["n_optuna_trials"] if config["bac_nortia"]["tune_hyperparams"] else 0,
+        cv = config["bac_nortia"]["cv_folds"],
+        min_af = config["bac_nortia"]["min_af"],
+        corr_thresh = config["bac_nortia"]["correlation_threshold"],
+        shap_handling = config["bac_nortia"]["shap_cluster_handling"],
+        seed_arg = lambda w: f"--random-seed {config['bac_nortia']['random_seed']}" if config["bac_nortia"].get("random_seed") else ""
+    conda:
+        "envs/bac_nortia.yaml"
+    log:
+        "out/logs/run_wg_nortia_{target}.log"
+    threads: 8
+    shell:
+        """
+        bac-nortia train \\
+            --phenotype {input.phenotypes} \\
+            --phenotype-column {wildcards.target} \\
+            --variant rtab:{input.rtab} \\
+            --model {params.model} \\
+            --n-optuna-trials {params.trials} \\
+            --cv-folds {params.cv} \\
+            --min-af {params.min_af} \\
+            --correlation-threshold {params.corr_thresh} \\
+            --shap-cluster-handling {params.shap_handling} \\
+            {params.seed_arg} \\
+            --n-jobs {threads} \\
+            --output-dir {params.outdir}
+
+        python workflow/scripts/shap_to_wg.py \\
+            --shap {params.outdir}/feature_importance_with_clusters.tsv \\
+            --out {output.wg_out}
+
+        awk 'BEGIN{{OFS="\\t"}} NR==1{{print "sample","actual","predicted"}} NR>1{{print $1,$2,$3}}' \\
+            {params.outdir}/predictions_test.tsv > {output.predictions}
+        """
+
 rule wg_metrics:
   input:
-    expand("out/wg/{target}/metrics_{model}.tsv",
-           target=config["targets"],
-           model=["ridge", "lasso"]),
+    expand("out/wg/{target}/metrics_{model}.tsv", target=config["targets"], model=WG_MODELS_LIST)
 
 rule run_wg_metrics:
   input:
@@ -737,13 +794,9 @@ rule run_wg_metrics:
 
 rule map_back:
   input:
-    expand("out/associations/{target}/mapped.tsv",
-           target=config["targets"]),
-    expand("out/associations/{target}/mapped_all.tsv",
-           target=config["targets"]),
-    expand("out/wg/{target}/mapped_{model}.tsv",
-           target=config["targets"],
-           model=['ridge', 'lasso']),
+    expand("out/associations/{target}/mapped.tsv", target=config["targets"]),
+    expand("out/associations/{target}/mapped_all.tsv", target=config["targets"]),
+    expand("out/wg/{target}/mapped_{model}.tsv", target=config["targets"], model=WG_MODELS_LIST)
 
 rule run_map_back:
   input:
@@ -822,18 +875,19 @@ rule run_map_back_wg:
     rm -rf {params} || true
     mkdir -p {params}
     echo -e "strain\\tunitig\\tcontig\\tstart\\tend\\tstrand\\tupstream\\tgene\\tdownstream" > {output} 2> {log}
-    python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+
+    if [ "{wildcards.model}" == "bac_nortia" ]; then
+        awk 'BEGIN {{OFS="\\t"}} NR>1 {{print "dummy", $1, "dummy", 0, 0, "+", "dummy", $1, "dummy"}}' {input.unitigs} >> {output}
+    else
+        python workflow/scripts/map_back.py {input.unitigs} {input.fasta} --tmp-prefix {params} --gff {input.gff} --print-details --pangenome {input.pangenome} >> {output} 2>> {log}
+    fi
     """
 
 rule map_summary:
   input:
-    expand("out/associations/{target}/summary.tsv",
-           target=config["targets"]),
-    expand("out/associations/{target}/summary_panfeed.tsv",
-           target=config["targets"]),
-    expand("out/wg/{target}/summary_{model}.tsv",
-           target=config["targets"],
-           model=["ridge", "lasso"]),
+    expand("out/associations/{target}/summary.tsv", target=config["targets"]),
+    expand("out/associations/{target}/summary_panfeed.tsv", target=config["targets"]),
+    expand("out/wg/{target}/summary_{model}.tsv", target=config["targets"], model=WG_MODELS_LIST)
 
 rule map_summary_fig:
   input:
@@ -942,19 +996,12 @@ rule run_map_summary_fig:
 
 rule annotate_summary:
   input:
-    expand("out/associations/{target}/annotated_summary.tsv",
-           target=config["targets"]),
-    expand("out/associations/{target}/annotated_rare_summary.tsv",
-           target=config["targets"]),
-    expand("out/associations/{target}/annotated_vcf.tsv",
-           target=config["targets"]),
-    expand("out/associations/{target}/annotated_gpa_summary.tsv",
-           target=config["targets"]),
-    expand("out/associations/{target}/annotated_panfeed_summary.tsv",
-           target=config["targets"]),
-    expand("out/wg/{target}/annotated_summary_{model}.tsv",
-           target=config["targets"],
-           model=["ridge", "lasso"]),
+    expand("out/associations/{target}/annotated_summary.tsv", target=config["targets"]),
+    expand("out/associations/{target}/annotated_rare_summary.tsv", target=config["targets"]),
+    expand("out/associations/{target}/annotated_vcf.tsv", target=config["targets"]),
+    expand("out/associations/{target}/annotated_gpa_summary.tsv", target=config["targets"]),
+    expand("out/associations/{target}/annotated_panfeed_summary.tsv", target=config["targets"]),
+    expand("out/wg/{target}/annotated_summary_{model}.tsv", target=config["targets"], model=WG_MODELS_LIST)
 
 rule run_annotate_summary:
   input:
@@ -1193,31 +1240,31 @@ rule download_obo:
   shell: "wget -O {output} 'http://purl.obolibrary.org/obo/go/go-basic.obo'"
 
 rule enrichment:
-  input:
-    expand('out/associations/{target}/COG.tsv',
-           target=config["targets"]),
-    expand('out/associations/{target}/GO.tsv',
-           target=config["targets"]),
-    expand('out/associations/{target}/KEGG.tsv',
-           target=config["targets"]),
-    expand('out/associations/{target}/COG_{kind}.tsv',
-           target=config["targets"],
-           kind=['gpa', 'rare', 'panfeed']),
-    expand('out/associations/{target}/GO_{kind}.tsv',
-           target=config["targets"],
-           kind=['gpa', 'rare', 'panfeed']),
-    expand('out/associations/{target}/KEGG_{kind}.tsv',
-           target=config["targets"],
-           kind=['gpa', 'rare', 'panfeed']),
-    expand("out/wg/{target}/COG_{model}.tsv",
-           target=config["targets"],
-           model=["ridge", "lasso"]),
-    expand("out/wg/{target}/GO_{model}.tsv",
-           target=config["targets"],
-           model=["ridge", "lasso"]),
-    expand("out/wg/{target}/KEGG_{model}.tsv",
-           target=config["targets"],
-           model=["ridge", "lasso"]),
+    input:
+        expand('out/associations/{target}/COG.tsv',
+               target=config["targets"]),
+        expand('out/associations/{target}/GO.tsv',
+               target=config["targets"]),
+        expand('out/associations/{target}/KEGG.tsv',
+               target=config["targets"]),
+        expand('out/associations/{target}/COG_{kind}.tsv',
+               target=config["targets"],
+               kind=['gpa', 'rare', 'panfeed']),
+        expand('out/associations/{target}/GO_{kind}.tsv',
+               target=config["targets"],
+               kind=['gpa', 'rare', 'panfeed']),
+        expand('out/associations/{target}/KEGG_{kind}.tsv',
+               target=config["targets"],
+               kind=['gpa', 'rare', 'panfeed']),
+        expand("out/wg/{target}/COG_{model}.tsv",
+               target=config["targets"],
+               model=["ridge", "lasso", "bac_nortia"]),
+        expand("out/wg/{target}/GO_{model}.tsv",
+               target=config["targets"],
+               model=["ridge", "lasso", "bac_nortia"]),
+        expand("out/wg/{target}/KEGG_{model}.tsv",
+               target=config["targets"],
+               model=["ridge", "lasso", "bac_nortia"])
 
 rule run_enrich:
   input:
@@ -1295,15 +1342,15 @@ rule enrichment_plots:
            format=['png', 'svg']),
     expand("out/wg/{target}/COG_{model}.{format}",
            target=config["targets"],
-           model=["ridge", "lasso"],
+           model=WG_MODELS_LIST,
            format=['png', 'svg']),
     expand("out/wg/{target}/GO_{model}.{format}",
            target=config["targets"],
-           model=["ridge", "lasso"],
+           model=WG_MODELS_LIST,
            format=['png', 'svg']),
     expand("out/wg/{target}/KEGG_{model}.{format}",
            target=config["targets"],
-           model=["ridge", "lasso"],
+           model=WG_MODELS_LIST,
            format=['png', 'svg']),
 
 rule run_enrichment_plots:

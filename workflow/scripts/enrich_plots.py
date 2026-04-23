@@ -36,6 +36,7 @@ def plot_enrichment(data, plot_file, category_label, count_col,
 
     cmap = plt.cm.viridis.copy()
     cmap.set_under('grey')
+    
     cmap = plt.cm.ScalarMappable(cmap=cmap,
                                  norm=plt.Normalize(vmin=-np.log10(0.01),
                                                     vmax=-np.log10(1E-10)))
