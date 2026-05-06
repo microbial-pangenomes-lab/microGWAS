@@ -41,7 +41,53 @@ username = os.getenv('USER')
 if username is None:
     username = 'gwas'
 
+# check whether the user provided their own GFF files
+# in `user_gffs_dir`. If the directory exists and contains
+# at least one .gff/.gff3 file, the workflow will use those
+# files instead of running ggcaller.
+def _user_gffs_provided():
+    d = config.get("user_gffs_dir", "")
+    if not d or not os.path.isdir(d):
+        return False
+    for f in os.listdir(d):
+        if f.endswith(".gff") or f.endswith(".gff3"):
+            return True
+    return False
+
+USER_GFFS = _user_gffs_provided()
+
+# decide rule priority: when the user provides GFFs, prefer
+# `use_user_gffs` over `ggcaller` (both produce ggcaller_gffs).
+if USER_GFFS:
+    ruleorder: use_user_gffs > ggcaller
+else:
+    ruleorder: ggcaller > use_user_gffs
+
 ##### rules #####
+
+rule use_user_gffs:
+  """Use user-provided GFF files (in `user_gffs_dir`) instead of running ggcaller.
+  """
+  input:
+    fasta_list=config["mash_input"]
+  output:
+    gffs=config["ggcaller_gffs"],
+    calls=config["ggcaller_calls"],
+    gfa=config["ggcaller_gfa"]
+  params:
+    user_dir=config["user_gffs_dir"],
+    outdir=config["ggcaller_dir"]
+  log: "out/logs/use_user_gffs.log"
+  shell:
+    """
+    python workflow/scripts/user_gffs.py \
+        --fasta-list {input.fasta_list} \
+        --user-dir {params.user_dir} \
+        --out-gffs {output.gffs} \
+        --out-calls {output.calls} \
+        --out-gfa {output.gfa} \
+        --ggcaller-dir {params.outdir} 2> {log}
+    """
 
 rule ggcaller:
   input:
