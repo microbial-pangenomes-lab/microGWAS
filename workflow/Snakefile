@@ -98,7 +98,7 @@ rule ggcaller:
     gfa=config["ggcaller_gfa"]
   params:
     outdir=config["ggcaller_dir"]
-  threads: 30
+  threads: 16
   conda: "envs/ggcaller.yaml"
   log: "out/logs/ggcaller.log"
   shell:
