@@ -117,6 +117,10 @@ ggcaller_gffs: "out/ggcaller_gffs.txt"
 ggcaller_calls: "out/ggcaller/gene_calls.faa"
 ggcaller_gfa: "out/mash_input.gfa"
 #
+# Optional: directory with user-provided GFF files (one per sample, named <sample>.gff or <sample>.gff3).
+# If this directory exists and contains GFF files, the workflow will use them
+# instead of running ggcaller. Otherwise, ggcaller will be run automatically.
+user_gffs_dir: "data/gffs"
 
 ### pangenome (panaroo)
 #
@@ -197,6 +201,6 @@ bac_nortia:
   
   # SHAP evaluation handling ("expand" clusters or use "representative")
   shap_cluster_handling: "expand"
-  
+ 
   # Uncomment this line and replace "" with the desired value if you want to set a random seed
   # random_seed: ""
