@@ -2,6 +2,16 @@
 
 set -e -u -o pipefail -x
 
+# Check if running in CI mode (explicit command line flag).
+CI_MODE=false
+for arg in "$@"; do
+    if [ "$arg" = "--ci" ]; then
+        CI_MODE=true
+        echo "Running in CI mode (dry run only)"
+        break
+    fi
+done
+
 # stop everything if we are risking to override
 # a genuine GWAS run
 if [ -d "../out" ]; then
@@ -80,5 +90,10 @@ bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 
 cp test/reference.faa data/
 # first dry run
 snakemake -np annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
-# actual run (brace yourself)
-snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
+
+if [ "$CI_MODE" = true ]; then
+    echo "CI mode: skipping actual snakemake run"
+else
+    # actual run (brace yourself)
+    snakemake -p annotate_summary find_amr_vag map_back manhattan_plots heritability enrichment_plots qq_plots tree --cores 8 --use-conda
+fi
