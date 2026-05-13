@@ -109,14 +109,15 @@ unitigs: "out/unitigs/unitigs.txt.gz"
 unitigs_rtab: "out/unitigs/unitigs.unique_rows.Rtab.gz"
 
 ### gene-calling (ggcaller)
-# generated outside the workflow
 ggcaller_input: "out/ggcaller_input.txt"
-#
 ggcaller_dir: "out/ggcaller"
 ggcaller_gffs: "out/ggcaller_gffs.txt"
 ggcaller_calls: "out/ggcaller/gene_calls.faa"
 ggcaller_gfa: "out/mash_input.gfa"
 #
+# Set to true when the phenotype file has a "gff" column with
+# user-provided GFF files.
+use_user_gffs: false
 
 ### pangenome (panaroo)
 #
@@ -197,6 +198,6 @@ bac_nortia:
   
   # SHAP evaluation handling ("expand" clusters or use "representative")
   shap_cluster_handling: "expand"
-  
+ 
   # Uncomment this line and replace "" with the desired value if you want to set a random seed
   # random_seed: ""

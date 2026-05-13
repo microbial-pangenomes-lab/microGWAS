@@ -72,6 +72,7 @@ mkdir -p data/references/gbks
 
 > out/mash_input.txt
 > out/ggcaller_input.txt
+> out/ggcaller_gffs.txt
 > out/panaroo_input.txt
 > out/unitigs_input.tsv
 > out/annotate_input.txt
@@ -150,6 +151,7 @@ do
   zcat data/references/human_readable/refseq/bacteria/$GENUS/$SPECIES/$ref/*_protein.faa.gz > data/references/faas/$ref.faa;
   echo "data/references/fastas/"$ref".fasta" >> out/mash_input.txt;
   echo "data/references/gffs/"$ref".gff" >> out/panaroo_input.txt;
+  echo "data/references/gffs/"$ref".gff" >> out/ggcaller_gffs.txt;
   echo -e $ref"\tdata/references/fastas/"$ref".fasta" >> out/unitigs_input.tsv;
   echo -e "data/references/fastas/"$ref".fasta\tdata/references/gffs/"$ref".gff\tref" >> out/annotate_input.txt;
 done
