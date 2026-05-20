@@ -10,8 +10,7 @@ an end-to-end microbial GWAS analysis.
 Starting from genome assemblies and a phenotype file, microGWAS
 will run a number of single-locus and whole genome associations
 using ``pyseer``, and annotate the associations results, as well
-as generating a number of functional enrichment tests. The pipeline
-uses ggCaller to automatically generate gene annotations for all samples.
+as generating a number of functional enrichment tests.
 
 Citation
 --------
@@ -20,7 +19,9 @@ If you find the ``microGWAS`` pipeline useful, please cite it as:
 
 .. code-block:: console
 
-    Burgaya, J., Damaris, B. F., Fiebig, J., & Galardini, M. (2024). microGWAS: A computational pipeline to perform large scale bacterial genome-wide association studies (p. 2024.07.08.602456). bioRxiv. https://doi.org/10.1101/2024.07.08.602456
+    Burgaya, J., Damaris, B. F., Fiebig, J., & Galardini, M. (2024).
+    microGWAS: A computational pipeline to perform large scale bacterial genome-wide association studies (p. 2024.07.08.602456). bioRxiv.
+    https://doi.org/10.1101/2024.07.08.602456
 
 Please also consider citing the underlying tools used by the pipeline.
 See :doc:`tools` for more details.
@@ -36,4 +37,3 @@ Contents
    outputs
    rules
    tools
-

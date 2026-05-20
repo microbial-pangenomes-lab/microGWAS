@@ -178,7 +178,7 @@ go_obo: "out/go-basic.obo"
 # Machine learning execution mode
 # ---------------------------------------------------------
 # Choose between "pyseer" (ENet on the entire variants file) or "bac-nortia" (Machine Learning)
-wg_method: "bac-nortia"
+wg_method: "pyseer"
 
 # ---------------------------------------------------------
 # Bac-Nortia Machine Learning Configuration

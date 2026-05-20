@@ -83,8 +83,16 @@ cd ..
 zcat test/local_assemblies/536/genome.fasta.gz > test/local_assemblies/536/genome.fasta
 zcat test/local_assemblies/536/genome.gff.gz > test/local_assemblies/536/genome.gff
 zcat test/local_assemblies/536/genome.gbk.gz > test/local_assemblies/536/genome.gbk
-#
-bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+
+if [ "$CI_MODE" = true ]; then
+    # In CI mode, only use local references
+    bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli 536
+    sed -i 's$enrichment_reference: "IAI39"$enrichment_reference: "536"$g' config/config.yaml 
+else
+    # In normal mode, use both local and remote references
+    bash bootstrap.sh --local-dirs test/local_assemblies/536 Escherichia coli IAI39 GCF_000007445.1,GCF_000026305.1,GCF_000026265.1,GCF_000026345.1,GCF_000005845.2,GCF_000026325.1,GCF_000013265.1
+fi
+
 # reduce the size of the reference proteome
 # to speed up its annotation and rare variants analysis
 cp test/reference.faa data/
