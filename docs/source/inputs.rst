@@ -35,6 +35,6 @@ By default, the microGWAS pipeline takes the assemblies with the ``.fasta`` exte
 Make sure that each sample assembly file follows this naming convention before running the analysis.
 
 .. note::
-    The pipeline uses ggCaller to generate GFF annotations automatically, so you no longer need to provide GFF files for your samples.
+    The pipeline uses ggCaller to generate GFF annotations automatically only if the ``gff`` column is not present in the phenotype file, so you no longer need to provide GFF files for your samples.
     However, using ggCaller can take a long time with large datasets containing more than ~2k genomes.
     If you are dealing with a large number of samples, providing pre-computed GFF files via the optional ``gff`` column is highly recommended to speed up the analysis.
