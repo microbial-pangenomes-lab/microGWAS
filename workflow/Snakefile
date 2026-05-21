@@ -41,25 +41,49 @@ username = os.getenv('USER')
 if username is None:
     username = 'gwas'
 
+# When `use_user_gffs` is true, the input TSV had a "gff" column.
+USE_USER_GFFS = bool(config.get("use_user_gffs", False))
+
 ##### rules #####
 
 rule ggcaller:
   input:
-    fasta_list=config["mash_input"]
+    fasta_list=config["ggcaller_input"],
+    gffs_list=config["ggcaller_gffs"]
   output:
-    gffs=config["ggcaller_gffs"],
-    calls=config["ggcaller_calls"],
-    gfa=config["ggcaller_gfa"]
+    done=touch("out/ggcaller.done")
   params:
-    outdir=config["ggcaller_dir"]
+    outdir=config["ggcaller_dir"],
+    use_user_gffs=int(USE_USER_GFFS),
+    user_gffs_manifest="out/user_gffs.tsv"
   threads: 16
   conda: "envs/ggcaller.yaml"
   log: "out/logs/ggcaller.log"
   shell:
     """
-    rm -rf {params.outdir} > {log} 2>&1 || true
-    ggcaller --refs {input.fasta_list} --out {params.outdir} --threads {threads} >> {log} 2>&1
-    ls {params.outdir}/GFF/*.gff > {output.gffs} 2>> {log}
+    if [ "{params.use_user_gffs}" = "1" ]; then
+        # User-provided GFFs: bootstrap already wrote the paths to
+        # {input.gffs_list}. Just sanity-check that they exist.
+        if [ ! -f "{params.user_gffs_manifest}" ]; then
+            echo "ERROR: use_user_gffs is true but {params.user_gffs_manifest} is missing." >&2
+            echo "Re-run bootstrap.sh after adding a 'gff' column to the samples TSV." >&2
+            exit 1
+        fi
+        mkdir -p {params.outdir} >> {log} 2>&1
+        missing=0
+        while read gff; do
+            if [ -n "$gff" ] && [ ! -f "$gff" ]; then
+                echo "ERROR: GFF file listed in {input.gffs_list} not found: $gff" >&2
+                missing=1
+            fi
+        done < {input.gffs_list}
+        if [ "$missing" = "1" ]; then exit 1; fi
+        echo "use_user_gffs=true: skipped ggcaller; $(wc -l < {input.gffs_list}) GFF paths in {input.gffs_list} verified" >> {log}
+    else
+        rm -rf {params.outdir} > {log} 2>&1 || true
+        ggcaller --refs {input.fasta_list} --out {params.outdir} --threads {threads} >> {log} 2>&1
+        echo "ggcaller finished; sample GFFs are in {params.outdir}/GFF/" >> {log}
+    fi
     """
     
 rule download_eggnog:
@@ -169,7 +193,8 @@ rule distance:
 
 rule pangenome:
   input:
-    gffs=config["ggcaller_gffs"]
+    gffs="out/panaroo_input.txt",
+    ggcaller_done="out/ggcaller.done"
   output:
     rtab=config["pangenome"],
     csv=config["pangenome_csv"],

@@ -1,7 +1,7 @@
 Underlying tools
 ================
 
-The ``microGWAS`` pipeline uses a number of computional tools
+The ``microGWAS`` pipeline uses a number of computational tools
 underneath, which you should try to cite in any publication that uses the results
 produced by the pipeline.
 

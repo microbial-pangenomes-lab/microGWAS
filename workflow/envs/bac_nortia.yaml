@@ -21,7 +21,7 @@ dependencies:
   - pyyaml>=6.0
   - matplotlib>=3.7
   - tqdm>=4.65
-  - pytorch-tabnet>=4.1
-  - tabpfn>=6.0.0
   - pip:
+      - pytorch-tabnet>=4.1
+      - tabpfn>=6.0.0
       - git+https://github.com/microbial-pangenomes-lab/bac-nortia.git
