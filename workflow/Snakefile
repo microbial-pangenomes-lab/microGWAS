@@ -84,6 +84,7 @@ rule ggcaller:
         ggcaller --refs {input.fasta_list} --out {params.outdir} --threads {threads} >> {log} 2>&1
         echo "ggcaller finished; sample GFFs are in {params.outdir}/GFF/" >> {log}
     fi
+    touch {output}
     """
     
 rule download_eggnog:
