@@ -235,7 +235,9 @@ rule sample_whole_pangenome:
     """
 
 rule annotate_pangenome:
-  input: config["pangenome_faa"]
+  input:
+    faa=config["pangenome_faa"],
+    emapper=config["emapper_db"]
   output: "out/panaroo/pangenome.emapper.annotations",
   params:
     emapper_data=config["emapper"],
@@ -249,7 +251,7 @@ rule annotate_pangenome:
       echo "eggnog-mapper database missing" > {log}; \
       exit 1;
     fi
-    emapper.py -i {input} -o {params.emapper_base} \
+    emapper.py -i {input.faa} -o {params.emapper_base} \
                --cpu {threads} --target_orthologs one2one --go_evidence all \
                --tax_scope Bacteria --pfam_realign none --override \
                --data_dir {params.emapper_data} >> {log} 2>&1
@@ -1032,38 +1034,16 @@ rule annotate_summary:
 rule run_annotate_summary:
   input:
     summary="out/associations/{target}/summary.tsv",
-    pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"],
-    emapper=config["emapper_db"]
+    annotations="out/panaroo/pangenome.emapper.annotations"
   output:
     "out/associations/{target}/annotated_summary.tsv"
   params:
-    emapper_data=config["emapper"],
-    emapper_base="out/associations/{target}/summary",
-    sample="out/associations/{target}/sample.faa",
-    annotations="out/associations/{target}/summary.emapper.annotations",
-    r=config["annotation_references"]
-  threads: 8
-  conda: "envs/eggnog-mapper.yaml"
+    annotations="out/associations/{target}/summary.emapper.annotations"
   log: "out/logs/annotate_{target}.log"
   shell:
     """
-    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
-               {params.r} \
-               --groups {input.summary} > {params.sample} 2> {log} && \
-    if [ ! -s {params.sample} ]; then \
-      echo "No OGs, skipping emapper.py" >> {log}; \
-      touch {output} ; \
-      exit 0; \
-    fi && \
-    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
-      echo "eggnog-mapper database missing" >> {log}; \
-      exit 1;
-    fi
-    emapper.py -i {params.sample} -o {params.emapper_base} \
-               --cpu {threads} --target_orthologs one2one --go_evidence all \
-               --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} >> {log} 2>&1 && \
+    python workflow/scripts/subset_annotations.py {input.annotations} \
+               --groups {input.summary} > {params.annotations} 2> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1071,38 +1051,16 @@ rule run_annotate_summary:
 rule run_annotate_rare_summary:
   input:
     summary="out/associations/{target}/rare_summary.tsv",
-    pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"],
-    emapper=config["emapper_db"]
+    annotations="out/panaroo/pangenome.emapper.annotations"
   output:
     "out/associations/{target}/annotated_rare_summary.tsv"
   params:
-    emapper_data=config["emapper"],
-    emapper_base="out/associations/{target}/rare_summary",
-    sample="out/associations/{target}/rare_sample.faa",
-    annotations="out/associations/{target}/rare_summary.emapper.annotations",
-    r=config["annotation_references"]
-  threads: 8
-  conda: "envs/eggnog-mapper.yaml"
+    annotations="out/associations/{target}/rare_summary.emapper.annotations"
   log: "out/logs/annotate_rare_{target}.log"
   shell:
     """
-    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
-               {params.r} \
-               --groups {input.summary} > {params.sample} 2> {log} && \
-    if [ ! -s {params.sample} ]; then \
-      echo "No OGs, skipping emapper.py" >> {log}; \
-      touch {output} ; \
-      exit 0; \
-    fi && \
-    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
-      echo "eggnog-mapper database missing" >> {log}; \
-      exit 1;
-    fi
-    emapper.py -i {params.sample} -o {params.emapper_base} \
-               --cpu {threads} --target_orthologs one2one --go_evidence all \
-               --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} >> {log} 2>&1 && \
+    python workflow/scripts/subset_annotations.py {input.annotations} \
+               --groups {input.summary} > {params.annotations} 2> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1110,38 +1068,16 @@ rule run_annotate_rare_summary:
 rule run_annotate_gpa_summary:
   input:
     summary="out/associations/{target}/gpa_summary.tsv",
-    pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"],
-    emapper=config["emapper_db"]
+    annotations="out/panaroo/pangenome.emapper.annotations"
   output:
     "out/associations/{target}/annotated_gpa_summary.tsv"
   params:
-    emapper_data=config["emapper"],
-    emapper_base="out/associations/{target}/gpa_summary",
-    sample="out/associations/{target}/gpa_sample.faa",
-    annotations="out/associations/{target}/gpa_summary.emapper.annotations",
-    r=config["annotation_references"]
-  threads: 8
-  conda: "envs/eggnog-mapper.yaml"
+    annotations="out/associations/{target}/gpa_summary.emapper.annotations"
   log: "out/logs/annotate_gpa_{target}.log"
   shell:
     """
-    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
-               {params.r} \
-               --groups {input.summary} > {params.sample} 2> {log} && \
-    if [ ! -s {params.sample} ]; then \
-      echo "No OGs, skipping emapper.py" >> {log}; \
-      touch {output} ; \
-      exit 0; \
-    fi && \
-    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
-      echo "eggnog-mapper database missing" >> {log}; \
-      exit 1;
-    fi
-    emapper.py -i {params.sample} -o {params.emapper_base} \
-               --cpu {threads} --target_orthologs one2one --go_evidence all \
-               --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} >> {log} 2>&1 && \
+    python workflow/scripts/subset_annotations.py {input.annotations} \
+               --groups {input.summary} > {params.annotations} 2> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1149,38 +1085,16 @@ rule run_annotate_gpa_summary:
 rule run_annotate_panfeed_summary:
   input:
     summary="out/associations/{target}/summary_panfeed.tsv",
-    pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"],
-    emapper=config["emapper_db"]
+    annotations="out/panaroo/pangenome.emapper.annotations"
   output:
     "out/associations/{target}/annotated_panfeed_summary.tsv"
   params:
-    emapper_data=config["emapper"],
-    emapper_base="out/associations/{target}/panfeed_summary",
-    sample="out/associations/{target}/panfeed_sample.faa",
-    annotations="out/associations/{target}/panfeed_summary.emapper.annotations",
-    r=config["annotation_references"]
-  threads: 8
-  conda: "envs/eggnog-mapper.yaml"
+    annotations="out/associations/{target}/panfeed_summary.emapper.annotations"
   log: "out/logs/annotate_panfeed_{target}.log"
   shell:
     """
-    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
-               {params.r} \
-               --groups {input.summary} > {params.sample} 2> {log} && \
-    if [ ! -s {params.sample} ]; then \
-      echo "No OGs, skipping emapper.py" >> {log}; \
-      touch {output} ; \
-      exit 0; \
-    fi && \
-    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
-      echo "eggnog-mapper database missing" >> {log}; \
-      exit 1;
-    fi
-    emapper.py -i {params.sample} -o {params.emapper_base} \
-               --cpu {threads} --target_orthologs one2one --go_evidence all \
-               --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} >> {log} 2>&1 && \
+    python workflow/scripts/subset_annotations.py {input.annotations} \
+               --groups {input.summary} > {params.annotations} 2> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1188,38 +1102,16 @@ rule run_annotate_panfeed_summary:
 rule run_annotate_summary_wg:
   input:
     summary="out/wg/{target}/summary_{model}.tsv",
-    pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"],
-    emapper=config["emapper_db"]
+    annotations="out/panaroo/pangenome.emapper.annotations"
   output:
     "out/wg/{target}/annotated_summary_{model}.tsv"
   params:
-    emapper_data=config["emapper"],
-    emapper_base="out/wg/{target}/summary_{model}",
-    sample="out/wg/{target}/sample_{model}.faa",
-    annotations="out/wg/{target}/summary_{model}.emapper.annotations",
-    r=config["annotation_references"]
-  threads: 8
-  conda: "envs/eggnog-mapper.yaml"
+    annotations="out/wg/{target}/summary_{model}.emapper.annotations"
   log: "out/logs/annotate_{model}_{target}.log"
   shell:
     """
-    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
-               {params.r} \
-               --groups {input.summary} > {params.sample} 2> {log} && \
-    if [ ! -s {params.sample} ]; then \
-      echo "No OGs, skipping emapper.py" >> {log}; \
-      touch {output} ; \
-      exit 0; \
-    fi && \
-    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
-      echo "eggnog-mapper database missing" >> {log}; \
-      exit 1;
-    fi
-    emapper.py -i {params.sample} -o {params.emapper_base} \
-               --cpu {threads} --target_orthologs one2one --go_evidence all \
-               --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} >> {log} 2>&1 && \
+    python workflow/scripts/subset_annotations.py {input.annotations} \
+               --groups {input.summary} > {params.annotations} 2> {log} && \
     python workflow/scripts/enhance_summary.py {input.summary} {params.annotations} \
     > {output} 2>> {log}
     """
@@ -1227,36 +1119,17 @@ rule run_annotate_summary_wg:
 rule annotate_reference:
   input:
     pangenome=config["pangenome_csv"],
-    genes=config["pangenome_genes"],
-    emapper=config["emapper_db"]
+    annotations="out/panaroo/pangenome.emapper.annotations"
   output: config["annotated_reference"]
   params:
-    emapper_data=config["emapper"],
-    emapper_base="out/reference",
-    sample="out/reference.faa",
     annotations="out/reference.emapper.annotations",
     r=config["enrichment_reference"]
-  threads: 8
-  conda: "envs/eggnog-mapper.yaml"
   log: "out/logs/annotate_reference.log"
   shell:
     """
-    python workflow/scripts/sample_pangenome.py {input.pangenome} {input.genes} \
-               --focus-strain {params.r} --only-focus \
-               > {params.sample} 2> {log} && \
-    if [ ! -s {params.sample} ]; then \
-      echo "No OGs, skipping emapper.py" >> {log}; \
-      touch {output} ; \
-      exit 0; \
-    fi && \
-    if [ ! -e {params.emapper_data} ] || ( [ -L {params.emapper_data} ] && [ ! -e {params.emapper_data} ] ); then \
-      echo "eggnog-mapper database missing" >> {log}; \
-      exit 1;
-    fi
-    emapper.py -i {params.sample} -o {params.emapper_base} \
-               --cpu {threads} --target_orthologs one2one --go_evidence all \
-               --tax_scope Bacteria --pfam_realign none --override \
-               --data_dir {params.emapper_data} >> {log} 2>&1 && \
+    python workflow/scripts/subset_annotations.py {input.annotations} \
+               --pangenome {input.pangenome} --focus-strain {params.r} --only-focus \
+               > {params.annotations} 2> {log} && \
     python workflow/scripts/enhance_summary.py /dev/null {params.annotations} --no-summary \
     > {output} 2>> {log}
     """
