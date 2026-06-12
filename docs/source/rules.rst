@@ -32,7 +32,7 @@ Which accomplish the following functions:
 * ``lineage_st``: will generate a tab-separated file with the predicted sequence types (STs).
 * ``find_amr_vag``: will generate a summary file with the predicted antimicrobial resistance genes identified into functionally relevant groups, and a summary file with the predicted virulence associated genes.
 * ``pangenome``: will find the orthologous gene clusters across all samples and the chosen references using panaroo.
-* ``annotate_pangenome``: will generate functional annotations for the pangenome using eggnog-mapper, including COG categories, GO terms, and KEGG pathway mappings.
+* ``annotate_pangenome``: will generate functional annotations for the **whole** pangenome using eggnog-mapper, including COG categories, GO terms, and KEGG pathway mappings. This is the only rule that runs ``emapper.py``: every downstream annotation rule (``annotate_summary``, the rare/gpa/panfeed/whole-genome summaries and the enrichment reference) reuses this single annotation table instead of re-running eggnog-mapper, by extracting the relevant subtable with ``workflow/scripts/subset_annotations.py``.
 * ``tree``: will generate a phylogenetic tree from the core genome alignment output from panaroo.
 * ``combine_heritability``: will generate a file with the comined heritabilities: built from the lineages of each strain and by using a kinship matrix built from the unitigs presence and absence matrix.
 * ``pyseer``: will test for associations of each unitig and the phenotype, as well as gene presence/absence patterns and lineage effects.
@@ -43,7 +43,7 @@ Which accomplish the following functions:
 * ``qq_plots``: will createa Q-Q plot to check that p-values are not inflated (large ‘shelves’ are symptomatic of poorly controlled confounding population structure)
 * ``map_back``: will map back the associated genetic variants to the provided reference genomes.
 * ``manhattan_plots``: will generate a Manhattan plot of the unitigs that map to the chosen reference genome.
-* ``annotate_summary``: will generate an annotated summary table for all associations, including: the identity of the gene the variants map to, the number of strains, the average association pvalue, the gene ID across the selected reference genomes, and automatic annotations provided by ``eggnog-mapper``.
+* ``annotate_summary``: will generate an annotated summary table for all associations, including: the identity of the gene the variants map to, the number of strains, the average association pvalue, the gene ID across the selected reference genomes, and automatic annotations provided by ``eggnog-mapper``. The eggnog-mapper annotations are not recomputed here: they are taken directly from the pangenome-wide table produced by ``annotate_pangenome`` (so this rule depends on it).
 * ``enrichment``: will generate a file with the functional enrichment of the associated variants for GO terms, COG categories and KEGG pathways.
 * ``enrichment_plots``: will generate visualizations from the results of the ``enrichment`` rule.
 
